@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 
 import org.docksidestage.unit.PlainTestCase;
 
+// TODO iwata [感謝] javadocのauthorありがとうございます！(^^ by jflute (2025/07/14)
 /**
  * The test of variable. <br>
  * Operate exercise as javadoc. If it's question style, write your answer before test execution. <br>
@@ -50,6 +51,7 @@ public class Step01VariableTest extends PlainTestCase {
         log(sea); // your answer? => mystic8:mai
     }
     //型の異なる変数を+演算子で文字列結合していると考えました。
+    // TODO iwata [いいね] yes, String以外のクラスはtoString()が暗黙的に呼ばれます by jflute (2025/07/14)
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_variable_reassigned_basic() {
@@ -85,6 +87,17 @@ public class Step01VariableTest extends PlainTestCase {
     // 気になったのでadd()メソッドについて調べたところ、戻り値はBigDecimal型で返すことを確認しました。
     // そもそもなぜlog(sea)で値が返ってくるか調べました。
     // log()ではtoString()が戻り値として呼び出されており、BigDecimalクラスのtoString() メソッドは、そのオブジェクトが表す数値を文字列形式で返すため数値のメンバ変数のみがログに出力される。
+    // TODO iwata [いいね] ソースコード読んでる素晴らしいです(^^ by jflute (2025/07/14)
+    // TODO iwata [ふぉろー] しっかり add()メソッド調べたの素晴らしいです by jflute (2025/07/14)
+    // ぜひ、add()メソッドのJavaDocにも注目してみてください。IntelliJ上でカーソルを当てればツールチップで表示されます。
+    // 一言目に Returns って書いてあるので、自分自身を変えるっというよりも「戻す」って主張が強いです。
+    // JavaDocの戻り値の説明欄も this + argend とあって、足したものを戻すよって言っています。
+    // 他にも、BigDecimal自身のクラスのJavaDocを読むと、一言目に immutable って書いてあります。
+    // 自分(のインスタンス)は変わらないってことを示すので、このクラスの特性からaddしても自分は変えずに戻す、
+    // ってことも読み取れます。色々な調べ方がありますが、JavaDocは目の前にある手軽な情報ということで。
+
+    // TODO jflute 1on1のときに、Immutableの話とソースコードリーディングをする予定 (2025/07/14)
+    // ↑このtodoは、くぼ用のものなのでそのまま残しておいてください
 
     // ===================================================================================
     //                                                                   Instance Variable
@@ -139,7 +152,15 @@ public class Step01VariableTest extends PlainTestCase {
     // *instanceMagiclampについて*
     // Copilotに尋ねたらinstanceMagiclampはメソッドの引数として渡されているローカル変数であるためクラスのメンバ変数には影響しない
     // 納得した。
+    // TODO iwata [ふぉろー] AI良い活用の仕方してますね(^^。 by jflute (2025/07/14)
+    // そう、helpメソッドのinstanceMagiclampは「引数」で、引数は「メソッドのローカル変数」です。
+    // メソッドを呼ばれるときに、呼び出し側で指定された値(インスタンス)を引数で受け取ります。
+    // なので、呼び出し側で呼び出す直前まで入れていた変数(instanceMagiclamp)と、
+    // 呼ばれた側で受け取るための宣言した引数(ローカル変数)(instanceMagiclamp)は、
+    // たまたま名前が同じだけの別の変数なんですね。(たまたま名前が同じ別の箱)
+    // (インスタンスだけhelpメソッドに旅立つだけで、変数は旅立たない)
 
+    // TODO jflute 1on1にて、変数とインスタンスの関係性について、そもそもインスタンスとは？ (2025/07/14)
 
     private void helpInstanceVariableViaMethod(String instanceMagiclamp) {
         instanceBroadway = "bigband";
@@ -187,6 +208,10 @@ public class Step01VariableTest extends PlainTestCase {
     // そのため、メソッド内でのseaの変更は呼び出し元のseaにも影響を与えると理解した。
     // オブジェクト自体は、メモリ上に存在するデータの塊であり、変数はそのオブジェクトがメモリ上のどこにあるかを示す「アドレス（参照）」を保持しています。
     // ↑らしい。たしかに納得。
+    // TODO iwata [ふぉろー] おお、これですこれです。変数はただ(どこかに置いてある)インスタンスを指し示すだけで.. by jflute (2025/07/14)
+    // 何かしら処理を振る舞うのはあくまでインスタンス(オブジェクト)なんですね。
+    // そのインスタンス(のクラス)が、自分自身を書き換えるのか？書き換えずに新しいインスタンスを戻すのか？
+    // という二択になって、StringBuilderは自分自身を書き換えるスタイルのクラスだったということですね。
 
     private void helpMethodArgumentMethodcall(StringBuilder sea, int land) {
         ++land;
@@ -204,6 +229,8 @@ public class Step01VariableTest extends PlainTestCase {
         log(sea); // your answer? => harbor
     }
     // メソッド内ではローカル変数のseaに新しいインスタンスへの参照を渡しているだけなので、harborと予想
+    // TODO iwata [いいね] yes, 1個目のインスタンスへの参照を破棄して、2個目のインスタンスを代入したということですね by jflute (2025/07/14)
+    // (helpメソッドの最後の行)
 
     private void helpMethodArgumentVariable(StringBuilder sea, int land) {
         ++land;
@@ -234,6 +261,9 @@ public class Step01VariableTest extends PlainTestCase {
         // define variables here
         String sea = "mystic";
         Integer land = null;
+        // TODO iwata piariはインスタンス変数という要件なので、メソッドの外側に宣言しましょう by jflute (2025/07/14)
+        // 通常はクラス宣言直下あたりに宣言するのが慣習ですが、ここはエクササイズのわかりやすさを優先して、
+        // このメソッドの前後のどこかあたりでOKです。
         int piari = 0;
         log(sea, land, piari);
     }
