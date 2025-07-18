@@ -52,6 +52,7 @@ public class Step01VariableTest extends PlainTestCase {
     }
     //型の異なる変数を+演算子で文字列結合していると考えました。
     // TODO iwata [いいね] yes, String以外のクラスはtoString()が暗黙的に呼ばれます by jflute (2025/07/14)
+    // なるほど。理解しました。
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_variable_reassigned_basic() {
@@ -95,6 +96,8 @@ public class Step01VariableTest extends PlainTestCase {
     // 他にも、BigDecimal自身のクラスのJavaDocを読むと、一言目に immutable って書いてあります。
     // 自分(のインスタンス)は変わらないってことを示すので、このクラスの特性からaddしても自分は変えずに戻す、
     // ってことも読み取れます。色々な調べ方がありますが、JavaDocは目の前にある手軽な情報ということで。
+
+    // ↑なるほどすぎました。addしても自分は変えずに戻す、の部分。JavaDoc今後は活用します。
 
     // TODO jflute 1on1のときに、Immutableの話とソースコードリーディングをする予定 (2025/07/14)
     // ↑このtodoは、くぼ用のものなのでそのまま残しておいてください
@@ -257,6 +260,8 @@ public class Step01VariableTest extends PlainTestCase {
      * o すべての変数をlog()でカンマ区切りの文字列で表示
      * </pre>
      */
+    int piari;
+
     public void test_variable_writing() {
         // define variables here
         String sea = "mystic";
@@ -264,9 +269,32 @@ public class Step01VariableTest extends PlainTestCase {
         // TODO iwata piariはインスタンス変数という要件なので、メソッドの外側に宣言しましょう by jflute (2025/07/14)
         // 通常はクラス宣言直下あたりに宣言するのが慣習ですが、ここはエクササイズのわかりやすさを優先して、
         // このメソッドの前後のどこかあたりでOKです。
-        int piari = 0;
+        // int piari = 0;
         log(sea, land, piari);
     }
+    // public void test_variable_writing()これをクラスだと勘違いしておかしなことになってました。
+    // メソッド配下がローカル変数、インスタンス配下がインスタンス変数
+
+    // 以下Copilotへの質問
+    /**
+     *理由
+     * Javaではローカル変数とインスタンス変数で初期化の扱いが異なります：
+     * インスタンス変数（フィールド）
+     * 自動的にデフォルト値で初期化される
+     * String → null
+     * int → 0
+     * boolean → false
+     *
+     * ローカル変数
+     * 自動初期化されない
+     * 使用前に明示的に初期化する必要がある
+     * 初期化せずに使用するとコンパイルエラーになる
+     *
+     * 設計上の理由
+     * 安全性: 未初期化の変数使用によるバグを防ぐ
+     * 明示性: 開発者が意図的に初期値を設定することを強制
+     * パフォーマンス: ローカル変数は頻繁に作成/破棄されるため、自動初期化のオーバーヘッドを避ける
+     */
 
     // ===================================================================================
     //                                                                           Good Luck
@@ -277,11 +305,36 @@ public class Step01VariableTest extends PlainTestCase {
      * <pre>
      * _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
      * your question here (ここにあなたの質問を):
-     * 
+     * メソッド終了時の変数 sea の中身は？
      * _/_/_/_/_/_/_/_/_/_/
      * </pre>
      */
+    private boolean bool;
+    private char c;
+
     public void test_variable_yourExercise() {
-        // write your code here
+        boolean bool = true;
+        char c = 'A';
+        String sea = "mystic";
+        sea = sea + bool + c;
+        log(sea); // your answer? => mystictrueA
     }
+
+    // boolとcharの初期値の確認と見せかけて、インスタンス変数名とローカル変数名が衝突した場合の問題にしました。
+
+    /**
+     * 以下、Copilotへの質問
+     * このファイルのテストコードってどの部分で正解を判断してる？
+     *
+     * 正解判断の仕組み
+     * 予想を事前に記述: log(sea); // your answer? => mystic のように、コメントで予想答えを書く
+     * テスト実行: log()メソッドを呼び出してコンソールに実際の値を出力
+     * 手動比較: 実行結果と予想が一致しているかを目視で確認
+     *
+     * 自動判定はない理由
+     * このテストは学習用エクササイズのため：
+     * assertEqualsなどのアサーション文は使用していない
+     * 自動的にパス/フェイルを判定しない
+     * 学習者が自分で考えて答えを予想し、実行結果と比較することが目的
+     */
 }

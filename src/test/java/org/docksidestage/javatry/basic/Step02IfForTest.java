@@ -25,7 +25,7 @@ import org.docksidestage.unit.PlainTestCase;
  * Operate exercise as javadoc. If it's question style, write your answer before test execution. <br>
  * (javadocの通りにエクササイズを実施。質問形式の場合はテストを実行する前に考えて答えを書いてみましょう)
  * @author jflute
- * @author your_name_here
+ * @author Rio-Rf-biz
  */
 public class Step02IfForTest extends PlainTestCase {
 
@@ -52,8 +52,9 @@ public class Step02IfForTest extends PlainTestCase {
         } else {
             sea = 7;
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? => 7
     }
+    // sea > 904を満たさないのでelseに入る。seaは7になる。
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_if_elseif_basic() {
@@ -67,96 +68,140 @@ public class Step02IfForTest extends PlainTestCase {
         } else {
             sea = 9;
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? => 7
     }
+    // sea > 904を満たさないのでelse ifに入る。seaは7になる。その後はelseなのでlog(sea)に飛ぶと予想。
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_if_elseif_nested() {
         boolean land = false;
         int sea = 904;
-        if (sea > 904) {
+        if (sea > 904) { //満たさない
             sea = 2001;
-        } else if (land && sea >= 904) {
+        } else if (land && sea >= 904) { // landはfalseなので満たさない
             sea = 7;
-        } else if (sea >= 903 || land) {
+        } else if (sea >= 903 || land) { // sea >= 903は満たす, landはfalseなので満たさない, ||なのでelse ifの中に入る
             sea = 8;
-            if (!land) {
+            if (!land) { // !landなのでtrue, ifの中に入る
                 land = true;
-            } else if (sea <= 903) {
+            } else if (sea <= 903) { // elseなので飛ばす
                 sea++;
             }
-        } else if (sea == 8) {
+        } else if (sea == 8) { // elseなので飛ばす
             sea++;
             land = false;
-        } else {
+        } else { // elseなので飛ばす
             sea = 9;
         }
-        if (sea >= 9 || (sea > 7 && sea < 9)) {
-            sea--;
+        if (sea >= 9 || (sea > 7 && sea < 9)) { // このときsea = 8, land = trueなのでifの中に入る
+            sea--; // seaは8なので1減らして7になる
         }
-        if (land) {
+        if (land) { // landはtrueなのでifの中に入る
             sea = 10;
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? => 10
     }
+    // コメントアウトにメモしながら読んだ。seaは10と予想。
 
     // ===================================================================================
     //                                                                       for Statement
     //                                                                       =============
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_for_inti_basic() {
-        List<String> stageList = prepareStageList();
+        List<String> stageList = prepareStageList(); // 4つの文字列をリストに入れる
         String sea = null;
-        for (int i = 0; i < stageList.size(); i++) {
+        for (int i = 0; i < stageList.size(); i++) { // i < 4なので4回ループ
             String stage = stageList.get(i);
             if (i == 1) {
-                sea = stage;
+                sea = stage; // 1番目の要素は"dockside"
             }
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? => "dockside"
     }
+    // seaはdocksideになると予想。
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_for_foreach_basic() {
-        List<String> stageList = prepareStageList();
+        List<String> stageList = prepareStageList(); // 4つの文字列をリストに入れる
         String sea = null;
         for (String stage : stageList) {
             sea = stage;
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? => magiclamp
     }
+    // この記法がわからない。仮に全ての要素について実行すると予想してseaは最後の要素の"magiclamp"になると予想。
+    // あってた
+    /** <以下Copilotの解説>
+     * この記法は拡張for文（Enhanced for loop）またはfor-each文と呼ばれる構文です。
+     * for (データ型 変数名 : コレクション) {
+     *     // 処理
+     * }
+     *
+     * 1. stageListの各要素を順番に取得
+     * 2. 各要素をstage変数に格納
+     * 3. ループ本体を実行
+     * 4. 次の要素があれば繰り返し
+     *
+     * この記法はJava 5から導入され、配列やCollection（List、Setなど）で使用できます。
+     */
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_for_foreach_continueBreak() {
-        List<String> stageList = prepareStageList();
+        List<String> stageList = prepareStageList(); // 4つの文字列をリストに入れる
         String sea = null;
         for (String stage : stageList) {
-            if (stage.startsWith("br")) {
+            if (stage.startsWith("br")) { // brで始まるのは0番目の要素だけ
                 continue;
             }
             sea = stage;
-            if (stage.contains("ga")) {
+            if (stage.contains("ga")) { // gaを含むのは2番目の要素だけ
                 break;
             }
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? => hangar
     }
+    // continueの意味: 現在のループだけをスキップし、次のループへ進む
+    // hangarでbreakに入るのでseaはhangarになると予想。
+    // あってた
+    // TODO startWithとcontainsの実装を調べる
+    // startWithは空文字列の場合もtrueを返す
+    // containsは空文字列の場合もtrueを返す
+    /**
+     * Stringクラスのstatic int indexOf(char[] source, int sourceOffset, int sourceCount,
+     *             char[] target, int targetOffset, int targetCount,
+     *             int fromIndex)で含むかどうかを調べている。
+     * source配列内でtarget配列（検索したい文字列）の最初の文字を探します。
+     * 最初の文字が見つかったら、残りの文字が一致するかを確認します。
+     * 全て一致した場合、部分文字列の開始インデックスを返します。
+     * 一致しなければ次の位置で再度検索します。
+     * 最後まで一致しなければ-1を返します（この部分は選択範囲外）。
+     */
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_for_listforeach_basic() {
         List<String> stageList = prepareStageList();
         StringBuilder sb = new StringBuilder();
         stageList.forEach(stage -> {
-            if (sb.length() > 0) {
+            if (sb.length() > 0) { // docksideが入った状態でメソッドが終了すると予想
                 return;
             }
-            if (stage.contains("i")) {
+            if (stage.contains("i")) { //iを含むのは"dockside"(1番目)と"magiclamp"(3番目)の2つ
                 sb.append(stage);
             }
         });
         String sea = sb.toString();
         log(sea); // your answer? => 
     }
+    // <StringBuilder()の解説>
+    // super(16); によって、親クラス（AbstractStringBuilder）のコンストラクタを呼び出し、初期容量16の文字バッファを作成します。
+    // seaにdocksideが入った状態でメソッドが終了すると予想。log()は実行されないと予想。
+    // 答えはdockside。log()は実行される。
+    /**
+     * forEachのラムダ式内でreturnを使うと、そのラムダの現在のイテレーション（1回分の処理）だけを終了します。
+     * forEach全体のループやメソッド自体の終了にはなりません。
+     */
+    // 以上を踏まえるとdockside以降のループでは最初のif文が常に発動するのでseaの値が変わることはなくループを抜けてseaが出力される。
+
 
     // ===================================================================================
     //                                                                           Challenge
@@ -166,8 +211,41 @@ public class Step02IfForTest extends PlainTestCase {
      * (prepareStageList()のリストから "a" が含まれているものだけのリストを作成して、それをループで回してログに表示しましょう。(Stream APIなしで))
      */
     public void test_iffor_making() {
-        // write if-for here
+        List<String> stageList = prepareStageList();
+        List<String> aList = new ArrayList<>();
+        for (String stage : stageList) {// "a" が含まれているものだけのリストを作成
+            if (stage.contains("a")) {
+                aList.add(stage);
+            }
+        }
+//        for (String a : aList) { // 作成したリストをループで回してログに表示
+//            log(a);
+//        }
+        aList.forEach(a -> log(a)); // このように一行で書けることを学んだ。
     }
+    // Stream APIとは
+    /**
+     * StreamAPIは、Java 8から導入されたコレクション（List、Setなど）を効率的に処理するためのAPIです。
+     *
+     * 基本的な仕組み
+     * 従来のfor文による処理を、メソッドチェーンで表現できます：
+     * 中間操作（処理を繋げる）
+     * filter(): 条件に合うものだけを抽出
+     * map(): 各要素を変換
+     * distinct(): 重複を除去
+     * sorted(): ソート
+     * 終端操作（結果を取得）
+     * collect(): リストやSetに変換
+     * forEach(): 各要素に処理を実行
+     * count(): 要素数を取得
+     * findFirst(): 最初の要素を取得
+     *
+     * // StreamAPIを使った場合
+     *     List<String> aList = stageList.stream()
+     *         .filter(stage -> stage.contains("a"))
+     *         .collect(Collectors.toList());
+     *     .stream()って書くやつがstreamAPI
+     */
 
     // ===================================================================================
     //                                                                           Good Luck
@@ -190,6 +268,45 @@ public class Step02IfForTest extends PlainTestCase {
         }
         log(sea); // should be same as before-fix
     }
+    // 以下が置き換え後
+    public void test_iffor_refactor_forEach() {
+        List<String> stageList = prepareStageList();
+        String[] sea = {null}; // 配列を使用してラムダ式内で変更可能にする
+        stageList.forEach(stage -> {
+            if (stage.startsWith("br")) {
+                return; // continueの代わりにreturnを使用
+            }
+            sea[0] = stage;
+            if (stage.contains("ga")) {
+                throw new RuntimeException("Break from forEach"); // breakの代わりに例外を投げる
+            }
+        });
+        log(sea[0]);
+    }
+    // ラムダ式内で外部のローカル変数seaを変更しようとしているため、コンパイルエラーが発生します。
+    // そのため、配列を使用してseaを変更可能にした。
+    //TODO なぜ配列なら可能なのか
+    /**
+     * Javaのラムダ式（forEachの中など）では、外部のローカル変数は「実質的final」でなければ参照できません。
+     * つまり、ラムダ内で値を変更できません。
+     *
+     * 一方、配列やAtomicReferenceなどのオブジェクトは参照自体はfinalなので、
+     * 中身（要素）は変更可能です。
+     * このため、sea[0]のように配列の要素を書き換えることは可能です。
+     */
+    // ↑らしい。確かに配列の先頭アドレスを指すというポインタの値は変わらないか。
+    // なぜfinalにしないといけないのかは依然疑問が残る
+    /**
+     * 1. スレッドセーフティの保証
+     * ラムダ式は別スレッドで実行される可能性があり、変数の値が予期しないタイミングで変更されると競合状態が発生する可能性があります。
+     *補足：スレッドは、プロセス内で実行される、さらに小さな処理の単位。スレッドは「工場（プロセス）の中の作業員」のようなものです。同じ工場の中で、複数の作業員（スレッド）が協力して作業を進めます。
+     *
+     *  2. 変数のライフサイクルの問題
+     * ローカル変数はメソッド終了時にスタックから削除されますが、ラムダ式は後で実行される可能性があります。
+     *
+     * 3. 変数キャプチャの実装
+     * Javaでは変数の値をラムダ式内にコピー（キャプチャ）します。元の変数が変更されると、コピーされた値と元の値が異なってしまい、予期しない動作を引き起こします。
+     */
 
     /**
      * Make your original exercise as question style about if-for statement. <br>
@@ -197,13 +314,26 @@ public class Step02IfForTest extends PlainTestCase {
      * <pre>
      * _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
      * your question here (ここにあなたの質問を):
-     * 
+     *
+     * memo: breakが2重のfor文だとどこまで抜けるかの問題とかいいかも
      * _/_/_/_/_/_/_/_/_/_/
      * </pre>
      */
     public void test_iffor_yourExercise() {
-        // write your code here
+        List<String> stageList = prepareStageList();
+        String sea = null;
+        for (String stage : stageList) {
+            for (int i = 0; i < stage.length(); i++) {
+                if (stage.charAt(i) == 'a') {
+                    sea = stage;
+                    break;
+                }
+            }
+            sea = stage;
+        }
+        log(sea); // your answer? => "magiclamp"
     }
+    // breakで2つとも抜けると考えた人はbroadwayが出力されると予想するはず
 
     // ===================================================================================
     //                                                                        Small Helper
