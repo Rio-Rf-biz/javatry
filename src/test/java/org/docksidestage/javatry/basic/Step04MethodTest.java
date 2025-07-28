@@ -22,7 +22,7 @@ import org.docksidestage.unit.PlainTestCase;
  * Operate exercise as javadoc. If it's question style, write your answer before test execution. <br>
  * (javadocの通りにエクササイズを実施。質問形式の場合はテストを実行する前に考えて答えを書いてみましょう)
  * @author jflute
- * @author your_name_here
+ * @author Rio-Rf-biz
  */
 public class Step04MethodTest extends PlainTestCase {
 
@@ -35,15 +35,16 @@ public class Step04MethodTest extends PlainTestCase {
      */
     public void test_method_call_basic() {
         String sea = supplySomething();
-        log(sea); // your answer? =>
+        log(sea); // your answer? => over
     }
+    // "over"がreturnされるので、seaの中身は"over"になる。
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_method_call_many() {
-        String sea = functionSomething("mystic");
-        consumeSomething(supplySomething());
-        runnableSomething();
-        log(sea); // your answer? => 
+        String sea = functionSomething("mystic"); // ticがmysになるので"mysmys"
+        consumeSomething(supplySomething()); // log出力 (引数でoverが入ってmysticになる)
+        runnableSomething(); // log出力 outofshadow
+        log(sea); // your answer? => mysmys
     }
 
     private String functionSomething(String name) {
@@ -72,12 +73,19 @@ public class Step04MethodTest extends PlainTestCase {
         St4MutableStage mutable = new St4MutableStage();
         int sea = 904;
         boolean land = false;
-        helloMutable(sea - 4, land, mutable);
-        if (!land) {
+        helloMutable(sea - 4, land, mutable); //再代入してないのでseaは904のまま, mutaableにはmysticがセットされる
+        if (!land) { // true
             sea = sea + mutable.getStageName().length();
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? => 910
     }
+    // 910と予想したらあってた
+    // seaは値渡しでありhelloMutableメソッド内での変更は反映されない
+    // landも値渡しでありhelloMutableメソッド内での変更は反映されない
+    // mutableは参照渡しでstageNameにfinalが付いておらずmutableなので、helloMutableメソッド内での変更が反映される
+    //
+    // プリミティブ型（int, boolean等）：値そのものをコピー
+    // オブジェクト：参照（メモリアドレス）の値をコピー
 
     private int helloMutable(int sea, Boolean land, St4MutableStage piari) {
         sea++;
@@ -108,22 +116,27 @@ public class Step04MethodTest extends PlainTestCase {
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_method_instanceVariable() {
         hasAnnualPassport = true;
-        int sea = inParkCount;
-        offAnnualPassport(hasAnnualPassport);
+        int sea = inParkCount; //0で初期化されてるはず
+        offAnnualPassport(hasAnnualPassport); //bppleanは値渡しなのでhasAPはtrueのまま
         for (int i = 0; i < 100; i++) {
             goToPark();
         }
         ++sea;
-        sea = inParkCount;
-        log(sea); // your answer? => 
+        sea = inParkCount; // inPCの初期値は0
+        log(sea); // your answer? => 0
     }
+    // 100だった。
+    // 間違えた要因はメソッド内でインスタンス変数を変更してもその変更がインスタンス変数に反映されないと勘違いしていたこと
+    // ローカル変数とインスタンス変数を混同していた。メソッドの引数に指定していないので今回はインスタンス変数。
+    //
+    // メソッド内でインスタンス変数を変更するとその変更はメソッド外のインスタンス変数にも反映される
 
     private void offAnnualPassport(boolean hasAnnualPassport) {
         hasAnnualPassport = false;
     }
 
     private void goToPark() {
-        if (hasAnnualPassport) {
+        if (hasAnnualPassport) { //hasAPの初期値はfalse
             ++inParkCount;
         }
     }
@@ -152,12 +165,29 @@ public class Step04MethodTest extends PlainTestCase {
      */
     public void test_method_making() {
         // use after making these methods
-        //String replaced = replaceCwithB(replaceAwithB("ABC"));
-        //String sea = quote(replaced, "'");
-        //if (isAvailableLogging()) {
-        //    showSea(sea);
-        //}
+        String replaced = replaceCwithB(replaceAwithB("ABC"));
+        String sea = quote(replaced, "'");
+        if (isAvailableLogging()) {
+            showSea(sea);
+        }
     }
 
+    private boolean availableLogging = true;
+
     // write methods here
+    private String replaceAwithB(String str) {
+        return str.replace("A", "B");
+    }
+    private String replaceCwithB(String str) {
+        return str.replace("C", "B");
+    }
+    private String quote(String str, String quotation) {
+        return quotation + str + quotation;
+    }
+    private boolean isAvailableLogging() {
+        return availableLogging;
+    }
+    private void showSea(String sea) {
+        log(sea);
+    }
 }

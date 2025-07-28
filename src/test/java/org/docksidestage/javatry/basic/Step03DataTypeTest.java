@@ -105,8 +105,19 @@ public class Step03DataTypeTest extends PlainTestCase {
     public void test_datatype_object() {
         St3ImmutableStage stage = new St3ImmutableStage("hangar");
         String sea = stage.getStageName();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => hanger
     }
+    // hangarと予想
+    // stageNameはコンストラクタで設定されている。
+    // private finalフィールドなので、インスタンス化時に設定された値を変更することはできない。
+    //
+    // privateはアクセス修飾子の一つです。
+    // 意味: そのフィールドが定義されたクラスの内部からのみアクセス可能であることを意味します。
+    //
+    // finalはキーワードで、変数やフィールドが一度初期化されたら再代入できないことを示します。
+    // 不変(immutable)
+    //
+    // getterメソッドはpublicであるため、外部からでもstageNameの値を取得することができる。
 
     private static class St3ImmutableStage {
 
