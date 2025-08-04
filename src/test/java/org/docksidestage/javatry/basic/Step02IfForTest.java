@@ -102,6 +102,10 @@ public class Step02IfForTest extends PlainTestCase {
         log(sea); // your answer? => 10
     }
     // コメントアウトにメモしながら読んだ。seaは10と予想。
+    // TODO iwata コメントアウトじゃなくてコメントですね^^ by jflute (2025/08/04)
+    // コメントアウトは、実際のソースコードをコメントにして実行除外するということで。
+    
+    // TODO jflute iwata 1on1にて、ソースコードリーディングの話をする予定 (2025/08/04)
 
     // ===================================================================================
     //                                                                       for Statement
@@ -166,6 +170,8 @@ public class Step02IfForTest extends PlainTestCase {
     // TODO startWithとcontainsの実装を調べる
     // startWithは空文字列の場合もtrueを返す
     // containsは空文字列の場合もtrueを返す
+    // TODO iwata [いいね] 空文字が入ったときの挙動はややこしいですよね by jflute (2025/08/04)
+    // TODO jflute 1on1にて、contains()のソースコードリーディング少しやってみよう (2025/08/04)
     /**
      * Stringクラスのstatic int indexOf(char[] source, int sourceOffset, int sourceCount,
      *             char[] target, int targetOffset, int targetCount,
@@ -196,11 +202,14 @@ public class Step02IfForTest extends PlainTestCase {
     // super(16); によって、親クラス（AbstractStringBuilder）のコンストラクタを呼び出し、初期容量16の文字バッファを作成します。
     // seaにdocksideが入った状態でメソッドが終了すると予想。log()は実行されないと予想。
     // 答えはdockside。log()は実行される。
+    // TODO iwata [いいね] Good, StringBuilderは16サイズ確保して、足りなくなったら拡張するという感じですね by jflute (2025/08/04)
+    // TODO jflute 1on1にて、StringBuilderもソースコードリーディング (2025/08/04)
     /**
      * forEachのラムダ式内でreturnを使うと、そのラムダの現在のイテレーション（1回分の処理）だけを終了します。
      * forEach全体のループやメソッド自体の終了にはなりません。
      */
     // 以上を踏まえるとdockside以降のループでは最初のif文が常に発動するのでseaの値が変わることはなくループを抜けてseaが出力される。
+    // TODO jflute 1on1にて、forEach()の技術的な内容とは？ソースコードリーディング (2025/08/04)
 
 
     // ===================================================================================
@@ -246,6 +255,7 @@ public class Step02IfForTest extends PlainTestCase {
      *         .collect(Collectors.toList());
      *     .stream()って書くやつがstreamAPI
      */
+    // TODO iwata [いいね] step8が楽しみですね^^ by jflute (2025/08/04)
 
     // ===================================================================================
     //                                                                           Good Luck
@@ -278,11 +288,16 @@ public class Step02IfForTest extends PlainTestCase {
             }
             sea[0] = stage;
             if (stage.contains("ga")) {
+                // TODO iwata 例外投げっぱなしだとseaの値のログが出てこないので、catchもしてあげないとですね by jflute (2025/08/04)
+                // (一般的に良い実装かどうかは置いておいて、このエクササイズとしてbreakの代わりに例外を使うのであれば)
                 throw new RuntimeException("Break from forEach"); // breakの代わりに例外を投げる
             }
         });
         log(sea[0]);
     }
+    // TODO iwata ぜひ、Live Templatesを入れて、_todo の補完を使ってみてください^^ by jflute (2025/08/04)
+    // https://dbflute.seasar.org/ja/manual/topic/friends/intellij/index.html#dbflutelivetemplate
+    
     // ラムダ式内で外部のローカル変数seaを変更しようとしているため、コンパイルエラーが発生します。
     // そのため、配列を使用してseaを変更可能にした。
     //TODO なぜ配列なら可能なのか
@@ -334,6 +349,7 @@ public class Step02IfForTest extends PlainTestCase {
         log(sea); // your answer? => "magiclamp"
     }
     // breakで2つとも抜けると考えた人はbroadwayが出力されると予想するはず
+    // TODO iwata [いいね] いいですねー、けっこう二重ループで break ってありますからね^^ by jflute (2025/08/04)
 
     // ===================================================================================
     //                                                                        Small Helper
