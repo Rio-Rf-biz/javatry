@@ -102,10 +102,16 @@ public class Step02IfForTest extends PlainTestCase {
         log(sea); // your answer? => 10
     }
     // コメントアウトにメモしながら読んだ。seaは10と予想。
-    // TODO iwata コメントアウトじゃなくてコメントですね^^ by jflute (2025/08/04)
+    // done iwata コメントアウトじゃなくてコメントですね^^ by jflute (2025/08/04)
     // コメントアウトは、実際のソースコードをコメントにして実行除外するということで。
+    // #1on1: 歳を重ねると、細かいところ言われなくなるので、自分で律しないといけない話 (2025/08/04)
     
-    // TODO jflute iwata 1on1にて、ソースコードリーディングの話をする予定 (2025/08/04)
+    // done jflute iwata 1on1にて、ソースコードリーディングの話をする予定 (2025/08/04)
+    // #1on1 漠然読みで構造だけ把握して、気になるところ焦点を当ててフォーカス読み、ときに逆読み (2025/08/04)
+    // #1on1 BigDecimalのadd()のときも同じ
+    // #1on1 My Favorite Book: 仮説思考
+    // https://jflute.hatenadiary.jp/entry/20150111/kasetsu
+    // #1on1 package構造を利用しようとする姿勢は素晴らしい、ぼくもやる (2025/08/04)
 
     // ===================================================================================
     //                                                                       for Statement
@@ -123,6 +129,7 @@ public class Step02IfForTest extends PlainTestCase {
         log(sea); // your answer? => "dockside"
     }
     // seaはdocksideになると予想。
+    // #1on1 1番目の表現のジレンマについて e.g. (0始まりとしての)1番目の... (2025/08/04)
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_for_foreach_basic() {
@@ -148,13 +155,19 @@ public class Step02IfForTest extends PlainTestCase {
      *
      * この記法はJava 5から導入され、配列やCollection（List、Setなど）で使用できます。
      */
+    // #1on1 文法用語と現場用語のジレンマ話。
+    // 個人的には、拡張for文で呼ぶ人ほとんどいない、普通のfor文と言うと拡張for文。
+    // そして、int iのfor文は「いんとあいfor文」。
+    // (インスタンスメソッドの話: カーナビゲーションシステムに近い)
+    // (クラスメソッドの話: 紛らわしいのでstaticメソッドって言う)
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_for_foreach_continueBreak() {
         List<String> stageList = prepareStageList(); // 4つの文字列をリストに入れる
         String sea = null;
         for (String stage : stageList) {
-            if (stage.startsWith("br")) { // brで始まるのは0番目の要素だけ
+            String prefix = "br";
+            if (stage.startsWith(prefix)) { // brで始まるのは0番目の要素だけ
                 continue;
             }
             sea = stage;
@@ -170,8 +183,9 @@ public class Step02IfForTest extends PlainTestCase {
     // TODO startWithとcontainsの実装を調べる
     // startWithは空文字列の場合もtrueを返す
     // containsは空文字列の場合もtrueを返す
-    // TODO iwata [いいね] 空文字が入ったときの挙動はややこしいですよね by jflute (2025/08/04)
-    // TODO jflute 1on1にて、contains()のソースコードリーディング少しやってみよう (2025/08/04)
+    // done iwata [いいね] 空文字が入ったときの挙動はややこしいですよね by jflute (2025/08/04)
+    // done jflute 1on1にて、contains()のソースコードリーディング少しやってみよう (2025/08/04)
+    // #1on1 startsWith()のコード読んで、空文字がtrueになるときの挙動を確認した
     /**
      * Stringクラスのstatic int indexOf(char[] source, int sourceOffset, int sourceCount,
      *             char[] target, int targetOffset, int targetCount,
@@ -202,14 +216,17 @@ public class Step02IfForTest extends PlainTestCase {
     // super(16); によって、親クラス（AbstractStringBuilder）のコンストラクタを呼び出し、初期容量16の文字バッファを作成します。
     // seaにdocksideが入った状態でメソッドが終了すると予想。log()は実行されないと予想。
     // 答えはdockside。log()は実行される。
-    // TODO iwata [いいね] Good, StringBuilderは16サイズ確保して、足りなくなったら拡張するという感じですね by jflute (2025/08/04)
-    // TODO jflute 1on1にて、StringBuilderもソースコードリーディング (2025/08/04)
+    // done iwata [いいね] Good, StringBuilderは16サイズ確保して、足りなくなったら拡張するという感じですね by jflute (2025/08/04)
+    // done jflute 1on1にて、StringBuilderもソースコードリーディング (2025/08/04)
+    // #1on1 ensureCapacityInternal()のコード読んでみた (2025/08/04)
     /**
      * forEachのラムダ式内でreturnを使うと、そのラムダの現在のイテレーション（1回分の処理）だけを終了します。
      * forEach全体のループやメソッド自体の終了にはなりません。
      */
     // 以上を踏まえるとdockside以降のループでは最初のif文が常に発動するのでseaの値が変わることはなくループを抜けてseaが出力される。
-    // TODO jflute 1on1にて、forEach()の技術的な内容とは？ソースコードリーディング (2025/08/04)
+    // done jflute 1on1にて、forEach()の技術的な内容とは？ソースコードリーディング (2025/08/04)
+    // #1on1 forEach()メソッドは、Javaの文法ではなく、ただのメソッド。中で文法のfor文のforを回している。
+    // returnは、単にメソッドを終了させるいつものreturn;と同じ。
 
 
     // ===================================================================================
@@ -255,7 +272,7 @@ public class Step02IfForTest extends PlainTestCase {
      *         .collect(Collectors.toList());
      *     .stream()って書くやつがstreamAPI
      */
-    // TODO iwata [いいね] step8が楽しみですね^^ by jflute (2025/08/04)
+    // done iwata [いいね] step8が楽しみですね^^ by jflute (2025/08/04)
 
     // ===================================================================================
     //                                                                           Good Luck
@@ -295,8 +312,9 @@ public class Step02IfForTest extends PlainTestCase {
         });
         log(sea[0]);
     }
-    // TODO iwata ぜひ、Live Templatesを入れて、_todo の補完を使ってみてください^^ by jflute (2025/08/04)
+    // done iwata ぜひ、Live Templatesを入れて、_todo の補完を使ってみてください^^ by jflute (2025/08/04)
     // https://dbflute.seasar.org/ja/manual/topic/friends/intellij/index.html#dbflutelivetemplate
+    // #1on1 質問するときとかは _trev を。
     
     // ラムダ式内で外部のローカル変数seaを変更しようとしているため、コンパイルエラーが発生します。
     // そのため、配列を使用してseaを変更可能にした。
@@ -311,6 +329,9 @@ public class Step02IfForTest extends PlainTestCase {
      */
     // ↑らしい。確かに配列の先頭アドレスを指すというポインタの値は変わらないか。
     // なぜfinalにしないといけないのかは依然疑問が残る
+    
+    // #1on1: 「実質的final」でなければ参照できません、の意味について (昔の文法からおさらいして) (2025/08/04)
+    
     /**
      * 1. スレッドセーフティの保証
      * ラムダ式は別スレッドで実行される可能性があり、変数の値が予期しないタイミングで変更されると競合状態が発生する可能性があります。
@@ -323,6 +344,16 @@ public class Step02IfForTest extends PlainTestCase {
      * Javaでは変数の値をラムダ式内にコピー（キャプチャ）します。元の変数が変更されると、コピーされた値と元の値が異なってしまい、予期しない動作を引き起こします。
      */
 
+    // #1on1: Lambda式は、文法的には呼び出されたメソッド側で呼び出しタイミングをどうにでもできる
+    // (Lambda式もただのクラスのインスタンスなので、自由に使える、別スレッドで実行することもできちゃう)
+    //if (land) {
+    //    // ←このタイミングでlambda式が実行
+    //    log(land);
+    //}
+    // あくまで、ローカル変数の参照先を別の人が予期せぬタイミングで書き換えることができないようにしている。
+    // インスタンスは自由な人なので誰からでもmutableであれば書き換えることができる。
+    // だから、String[]のインスタンスの0番目は誰でも書き換えることができる。
+    
     /**
      * Make your original exercise as question style about if-for statement. <br>
      * (if文for文についてあなたのオリジナルの質問形式のエクササイズを作ってみましょう)
@@ -349,7 +380,8 @@ public class Step02IfForTest extends PlainTestCase {
         log(sea); // your answer? => "magiclamp"
     }
     // breakで2つとも抜けると考えた人はbroadwayが出力されると予想するはず
-    // TODO iwata [いいね] いいですねー、けっこう二重ループで break ってありますからね^^ by jflute (2025/08/04)
+    // done iwata [いいね] いいですねー、けっこう二重ループで break ってありますからね^^ by jflute (2025/08/04)
+    // #1on1 ラベルのお話をちょこっと (2025/08/04)
 
     // ===================================================================================
     //                                                                        Small Helper

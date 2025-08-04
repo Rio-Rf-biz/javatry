@@ -338,7 +338,8 @@ public class Step01VariableTest extends PlainTestCase {
     }
 
     // boolとcharの初期値の確認と見せかけて、インスタンス変数名とローカル変数名が衝突した場合の問題にしました。
-    // TODO iwata [いいね] cは特に一文字変数なのでなおさらIDE上のハイライトも視認しくくてよく見ないといけなくなってるのGood by jflute (2025/08/04)
+    // done iwata [いいね] cは特に一文字変数なのでなおさらIDE上のハイライトも視認しくくてよく見ないといけなくなってるのGood by jflute (2025/08/04)
+    // #1on1: 変数のスコープが広い場合は、短い名前を使わないほうが無難話 (2025/08/04)
 
     /**
      * 以下、Copilotへの質問
