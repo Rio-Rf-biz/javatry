@@ -56,15 +56,10 @@ public class TicketBooth {
      * @throws TicketSoldOutException When ticket in booth is sold out.
      * @throws TicketShortMoneyException When the specified money is short for purchase.
      */
-    public void buyOneDayPassport(Integer handedMoney) {
+    public int buyOneDayPassport(Integer handedMoney) {
         checkQuantity();
         checkHandedMoney(handedMoney, ONE_DAY_PRICE);
-        --quantity;
-        if (salesProceeds != null) { // second or more purchase
-            salesProceeds = salesProceeds + ONE_DAY_PRICE;
-        } else { // first purchase
-            salesProceeds = ONE_DAY_PRICE;
-        }
+        return purchase(handedMoney, ONE_DAY_PRICE);
     }
 
     /**
@@ -76,13 +71,7 @@ public class TicketBooth {
     public int buyTwoDayPassport(Integer handedMoney) {
         checkQuantity();
         checkHandedMoney(handedMoney, TWO_DAY_PRICE);
-        --quantity;
-        if (salesProceeds != null) { // second or more purchase
-            salesProceeds = salesProceeds + TWO_DAY_PRICE;
-        } else { // first purchase
-            salesProceeds = TWO_DAY_PRICE;
-        }
-        return handedMoney - TWO_DAY_PRICE;
+        return purchase(handedMoney, TWO_DAY_PRICE);
     }
 
     private void checkQuantity() {
@@ -95,6 +84,16 @@ public class TicketBooth {
         if(handedMoney < price) {
             throw new TicketShortMoneyException("Short money: " + handedMoney);
         }
+    }
+
+    private int purchase(Integer handedMoney, int price) {
+        --quantity;
+        if (salesProceeds != null) { // second or more purchase
+            salesProceeds = salesProceeds + price;
+        } else { // first purchase
+            salesProceeds = price;
+        }
+        return handedMoney - price;
     }
 
     public static class TicketSoldOutException extends RuntimeException {

@@ -144,7 +144,7 @@ public class Step05ClassTest extends PlainTestCase {
      */
     public void test_class_letsFix_refactor_recycle() {
         TicketBooth booth = new TicketBooth();
-        booth.buyOneDayPassport(5000);
+        booth.buyOneDayPassport(10000);
         log(booth.getQuantity(), booth.getSalesProceeds()); // should be same as before-fix
     }
     // if (quantity <= 0) {}の部分にIDEの警告(処理の重複)が出ていたのでメソッドで切り出した。
@@ -155,6 +155,11 @@ public class Step05ClassTest extends PlainTestCase {
     // お金が足りているかの処理も共通しているのでメソッドで切り出した。
     // 修正前：org.docksidestage.bizfw.basic.buyticket.TicketBooth$TicketShortMoneyException: Short money: 5000
     // 修正後：org.docksidestage.bizfw.basic.buyticket.TicketBooth$TicketShortMoneyException: Short money: 5000
+    //
+    // 購入の処理が共通しているのでメソッドで切り出した。
+    // 修正前：9, 7400
+    // 修正後：9, 7400
+
 
     // ===================================================================================
     //                                                                           Challenge
