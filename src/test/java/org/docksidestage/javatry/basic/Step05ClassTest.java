@@ -28,7 +28,7 @@ import org.docksidestage.unit.PlainTestCase;
  * (要件が曖昧なところがあれば、適切だと思われる仕様を決めても良いです)
  * 
  * @author jflute
- * @author your_name_here
+ * @author Rio-Rf-biz
  */
 public class Step05ClassTest extends PlainTestCase {
 
@@ -43,29 +43,43 @@ public class Step05ClassTest extends PlainTestCase {
         TicketBooth booth = new TicketBooth();
         booth.buyOneDayPassport(7400);
         int sea = booth.getQuantity();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => 9
     }
+    // TicketBooth.javaを読んだ。seaにはquantityが入るので、そこにアタリをつけた。
+    // quantityの初期値は10、buyOneDayPassport()内でquantityをgrepするとquantity--があるので、1減る。直前のifには入らず他に操作してる箇所はない。
+    // なので、seaの中身は9になる。
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_class_howToUse_overpay() {
         TicketBooth booth = new TicketBooth();
         booth.buyOneDayPassport(10000);
         Integer sea = booth.getSalesProceeds();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => 10000 -> 7400
     }
+    // seaにはsalesProceedsが入るので、そこにアタリをつけた。
+    // 初期値null、salesProceeds = handedMoney;が実行されるので、handedMoneyの値が入る。
+    // 代入してるから初期値は見なくてもよかったか。
+    //
+    // 後の問題でone-day price分だけ減るように修正したので、10000ではなくone-day priceの7400が入るようになった。
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_class_howToUse_nosales() {
         TicketBooth booth = new TicketBooth();
         Integer sea = booth.getSalesProceeds();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => null
     }
+    // seaにはsalesProceedsが入るので、そこにアタリをつけた。
+    // 初期値null
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_class_howToUse_wrongQuantity() {
         Integer sea = doTest_class_ticket_wrongQuantity();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => 9 -> 10
     }
+    // booth.getQuantity();が戻り値としてseaに入る。
+    // 前の問題でbuyOneDayPassport()を実行すると、quantityが1減ったので9と予想。
+    //
+    // 次の問題でbuyOneDayPassportを変更した影響で答えは10になる。
 
     private Integer doTest_class_ticket_wrongQuantity() {
         TicketBooth booth = new TicketBooth();
@@ -90,6 +104,8 @@ public class Step05ClassTest extends PlainTestCase {
         Integer sea = doTest_class_ticket_wrongQuantity();
         log(sea); // should be max quantity, visual check here
     }
+    // buyOneDayPassport内の--quantity;をお金が足りないif文の後に移動した。
+    // log(sea);の値は、max quantityの10が入るようになった。
 
     /**
      * Fix the problem of sales proceeds increased by handed money. (Don't forget to fix also previous exercise answers) <br>
@@ -101,6 +117,8 @@ public class Step05ClassTest extends PlainTestCase {
         Integer sea = booth.getSalesProceeds();
         log(sea); // should be same as one-day price, visual check here
     }
+    // 変更前はsalesProceeds = salesProceeds + handedMoney;だったので、10000が入っていた。
+    // 変更後はsalesProceeds = ONE_DAY_PRICE;にしたので、one-day priceの7400が入るようになった。
 
     /**
      * Make method for buying two-day passport (price is 13200). (which can return change as method return value)
@@ -108,14 +126,17 @@ public class Step05ClassTest extends PlainTestCase {
      */
     public void test_class_letsFix_makeMethod_twoday() {
         // uncomment after making the method
-        //TicketBooth booth = new TicketBooth();
-        //int money = 14000;
-        //int change = booth.buyTwoDayPassport(money);
-        //Integer sea = booth.getSalesProceeds() + change;
-        //log(sea); // should be same as money
+        TicketBooth booth = new TicketBooth();
+        int money = 14000;
+        int change = booth.buyTwoDayPassport(money);
+        Integer sea = booth.getSalesProceeds() + change;
+        log(sea); // should be same as money
 
         // and show two-day passport quantity here
+        log(change);
     }
+    // buyTwoDayPassportを作成した。
+    // 戻り値としてお釣りを返すようにした。
 
     /**
      * Recycle duplicate logics between one-day and two-day by e.g. private method in class. (And confirm result of both before and after) <br>
@@ -123,9 +144,17 @@ public class Step05ClassTest extends PlainTestCase {
      */
     public void test_class_letsFix_refactor_recycle() {
         TicketBooth booth = new TicketBooth();
-        booth.buyOneDayPassport(10000);
+        booth.buyOneDayPassport(5000);
         log(booth.getQuantity(), booth.getSalesProceeds()); // should be same as before-fix
     }
+    // if (quantity <= 0) {}の部分にIDEの警告(処理の重複)が出ていたのでメソッドで切り出した。
+    // 一時的にcheckQuantity()の前にquantity=0を追加して、修正前と修正後の実行結果を確認した。
+    // 修正前の実行結果：org.docksidestage.bizfw.basic.buyticket.TicketBooth$TicketSoldOutException: Sold out
+    // 修正後の実行結果：org.docksidestage.bizfw.basic.buyticket.TicketBooth$TicketSoldOutException: Sold out
+    //
+    // お金が足りているかの処理も共通しているのでメソッドで切り出した。
+    // 修正前：org.docksidestage.bizfw.basic.buyticket.TicketBooth$TicketShortMoneyException: Short money: 5000
+    // 修正後：org.docksidestage.bizfw.basic.buyticket.TicketBooth$TicketShortMoneyException: Short money: 5000
 
     // ===================================================================================
     //                                                                           Challenge

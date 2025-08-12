@@ -180,7 +180,7 @@ public class Step02IfForTest extends PlainTestCase {
     // continueの意味: 現在のループだけをスキップし、次のループへ進む
     // hangarでbreakに入るのでseaはhangarになると予想。
     // あってた
-    // TODO startWithとcontainsの実装を調べる
+    // done startWithとcontainsの実装を調べる by iwata (2025/08/04)
     // startWithは空文字列の場合もtrueを返す
     // containsは空文字列の場合もtrueを返す
     // done iwata [いいね] 空文字が入ったときの挙動はややこしいですよね by jflute (2025/08/04)
@@ -299,17 +299,22 @@ public class Step02IfForTest extends PlainTestCase {
     public void test_iffor_refactor_forEach() {
         List<String> stageList = prepareStageList();
         String[] sea = {null}; // 配列を使用してラムダ式内で変更可能にする
-        stageList.forEach(stage -> {
-            if (stage.startsWith("br")) {
-                return; // continueの代わりにreturnを使用
-            }
-            sea[0] = stage;
-            if (stage.contains("ga")) {
-                // TODO iwata 例外投げっぱなしだとseaの値のログが出てこないので、catchもしてあげないとですね by jflute (2025/08/04)
-                // (一般的に良い実装かどうかは置いておいて、このエクササイズとしてbreakの代わりに例外を使うのであれば)
-                throw new RuntimeException("Break from forEach"); // breakの代わりに例外を投げる
-            }
-        });
+        try {
+            stageList.forEach(stage -> {
+                if (stage.startsWith("br")) {
+                    return; // continueの代わりにreturnを使用
+                }
+                sea[0] = stage;
+                if (stage.contains("ga")) {
+                    // TODO done iwata 例外投げっぱなしだとseaの値のログが出てこないので、catchもしてあげないとですね by jflute (2025/08/04)
+                    // (一般的に良い実装かどうかは置いておいて、このエクササイズとしてbreakの代わりに例外を使うのであれば)
+                    throw new RuntimeException("Break from forEach"); // breakの代わりに例外を投げる, 実行されるとcatchの処理に飛ぶ
+                }
+            });
+        } catch (RuntimeException e) {
+            log(sea[0]);
+            return;
+        }
         log(sea[0]);
     }
     // done iwata ぜひ、Live Templatesを入れて、_todo の補完を使ってみてください^^ by jflute (2025/08/04)
@@ -318,7 +323,7 @@ public class Step02IfForTest extends PlainTestCase {
     
     // ラムダ式内で外部のローカル変数seaを変更しようとしているため、コンパイルエラーが発生します。
     // そのため、配列を使用してseaを変更可能にした。
-    //TODO なぜ配列なら可能なのか
+    //done なぜ配列なら可能なのか by iwata (2025/08/04)
     /**
      * Javaのラムダ式（forEachの中など）では、外部のローカル変数は「実質的final」でなければ参照できません。
      * つまり、ラムダ内で値を変更できません。

@@ -25,6 +25,7 @@ public class TicketBooth {
     //                                                                          ==========
     private static final int MAX_QUANTITY = 10;
     private static final int ONE_DAY_PRICE = 7400; // when 2019/06/15
+    private static final int TWO_DAY_PRICE = 13200;
 
     // ===================================================================================
     //                                                                           Attribute
@@ -56,17 +57,43 @@ public class TicketBooth {
      * @throws TicketShortMoneyException When the specified money is short for purchase.
      */
     public void buyOneDayPassport(Integer handedMoney) {
+        checkQuantity();
+        checkHandedMoney(handedMoney, ONE_DAY_PRICE);
+        --quantity;
+        if (salesProceeds != null) { // second or more purchase
+            salesProceeds = salesProceeds + ONE_DAY_PRICE;
+        } else { // first purchase
+            salesProceeds = ONE_DAY_PRICE;
+        }
+    }
+
+    /**
+     * Buy two-day passport, method for park guest.
+     * @param handedMoney The money (amount) handed over from park guest. (NotNull, NotMinus)
+     * @throws TicketSoldOutException When ticket in booth is sold out.
+     * @throws TicketShortMoneyException When the specified money is short for purchase.
+     */
+    public int buyTwoDayPassport(Integer handedMoney) {
+        checkQuantity();
+        checkHandedMoney(handedMoney, TWO_DAY_PRICE);
+        --quantity;
+        if (salesProceeds != null) { // second or more purchase
+            salesProceeds = salesProceeds + TWO_DAY_PRICE;
+        } else { // first purchase
+            salesProceeds = TWO_DAY_PRICE;
+        }
+        return handedMoney - TWO_DAY_PRICE;
+    }
+
+    private void checkQuantity() {
         if (quantity <= 0) {
             throw new TicketSoldOutException("Sold out");
         }
-        --quantity;
-        if (handedMoney < ONE_DAY_PRICE) {
+    }
+
+    private void checkHandedMoney(Integer handedMoney, int price) {
+        if(handedMoney < price) {
             throw new TicketShortMoneyException("Short money: " + handedMoney);
-        }
-        if (salesProceeds != null) { // second or more purchase
-            salesProceeds = salesProceeds + handedMoney;
-        } else { // first purchase
-            salesProceeds = handedMoney;
         }
     }
 
