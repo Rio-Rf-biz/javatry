@@ -306,7 +306,7 @@ public class Step02IfForTest extends PlainTestCase {
                 }
                 sea[0] = stage;
                 if (stage.contains("ga")) {
-                    // TODO done iwata 例外投げっぱなしだとseaの値のログが出てこないので、catchもしてあげないとですね by jflute (2025/08/04)
+                    // done iwata 例外投げっぱなしだとseaの値のログが出てこないので、catchもしてあげないとですね by jflute (2025/08/04)
                     // (一般的に良い実装かどうかは置いておいて、このエクササイズとしてbreakの代わりに例外を使うのであれば)
                     throw new RuntimeException("Break from forEach"); // breakの代わりに例外を投げる, 実行されるとcatchの処理に飛ぶ
                 }

@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 
 import org.docksidestage.unit.PlainTestCase;
 
+// TODO iwata javadocのauthor, お願いしますm(_ _)m by jflute (2025/08/14)
 /**
  * The test of data type. <br>
  * Operate exercise as javadoc. If it's question style, write your answer before test execution. <br>
@@ -62,6 +63,9 @@ public class Step03DataTypeTest extends PlainTestCase {
     // 0 以外の場合は、現在の日付を「エポック日」（1970-01-01 からの通算日数）に変換し、daysToAdd を加算します。
     // 加算後のエポック日から新しい LocalDate オブジェクトを生成して返します。
     // *エポック日とは特定の日時（基準点）から現在までの経過時間を秒数またはミリ秒数で表した値.日付はそのままだとコンピュータ的に扱いづらいので変換している。
+    // TODO iwata [いいね] エポック日のことまで調べてるの素晴らしいです by jflute (2025/08/14)
+    // そう、結局「日付」って概念は、地球上での人間の決め事ですから、コンピューター上では何かしらの基準が必要になるわけですね。
+    // ぼくらが目にする 2025-08-14 という文字列は、人間用の表現ということなわけです。
 
     // ===================================================================================
     //                                                                           Primitive
@@ -97,6 +101,7 @@ public class Step03DataTypeTest extends PlainTestCase {
      * d（小文字）でも同じ意味ですが、D（大文字）も使えます。
      * どちらもdouble型を表します。
      */
+    // TODO iwata [いいね] Dが大文字な理由で言うと、Dもdも両方入れてエクササイズとして紛らわしくするためです笑 by jflute (2025/08/14)
 
     // ===================================================================================
     //                                                                              Object
@@ -118,6 +123,8 @@ public class Step03DataTypeTest extends PlainTestCase {
     // 不変(immutable)
     //
     // getterメソッドはpublicであるため、外部からでもstageNameの値を取得することができる。
+    // TODO iwata [いいね] immutableのクラスの自作方法という感じですね by jflute (2025/08/14)
+    // コンストラクターで受け取ったインスタンスは、finalのインスタンス変数で保持しておくと安心です(^^
 
     private static class St3ImmutableStage {
 
