@@ -19,6 +19,11 @@ import org.docksidestage.bizfw.basic.buyticket.TicketBooth;
 import org.docksidestage.bizfw.basic.buyticket.TicketBooth.TicketShortMoneyException;
 import org.docksidestage.unit.PlainTestCase;
 
+// #1on1: 話題: 決めの問題という言葉 by いわたさん
+// 「逃げの決めの問題」と「合理的な決めの問題」が二つある by jflute
+// 逃げの決めの問題: あまりよく考えず、考えることから逃げてるだけの決め
+// 合理的な決めの問題: 考えれば答えは出るかもだけど、考える時間が掛かる、得られるメリットが薄いとかの決め
+// ここは程度の問題になるので境目がグレーだけど、逃げにはならないようにしたいところ。
 /**
  * The test of class. <br>
  * Operate exercise as javadoc. If it's question style, write your answer before test execution. <br>
