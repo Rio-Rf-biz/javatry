@@ -160,6 +160,7 @@ public class Step05ClassTest extends PlainTestCase {
     // 修正前：9, 7400
     // 修正後：9, 7400
     // TODO iwata [ざつだん] なるほど、エクササイズの "再利用しましょう" 以前にIDEで警告出るんですね^^ by jflute (2025/08/14)
+    // #1on1: IDEの警告を見る習慣があるのは素晴らしい、見ないともったいない (2025/08/15)
 
     // TODO jflute 1on1にて、流れの再利用についてのお話 (2025/08/14)
 

@@ -86,7 +86,7 @@ public class Step04MethodTest extends PlainTestCase {
     //
     // プリミティブ型（int, boolean等）：値そのものをコピー
     // オブジェクト：参照（メモリアドレス）の値をコピー
-    // TODO iwata [いいね] step1の復習ですね。簡潔にまとまっています。 by jflute (2025/08/14)
+    // done iwata [いいね] step1の復習ですね。簡潔にまとまっています。 by jflute (2025/08/14)
 
     private int helloMutable(int sea, Boolean land, St4MutableStage piari) {
         sea++;
@@ -131,7 +131,7 @@ public class Step04MethodTest extends PlainTestCase {
     // ローカル変数とインスタンス変数を混同していた。メソッドの引数に指定していないので今回はインスタンス変数。
     //
     // メソッド内でインスタンス変数を変更するとその変更はメソッド外のインスタンス変数にも反映される
-    // TODO iwata [いいね] そうですね、インスタンス変数は「そのインスタンス内では共有物」みたいな感じで... by jflute (2025/08/14)
+    // done iwata [いいね] そうですね、インスタンス変数は「そのインスタンス内では共有物」みたいな感じで... by jflute (2025/08/14)
     // メソッド(インスタンスメソッド)間で共有されていますので、別の人(メソッド)がいじったら変わっちゃうと。
 
     private void offAnnualPassport(boolean hasAnnualPassport) {
@@ -174,11 +174,14 @@ public class Step04MethodTest extends PlainTestCase {
             showSea(sea);
         }
     }
-    // TODO jflute 1on1にて、privateメソッドの定義順序のお話 (2025/08/14)
+    // done jflute 1on1にて、privateメソッドの定義順序のお話 (2025/08/14)
+    // #1on1: 基本はpublicの直下で処理順序で並べていく
+    // 応用として、再利用するprivateメソッドなら、コメントなどで区切って独立させる
+    // これも応用、独立性の高いロジックのprivateメソッドも、コメントなどで区切って独立させる
 
     private boolean availableLogging = true;
 
-    // TODO iwata [いいね] メソッドの定義順序が呼び出し順序と一緒でとてもわかりやすいです by jflute (2025/08/14)
+    // done iwata [いいね] メソッドの定義順序が呼び出し順序と一緒でとてもわかりやすいです by jflute (2025/08/14)
     // write methods here
     private String replaceAwithB(String str) {
         return str.replace("A", "B");
@@ -186,7 +189,7 @@ public class Step04MethodTest extends PlainTestCase {
     private String replaceCwithB(String str) {
         return str.replace("C", "B");
     }
-    // TODO iwata [いいね] 第二引数の引数名quotationってのがとてもわかりやすくて良いですね by jflute (2025/08/14)
+    // done iwata [いいね] 第二引数の引数名quotationってのがとてもわかりやすくて良いですね by jflute (2025/08/14)
     private String quote(String str, String quotation) {
         return quotation + str + quotation;
     }

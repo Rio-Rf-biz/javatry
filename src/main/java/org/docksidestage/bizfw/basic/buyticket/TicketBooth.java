@@ -62,7 +62,7 @@ public class TicketBooth {
         checkHandedMoney(handedMoney, ONE_DAY_PRICE);
         return purchase(handedMoney, ONE_DAY_PRICE);
     }
-
+    
     /**
      * Buy two-day passport, method for park guest.
      * @param handedMoney The money (amount) handed over from park guest. (NotNull, NotMinus)
@@ -82,6 +82,18 @@ public class TicketBooth {
     // 例えば、assertQuantityValid() とか assertQuantityExists() とか。
     // わざと曖昧にすることもあるので必ずしもcheckが悪いわけではないですが、
     // このくらいのプログラムであれば(privateメソッドであれば)、もうちょい具体的で良いかなとは思います。
+    // ぜひ、IntelliJのrenameの機能を使ってリファクタリングしてみましょう。
+    // #1on1: shift+shiftからのrenでrename探してenter
+    // もう少し指が頑張れる人は、control+T がオススメ (リファクタリングメニュー)
+
+    // TODO iwata [読み物課題] リファクタリングは思考のツール by jflute (2025/08/15)
+    // https://jflute.hatenadiary.jp/entry/20121202/1354442627
+    // TODO iwata [読み物課題] リファクタリングという行為が好きか？ by jflute (2025/08/15)
+    // https://jflute.hatenadiary.jp/entry/20220328/loverefactor
+    
+    // #1on1: 指が早いというのは、単に作業が早くなるって単純な話だけではなく...
+    // 試行錯誤が何回もできる、とか、サンクコストによる判断のブレを少なくすることにもつながる。
+
     private void checkQuantity() {
         if (quantity <= 0) {
             throw new TicketSoldOutException("Sold out");
@@ -96,13 +108,14 @@ public class TicketBooth {
 
     // TODO iwata [いいね] publicメソッドと区別しているメソッド名にしてるのでGoodです。 by jflute (2025/08/14)
     // こっちもbuyだと同じ言葉を使うと区別がしづらいですからね...
-    // 一方で、業務用語としてbuyとpurchaseの示す行為が明確に定義付けされているならOKですが、
+    // TODO iwata 一方で、業務用語としてbuyとpurchaseの示す行為が明確に定義付けされているならOKですが... by jflute (2025/08/15)
     // そうでない場合は逆に紛らわしくなることもあります。
     // 例えばユーザー目線でもpurchaseという言葉を使う場合、buyとpurchaseが言葉ブレがあちらこちらで発生すると良くないです。
     // (もうここではbuyとpurchaseの言葉の使い方はこうである、って決めにするのであれば全然OKです)
     // ゆえに、buyのまま区別するやり方もあって...
     // publicのbuyメソッドに対して、privateのdoBuyPassport()メソッドみたいにdoをprefixとして付けるとか。
     // 他にも色々な区別の仕方はあるのですが、ぼくはけっこう「実処理」みたいなニュアンスで doXxx() はよく使います。
+    // 会話上も言いやすく区別しやすいので。
     private int purchase(Integer handedMoney, int price) {
         --quantity;
         if (salesProceeds != null) { // second or more purchase
