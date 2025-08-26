@@ -27,7 +27,7 @@ import org.docksidestage.unit.PlainTestCase;
  * Operate exercise as javadoc. If it's question style, write your answer before test execution. <br>
  * (javadocの通りにエクササイズを実施。質問形式の場合はテストを実行する前に考えて答えを書いてみましょう)
  * @author jflute
- * @author your_name_here
+ * @author Rio-Rf-biz
  */
 public class Step03DataTypeTest extends PlainTestCase {
 
@@ -131,7 +131,7 @@ public class Step03DataTypeTest extends PlainTestCase {
     // 不変(immutable)
     //
     // getterメソッドはpublicであるため、外部からでもstageNameの値を取得することができる。
-    // TODO iwata [いいね] immutableのクラスの自作方法という感じですね by jflute (2025/08/14)
+    // done iwata [いいね] immutableのクラスの自作方法という感じですね by jflute (2025/08/14)
     // コンストラクターで受け取ったインスタンスは、finalのインスタンス変数で保持しておくと安心です(^^
     // #1on1 String, BigDecimalも同じ構造している。
 

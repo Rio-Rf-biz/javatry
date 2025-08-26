@@ -15,6 +15,8 @@
  */
 package org.docksidestage.bizfw.basic.buyticket;
 
+import java.time.LocalTime;
+
 /**
  * @author jflute
  */
@@ -25,7 +27,9 @@ public class TicketBooth {
     //                                                                          ==========
     private static final int MAX_QUANTITY = 10;
     private static final int ONE_DAY_PRICE = 7400; // when 2019/06/15
+    private static final int NIGHT_ONLY_TWO_DAY_PRICE = 7400; // 夜限定
     private static final int TWO_DAY_PRICE = 13200;
+    private static final int FOUR_DAY_PRICE = 22400;
 
     // ===================================================================================
     //                                                                           Attribute
@@ -56,11 +60,14 @@ public class TicketBooth {
      * @param handedMoney The money (amount) handed over from park guest. (NotNull, NotMinus)
      * @throws TicketSoldOutException When ticket in booth is sold out.
      * @throws TicketShortMoneyException When the specified money is short for purchase.
+     * @return チケットとお釣りを返す
      */
-    public int buyOneDayPassport(Integer handedMoney) {
-        checkQuantity();
-        checkHandedMoney(handedMoney, ONE_DAY_PRICE);
-        return purchase(handedMoney, ONE_DAY_PRICE);
+    public TicketBuyResult buyOneDayPassport(Integer handedMoney) {
+        assertQuantityValid(); // チケットの在庫を確認
+        assertHandedMoneyValid(handedMoney, ONE_DAY_PRICE); // お金が足りているか確認
+        Ticket ticket = new Ticket(ONE_DAY_PRICE, 1, false);
+        int change = doBuyPassport(handedMoney, ONE_DAY_PRICE);
+        return new TicketBuyResult(ticket, change);
     }
     
     /**
@@ -69,10 +76,28 @@ public class TicketBooth {
      * @throws TicketSoldOutException When ticket in booth is sold out.
      * @throws TicketShortMoneyException When the specified money is short for purchase.
      */
-    public int buyTwoDayPassport(Integer handedMoney) {
-        checkQuantity();
-        checkHandedMoney(handedMoney, TWO_DAY_PRICE);
-        return purchase(handedMoney, TWO_DAY_PRICE);
+    public TicketBuyResult buyTwoDayPassport(Integer handedMoney) {
+        assertQuantityValid();
+        assertHandedMoneyValid(handedMoney, TWO_DAY_PRICE);
+        Ticket ticket = new Ticket(TWO_DAY_PRICE, 2, false);
+        int change = doBuyPassport(handedMoney, TWO_DAY_PRICE);
+        return new TicketBuyResult(ticket, change);
+    }
+
+    public TicketBuyResult buyFourDayPassport(Integer handedMoney) {
+        assertQuantityValid();
+        assertHandedMoneyValid(handedMoney, FOUR_DAY_PRICE);
+        Ticket ticket = new Ticket(FOUR_DAY_PRICE, 4, false);
+        int change = doBuyPassport(handedMoney, FOUR_DAY_PRICE);
+        return new TicketBuyResult(ticket, change);
+    }
+
+    public TicketBuyResult buyNightOnlyTwoDayPassport(Integer handedMoney) {
+        assertQuantityValid();
+        assertHandedMoneyValid(handedMoney, NIGHT_ONLY_TWO_DAY_PRICE);
+        Ticket ticket = new Ticket(NIGHT_ONLY_TWO_DAY_PRICE, 2, true);
+        int change = doBuyPassport(handedMoney, NIGHT_ONLY_TWO_DAY_PRICE);
+        return new TicketBuyResult(ticket, change);
     }
 
     // TODO iwata これでも全然問題ないのですが、よくcheckという言葉の曖昧さが話題になることがあります。 by jflute (2025/08/14)
@@ -88,19 +113,27 @@ public class TicketBooth {
 
     // TODO iwata [読み物課題] リファクタリングは思考のツール by jflute (2025/08/15)
     // https://jflute.hatenadiary.jp/entry/20121202/1354442627
+    // 読みました
+    // リファクタリングの行為自体 (書き変えること) に思考力をすべて取られては意味がない。エディターの機能は使いこなしていますか？リラックスしながらリファクタリングできると良い。
+    //(直したほうが良いコードだと思っても、指が面倒だと思ったらやらなくなってしまいがちです)
+    // うーんとパソコンの前でうなってもしょうがない。リファクタリングを始める。おもむろに部屋のお片付けをし始めるようなもの。
+    //↑ 特に納得感があった部分を抜粋
+    //
     // TODO iwata [読み物課題] リファクタリングという行為が好きか？ by jflute (2025/08/15)
     // https://jflute.hatenadiary.jp/entry/20220328/loverefactor
+    // 読みました
+    // ↑ リファクタリングへの解像度が上がりました。いつかやろう、では確かに忘れ去られてしまいそうですね。。
     
     // #1on1: 指が早いというのは、単に作業が早くなるって単純な話だけではなく...
     // 試行錯誤が何回もできる、とか、サンクコストによる判断のブレを少なくすることにもつながる。
 
-    private void checkQuantity() {
+    private void assertQuantityValid() {
         if (quantity <= 0) {
             throw new TicketSoldOutException("Sold out");
         }
     }
 
-    private void checkHandedMoney(Integer handedMoney, int price) {
+    private void assertHandedMoneyValid(Integer handedMoney, int price) {
         if(handedMoney < price) {
             throw new TicketShortMoneyException("Short money: " + handedMoney);
         }
@@ -116,7 +149,7 @@ public class TicketBooth {
     // publicのbuyメソッドに対して、privateのdoBuyPassport()メソッドみたいにdoをprefixとして付けるとか。
     // 他にも色々な区別の仕方はあるのですが、ぼくはけっこう「実処理」みたいなニュアンスで doXxx() はよく使います。
     // 会話上も言いやすく区別しやすいので。
-    private int purchase(Integer handedMoney, int price) {
+    private int doBuyPassport(Integer handedMoney, int price) {
         --quantity;
         if (salesProceeds != null) { // second or more purchase
             salesProceeds = salesProceeds + price;
@@ -124,6 +157,78 @@ public class TicketBooth {
             salesProceeds = price;
         }
         return handedMoney - price;
+    }
+
+    public static class Ticket {
+        private boolean alreadyIn = false;
+        private int ticketPrice;
+        private int availableDays;
+        private boolean nightOnly;
+
+        public Ticket(int ticketPrice, int availableDays, boolean nightOnly) { // コンストラクタ
+            this.ticketPrice = ticketPrice;
+            this.availableDays = availableDays;
+            this.nightOnly = nightOnly;
+        }
+
+        public int getDisplayPrice() {
+            return ticketPrice;
+        }
+
+        public boolean isAlreadyIn() {
+            return alreadyIn;
+        }
+
+        public void doInPark() {
+            if (nightOnly) {
+                LocalTime now = LocalTime.now();
+                if (now.getHour() < 19 ) { // 夜限定チケットは19:00以降に入場可能
+                    throw new NightOnlyException("Night-only ticket: available after 19:00");
+                }
+            }
+            if (availableDays > 0) { // 入場可能日数が残っている場合
+                this.alreadyIn = true; // 入場済みにする
+                --availableDays;
+            } else {
+                throw new TicketUnavailableException("No more days available");
+            }
+        }
+    }
+
+    public static class TicketBuyResult {
+        private Ticket ticket; // 購入したチケット
+        private int change; // お釣り
+
+        public TicketBuyResult(Ticket ticket, int change) {
+            this.ticket = ticket;
+            this.change = change;
+        }
+
+        public int getChange() {
+            return change;
+        }
+
+        public Ticket getTicket() {
+            return ticket;
+        }
+    }
+
+    public static class NightOnlyException extends RuntimeException {
+
+        private static final long serialVersionUID = 1L;
+
+        public NightOnlyException(String msg) {
+            super(msg);
+        }
+    }
+
+    public static class TicketUnavailableException extends RuntimeException {
+
+        private static final long serialVersionUID = 1L;
+
+        public TicketUnavailableException(String msg) {
+            super(msg);
+        }
     }
 
     public static class TicketSoldOutException extends RuntimeException {
