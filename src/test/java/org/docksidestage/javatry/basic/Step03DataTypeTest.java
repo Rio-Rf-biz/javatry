@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 
 import org.docksidestage.unit.PlainTestCase;
 
-// TODO iwata javadocのauthor, お願いしますm(_ _)m by jflute (2025/08/14)
+// done iwata javadocのauthor, お願いしますm(_ _)m by jflute (2025/08/14)
 /**
  * The test of data type. <br>
  * Operate exercise as javadoc. If it's question style, write your answer before test execution. <br>

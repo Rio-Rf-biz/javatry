@@ -16,6 +16,8 @@
 package org.docksidestage.javatry.basic;
 
 import org.docksidestage.bizfw.basic.buyticket.TicketBooth;
+import org.docksidestage.bizfw.basic.buyticket.TicketBooth.Ticket;
+import org.docksidestage.bizfw.basic.buyticket.TicketBooth.TicketBuyResult;
 import org.docksidestage.bizfw.basic.buyticket.TicketBooth.TicketShortMoneyException;
 import org.docksidestage.unit.PlainTestCase;
 
@@ -167,7 +169,14 @@ public class Step05ClassTest extends PlainTestCase {
     // done iwata [ざつだん] なるほど、エクササイズの "再利用しましょう" 以前にIDEで警告出るんですね^^ by jflute (2025/08/14)
     // #1on1: IDEの警告を見る習慣があるのは素晴らしい、見ないともったいない (2025/08/15)
 
-    // TODO jflute 1on1にて、流れの再利用についてのお話 (2025/08/14)
+    // done jflute 1on1にて、流れの再利用についてのお話 (2025/08/14)
+    // #1on1: ↓の処理の順番がコピペされている: (2025/08/28)
+    //assertQuantityValid(); // チケットの在庫を確認
+    //assertHandedMoneyValid(handedMoney, ONE_DAY_PRICE); // お金が足りているか確認
+    //Ticket ticket = new Ticket(ONE_DAY_PRICE, 1, false);
+    //int change = doBuyPassport(handedMoney, ONE_DAY_PRICE);
+    //return new TicketBuyResult(ticket, change);
+    // TODO iwata ということで、全体の流れも再利用できるようにしましょう by jflute (2025/08/28)
 
     // ===================================================================================
     //                                                                           Challenge
@@ -237,14 +246,17 @@ public class Step05ClassTest extends PlainTestCase {
         TicketBooth.Ticket twoDayPassport = buyResult.getTicket();
         showTicketIfNeeds(twoDayPassport);
     }
+    // TODO iwata [いいね] 悩んだ過程と仕様が書かれているのがわかりやすい by jflute (2025/08/28)
     // Ticketの種別という意味なのでtwo-days-ticketの定義は値段で判断することにした。
     // 残りの使用可能日数と悩んだ
     //
     // logがohter, two-day passportとなることを確認
 
     // uncomment when you implement this exercise
+    // TODO iwata コピーして持ってくると、本体の金額が変わった時に追従できないので、本体の定数を参照した方がいい by jflute (2025/08/28)
     private static final int TWO_DAY_PRICE = 13200;
 
+    // TODO iwata 修行++: 新しいチケット種別で、たまたまTwoDayと同じ金額のチケット追加されたら破綻する by jflute (2025/08/28)
     private void showTicketIfNeeds(TicketBooth.Ticket ticket) {
         if (ticket.getDisplayPrice() == TWO_DAY_PRICE) { // write determination for two-day passport
             log("two-day passport");
@@ -293,8 +305,8 @@ public class Step05ClassTest extends PlainTestCase {
     public void test_class_moreFix_yourRefactoring() {
         // your confirmation code here
     }
-    // 良さそう
 
+    // 良さそう
     /**
      * Write intelligent comments on source code to the main code in buyticket package. <br>
      * (buyticketパッケージのクラスに、気の利いたコメントを追加してみましょう)
@@ -303,4 +315,27 @@ public class Step05ClassTest extends PlainTestCase {
         // your confirmation code here
     }
     // コメントを入れた
+
+    // TODO iwata ちょっとエクササイズ追加でお願いします by jflute (2025/08/28)
+    /**
+     * Write intelligent JavaDoc comments seriously on the public classes/constructors/methods of the Ticket class. <br>
+     * (Ticketクラスのpublicなクラス/コンストラクター/メソッドに、気の利いたJavaDocコメントを本気で書いてみましょう)
+     */
+    public void test_class_moreFix_yourSuperJavaDoc() {
+        // your confirmation code here
+    }
+
+    // ===================================================================================
+    //                                                                         Devil Stage
+    //                                                                         ===========
+    // TODO iwata ちょっとエクササイズ追加でお願いします2 by jflute (2025/08/28)
+    /**
+     * If your specification is to share inventory (quantity) between OneDay/TwoDay/...,
+     * change the specification to separate inventory for each OneDay/TwoDay/.... <br>
+     * (もし、OneDay/TwoDay/...で在庫(quantity)を共有する仕様になってたら、
+     * OneDay/TwoDay/...ごとに在庫を分ける仕様に変えてみましょう)
+     */
+    public void test_class_moreFix_zonedQuantity() {
+        // your confirmation code here
+    }
 }
