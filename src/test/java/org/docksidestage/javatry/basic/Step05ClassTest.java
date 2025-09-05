@@ -16,9 +16,9 @@
 package org.docksidestage.javatry.basic;
 
 import org.docksidestage.bizfw.basic.buyticket.TicketBooth;
-import org.docksidestage.bizfw.basic.buyticket.TicketBooth.Ticket;
-import org.docksidestage.bizfw.basic.buyticket.TicketBooth.TicketBuyResult;
 import org.docksidestage.bizfw.basic.buyticket.TicketBooth.TicketShortMoneyException;
+import org.docksidestage.bizfw.basic.buyticket.TicketCustomized;
+import org.docksidestage.bizfw.basic.buyticket.TicketType;
 import org.docksidestage.unit.PlainTestCase;
 
 // #1on1: 話題: 決めの問題という言葉 by いわたさん
@@ -26,14 +26,15 @@ import org.docksidestage.unit.PlainTestCase;
 // 逃げの決めの問題: あまりよく考えず、考えることから逃げてるだけの決め
 // 合理的な決めの問題: 考えれば答えは出るかもだけど、考える時間が掛かる、得られるメリットが薄いとかの決め
 // ここは程度の問題になるので境目がグレーだけど、逃げにはならないようにしたいところ。
+
 /**
  * The test of class. <br>
  * Operate exercise as javadoc. If it's question style, write your answer before test execution. <br>
  * (javadocの通りにエクササイズを実施。質問形式の場合はテストを実行する前に考えて答えを書いてみましょう) <br>
- * 
+ *
  * If ambiguous requirement exists, you can determine specification that seems appropriate. <br>
  * (要件が曖昧なところがあれば、適切だと思われる仕様を決めても良いです)
- * 
+ *
  * @author jflute
  * @author Rio-Rf-biz
  */
@@ -176,7 +177,7 @@ public class Step05ClassTest extends PlainTestCase {
     //Ticket ticket = new Ticket(ONE_DAY_PRICE, 1, false);
     //int change = doBuyPassport(handedMoney, ONE_DAY_PRICE);
     //return new TicketBuyResult(ticket, change);
-    // TODO iwata ということで、全体の流れも再利用できるようにしましょう by jflute (2025/08/28)
+    // done iwata ということで、全体の流れも再利用できるようにしましょう by jflute (2025/08/28)
 
     // ===================================================================================
     //                                                                           Challenge
@@ -188,7 +189,7 @@ public class Step05ClassTest extends PlainTestCase {
     public void test_class_moreFix_return_ticket() {
         // uncomment out after modifying the method
         TicketBooth booth = new TicketBooth();
-        TicketBooth.Ticket oneDayPassport = booth.buyOneDayPassport(10000).getTicket();
+        TicketCustomized oneDayPassport = booth.buyOneDayPassport(10000).getTicket();
         log(oneDayPassport.getDisplayPrice()); // should be same as one-day price
         log(oneDayPassport.isAlreadyIn()); // should be false
         oneDayPassport.doInPark();
@@ -205,7 +206,7 @@ public class Step05ClassTest extends PlainTestCase {
         TicketBooth booth = new TicketBooth();
         int handedMoney = 20000;
         TicketBooth.TicketBuyResult buyResult = booth.buyTwoDayPassport(handedMoney);
-        TicketBooth.Ticket twoDayPassport = buyResult.getTicket();
+        TicketCustomized twoDayPassport = buyResult.getTicket();
         int change = buyResult.getChange();
         log(twoDayPassport.getDisplayPrice() + change); // should be same as money
     }
@@ -221,13 +222,13 @@ public class Step05ClassTest extends PlainTestCase {
         TicketBooth booth = new TicketBooth();
         int handedMoney = 20000;
         TicketBooth.TicketBuyResult buyResult = booth.buyTwoDayPassport(handedMoney);
-        TicketBooth.Ticket twoDayPassport = buyResult.getTicket();
+        TicketCustomized twoDayPassport = buyResult.getTicket();
         twoDayPassport.doInPark();
         log(twoDayPassport.isAlreadyIn()); // should be true
         twoDayPassport.doInPark();
         log(twoDayPassport.isAlreadyIn()); // should be true
-        twoDayPassport.doInPark();
-        log(twoDayPassport.isAlreadyIn()); // ここは実行されない
+        //        twoDayPassport.doInPark();
+        //        log(twoDayPassport.isAlreadyIn()); // ここは実行されない
     }
     // doInPark()に条件を追加する方針で。
     // org.docksidestage.bizfw.basic.buyticket.TicketBooth$TicketUnavailableException: No more days available
@@ -240,25 +241,25 @@ public class Step05ClassTest extends PlainTestCase {
     public void test_class_moreFix_whetherTicketType() {
         // uncomment when you implement this exercise
         TicketBooth booth = new TicketBooth();
-        TicketBooth.Ticket oneDayPassport = booth.buyOneDayPassport(10000).getTicket();
+        TicketCustomized oneDayPassport = booth.buyOneDayPassport(10000).getTicket();
         showTicketIfNeeds(oneDayPassport);
         TicketBooth.TicketBuyResult buyResult = booth.buyTwoDayPassport(15000);
-        TicketBooth.Ticket twoDayPassport = buyResult.getTicket();
+        TicketCustomized twoDayPassport = buyResult.getTicket();
         showTicketIfNeeds(twoDayPassport);
     }
-    // TODO iwata [いいね] 悩んだ過程と仕様が書かれているのがわかりやすい by jflute (2025/08/28)
+    // done iwata [いいね] 悩んだ過程と仕様が書かれているのがわかりやすい by jflute (2025/08/28)
     // Ticketの種別という意味なのでtwo-days-ticketの定義は値段で判断することにした。
     // 残りの使用可能日数と悩んだ
     //
     // logがohter, two-day passportとなることを確認
 
     // uncomment when you implement this exercise
-    // TODO iwata コピーして持ってくると、本体の金額が変わった時に追従できないので、本体の定数を参照した方がいい by jflute (2025/08/28)
-    private static final int TWO_DAY_PRICE = 13200;
+    // done iwata コピーして持ってくると、本体の金額が変わった時に追従できないので、本体の定数を参照した方がいい by jflute (2025/08/28)
 
-    // TODO iwata 修行++: 新しいチケット種別で、たまたまTwoDayと同じ金額のチケット追加されたら破綻する by jflute (2025/08/28)
-    private void showTicketIfNeeds(TicketBooth.Ticket ticket) {
-        if (ticket.getDisplayPrice() == TWO_DAY_PRICE) { // write determination for two-day passport
+    // done iwata 修行++: 新しいチケット種別で、たまたまTwoDayと同じ金額のチケット追加されたら破綻する by jflute (2025/08/28)
+    // ticketTypeフィールドを追加して、TicketType列挙型で種別を管理するようにした。
+    private void showTicketIfNeeds(TicketCustomized ticket) {
+        if (ticket.getTicketType() == TicketType.TWO_DAY) { // write determination for two-day passport
             log("two-day passport");
         } else {
             log("other");
@@ -291,7 +292,7 @@ public class Step05ClassTest extends PlainTestCase {
         TicketBooth.TicketBuyResult buyResult = booth.buyNightOnlyTwoDayPassport(money);
         int change = buyResult.getChange();
         log(change);
-        TicketBooth.Ticket nightTwoDayPassport = buyResult.getTicket();
+        TicketCustomized nightTwoDayPassport = buyResult.getTicket();
         nightTwoDayPassport.doInPark();
     }
     // おつりが2600円になることを確認

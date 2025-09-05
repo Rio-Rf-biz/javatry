@@ -17,20 +17,22 @@ package org.docksidestage.bizfw.basic.buyticket;
 
 import java.time.LocalTime;
 
-// TODO iwata @authorの追加をお願いします by jflute (2025/08/28)
+// done iwata @authorの追加をお願いします by jflute (2025/08/28)
 /**
  * @author jflute
+ * @auhtor Rio-Rf-biz
  */
 public class TicketBooth {
 
     // ===================================================================================
     //                                                                          Definition
     //                                                                          ==========
-    private static final int MAX_QUANTITY = 10;
-    private static final int ONE_DAY_PRICE = 7400; // when 2019/06/15
-    private static final int NIGHT_ONLY_TWO_DAY_PRICE = 7400; // 夜限定
-    private static final int TWO_DAY_PRICE = 13200;
-    private static final int FOUR_DAY_PRICE = 22400;
+    public static final int MAX_QUANTITY = 10;
+    public static final int ONE_DAY_PRICE = 7400; // when 2019/06/15
+    public static final int NIGHT_ONLY_TWO_DAY_PRICE = 7400; // 夜限定
+    public static final int TWO_DAY_PRICE = 13200;
+    public static final int FOUR_DAY_PRICE = 22400;
+    public static final int NIGHT_ONLY_START_HOUR = 19;
 
     // ===================================================================================
     //                                                                           Attribute
@@ -56,47 +58,36 @@ public class TicketBooth {
     // * @throws TicketShortMoneyException 買うのに金額が足りなかったら
     // */
     // done iwata javadoc, @return も追加しましょう (日本語でいいですよ) by jflute (2025/08/14)
-    // TODO iwata [いいね] チケットとお釣りという風に具体例があるのはめちゃわかりやすい by jflute (2025/08/28)
-    // TODO iwata 一方で、チケットとお釣り以外の項目が増えた時に若干誤解しやすくなるので断定よりも... by jflute (2025/08/28)
+    // done iwata [いいね] チケットとお釣りという風に具体例があるのはめちゃわかりやすい by jflute (2025/08/28)
+    // done iwata 一方で、チケットとお釣り以外の項目が増えた時に若干誤解しやすくなるので断定よりも... by jflute (2025/08/28)
     // 「チケットとお釣りなどを返す」みたいな感じでぼかすと良い。"など" を付けるだけで一部事例であることを示すことができる。
-    // TODO iwata nullを戻すのかどうか？を示してくれると嬉しい (javatryルールとして) by jflute (2025/08/28)
+    // done iwata nullを戻すのかどうか？を示してくれると嬉しい (javatryルールとして) by jflute (2025/08/28)
     //  e.g. @return xxx (NotNull)
     /**
      * Buy one-day passport, method for park guest.
      * @param handedMoney The money (amount) handed over from park guest. (NotNull, NotMinus)
      * @throws TicketSoldOutException When ticket in booth is sold out.
      * @throws TicketShortMoneyException When the specified money is short for purchase.
-     * @return チケットとお釣りを返す
+     * @return チケットとお釣りなど (NotNull)
      */
     public TicketBuyResult buyOneDayPassport(Integer handedMoney) {
-        assertQuantityValid(); // チケットの在庫を確認
-        assertHandedMoneyValid(handedMoney, ONE_DAY_PRICE); // お金が足りているか確認
-        Ticket ticket = new Ticket(ONE_DAY_PRICE, 1, false);
-        int change = doBuyPassport(handedMoney, ONE_DAY_PRICE);
-        return new TicketBuyResult(ticket, change);
+        return (buyPassport(TicketType.ONE_DAY, handedMoney, ONE_DAY_PRICE, 1, false));
     }
-    
-    // TODO iwata twoDayの方にも、@returnを付けましょう by jflute (2025/08/28)
+
+    // done iwata twoDayの方にも、@returnを付けましょう by jflute (2025/08/28)
     /**
      * Buy two-day passport, method for park guest.
      * @param handedMoney The money (amount) handed over from park guest. (NotNull, NotMinus)
      * @throws TicketSoldOutException When ticket in booth is sold out.
      * @throws TicketShortMoneyException When the specified money is short for purchase.
+     * @return チケットとお釣りなど (NotNull)
      */
     public TicketBuyResult buyTwoDayPassport(Integer handedMoney) {
-        assertQuantityValid();
-        assertHandedMoneyValid(handedMoney, TWO_DAY_PRICE);
-        Ticket ticket = new Ticket(TWO_DAY_PRICE, 2, false);
-        int change = doBuyPassport(handedMoney, TWO_DAY_PRICE);
-        return new TicketBuyResult(ticket, change);
+        return (buyPassport(TicketType.TWO_DAY, handedMoney, TWO_DAY_PRICE, 2, false));
     }
 
     public TicketBuyResult buyFourDayPassport(Integer handedMoney) {
-        assertQuantityValid();
-        assertHandedMoneyValid(handedMoney, FOUR_DAY_PRICE);
-        Ticket ticket = new Ticket(FOUR_DAY_PRICE, 4, false);
-        int change = doBuyPassport(handedMoney, FOUR_DAY_PRICE);
-        return new TicketBuyResult(ticket, change);
+        return (buyPassport(TicketType.FOUR_DAY, handedMoney, FOUR_DAY_PRICE, 4, false));
     }
 
     // #1on1: 流れを再利用して極力コピペをしないで済むようにする一方で... (2025/08/28)
@@ -107,14 +98,19 @@ public class TicketBooth {
     // パッと出せる作業用のテキストスペースを準備しておくと良い話
 
     public TicketBuyResult buyNightOnlyTwoDayPassport(Integer handedMoney) {
+        return(buyPassport(TicketType.NIGHT_ONLY_TWO_DAY, handedMoney, NIGHT_ONLY_TWO_DAY_PRICE, 2, true));
+    }
+
+    // TODO r.iwata buyAnyPassportのようにするか悩みましたがbuyPassportの方がシンプルでわかりやすいと思ったのでそう名付けました、一応doBuyと区別はできている、doBuyの方を変えた方がいいんですかね (2025/09/03)
+    private TicketBuyResult buyPassport(TicketType ticketType, Integer handedMoney, Integer ticketPrice, Integer availableDays, boolean nightOnly) {
         assertQuantityValid();
-        assertHandedMoneyValid(handedMoney, NIGHT_ONLY_TWO_DAY_PRICE);
-        Ticket ticket = new Ticket(NIGHT_ONLY_TWO_DAY_PRICE, 2, true);
-        int change = doBuyPassport(handedMoney, NIGHT_ONLY_TWO_DAY_PRICE);
+        assertHandedMoneyValid(handedMoney, ticketPrice);
+        TicketCustomized ticket = new TicketCustomized(ticketType, ticketPrice, availableDays, nightOnly);
+        int change = doBuyPassport(handedMoney, ticketPrice);
         return new TicketBuyResult(ticket, change);
     }
 
-    // TODO iwata これでも全然問題ないのですが、よくcheckという言葉の曖昧さが話題になることがあります。 by jflute (2025/08/14)
+    // done iwata これでも全然問題ないのですが、よくcheckという言葉の曖昧さが話題になることがあります。 by jflute (2025/08/14)
     // checkQuantity()だと、QuantityがOKなのか？ダメなのか？どっちをチェックしているのか？どっちで例外が投げられるのか？
     // この辺はわかりにくくなるので、もうちょい明確になる動詞を使うケースもあります。
     // よく使われるのは assert という言葉で、assertの場合は期待することが目的語になるので、
@@ -151,7 +147,7 @@ public class TicketBooth {
     // だけど、リファクタリングタイムがなかなか成立しないので...パターン3である程度はOKに。
     // プルリク差分が見づらくなるくらいみんながリファクタリングに積極的なのであれば嬉しい悲鳴。
     // そのときにちょっと差分に配慮をしましょうって言えばいいだけかな。
-    
+
     // #1on1: 指が早いというのは、単に作業が早くなるって単純な話だけではなく...
     // 試行錯誤が何回もできる、とか、サンクコストによる判断のブレを少なくすることにもつながる。
 
@@ -187,58 +183,12 @@ public class TicketBooth {
         return handedMoney - price;
     }
 
-    // TODO iwata まあ、ここは大きな業務クラスなので、独立ファイルで作りましょう by jflute (2025/08/28)
-    public static class Ticket {
-        private boolean alreadyIn = false;
-        private int ticketPrice;
-        private int availableDays;
-        private boolean nightOnly;
-
-        public Ticket(int ticketPrice, int availableDays, boolean nightOnly) { // コンストラクタ
-            this.ticketPrice = ticketPrice;
-            this.availableDays = availableDays;
-            this.nightOnly = nightOnly;
-        }
-
-        // TODO iwata getterたちは、クラスの最後に定義のがわりと多いので移動をお願い by jflute (2025/08/28)
-        public int getDisplayPrice() {
-            return ticketPrice;
-        }
-
-        public boolean isAlreadyIn() {
-            return alreadyIn;
-        }
-
-        public void doInPark() {
-            if (nightOnly) {
-                LocalTime now = LocalTime.now();
-                // TODO iwata コメントで19時って書いちゃうと、値が変わった時に置き去りにされちゃう可能性 by jflute (2025/08/28)
-                // e.g. 夜限定チケットは、その時刻以降に入場可能
-                // TODO iwata [読み物課題] オートマティックおうむ返しコメントより背景や理由を by jflute (2025/08/28)
-                // https://jflute.hatenadiary.jp/entry/20180625/repeatablecomment
-                if (now.getHour() < 19 ) { // 夜限定チケットは19:00以降に入場可能
-                    // TODO iwata 例外メッセージに時刻を出すのはわかりやすいですが、連動させてましょう by jflute (2025/08/28)
-                    throw new NightOnlyException("Night-only ticket: available after 19:00");
-                }
-            }
-            if (availableDays > 0) { // 入場可能日数が残っている場合
-                this.alreadyIn = true; // 入場済みにする
-                --availableDays;
-            } else {
-                // TODO iwata [読み物課題] 例外メッセージ、敬語で満足でもロスロスパターン by jflute (2025/08/28)
-                // https://jflute.hatenadiary.jp/entry/20170804/explossloss
-                // ↑これを読むとどう直したらいいのかがわかる
-                throw new TicketUnavailableException("No more days available");
-            }
-        }
-    }
-
     public static class TicketBuyResult {
-        // TODO iwata final付けて完全なimmutableにしてしまいましょう by jflute (2025/08/28)
-        private Ticket ticket; // 購入したチケット
-        private int change; // お釣り
+        // done iwata final付けて完全なimmutableにしてしまいましょう by jflute (2025/08/28)
+        private final TicketCustomized ticket; // 購入したチケット
+        private final int change; // お釣り
 
-        public TicketBuyResult(Ticket ticket, int change) {
+        public TicketBuyResult(TicketCustomized ticket, int change) {
             this.ticket = ticket;
             this.change = change;
         }
@@ -247,7 +197,7 @@ public class TicketBooth {
             return change;
         }
 
-        public Ticket getTicket() {
+        public TicketCustomized getTicket() {
             return ticket;
         }
     }

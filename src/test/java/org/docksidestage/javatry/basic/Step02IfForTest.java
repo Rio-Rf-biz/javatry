@@ -366,7 +366,7 @@ public class Step02IfForTest extends PlainTestCase {
      * _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
      * your question here (ここにあなたの質問を):
      *
-     * memo: breakが2重のfor文だとどこまで抜けるかの問題とかいいかも
+     * done: breakが2重のfor文だとどこまで抜けるかの問題とかいいかも
      * _/_/_/_/_/_/_/_/_/_/
      * </pre>
      */
