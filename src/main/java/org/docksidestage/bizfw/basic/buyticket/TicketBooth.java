@@ -102,6 +102,7 @@ public class TicketBooth {
     }
 
     // TODO r.iwata buyAnyPassportのようにするか悩みましたがbuyPassportの方がシンプルでわかりやすいと思ったのでそう名付けました、一応doBuyと区別はできている、doBuyの方を変えた方がいいんですかね (2025/09/03)
+    // TODO jflute 1on1にてフォロー予定。privateが二段になっているので、さあどうしましょう？引数も多くなってきた (2025/09/11)
     private TicketBuyResult buyPassport(TicketType ticketType, Integer handedMoney, Integer ticketPrice, Integer availableDays, boolean nightOnly) {
         assertQuantityValid();
         assertHandedMoneyValid(handedMoney, ticketPrice);

@@ -258,6 +258,8 @@ public class Step05ClassTest extends PlainTestCase {
 
     // done iwata 修行++: 新しいチケット種別で、たまたまTwoDayと同じ金額のチケット追加されたら破綻する by jflute (2025/08/28)
     // ticketTypeフィールドを追加して、TicketType列挙型で種別を管理するようにした。
+    // TODO iwata [いいね] Good, チケットの種類って、無限の組み合わせで作ることできてしまいますから... by jflute (2025/09/11)
+    // 紛れがないように正確にってなったら、チケット種別そのものを表現して判定するしかないということです。
     private void showTicketIfNeeds(TicketCustomized ticket) {
         if (ticket.getTicketType() == TicketType.TWO_DAY) { // write determination for two-day passport
             log("two-day passport");
@@ -299,6 +301,9 @@ public class Step05ClassTest extends PlainTestCase {
     // org.docksidestage.bizfw.basic.buyticket.TicketBooth$NightOnlyException: Night-only ticket: available after 19:00
     // 作成した上記のエラーが出ることを確認
 
+    // ===================================================================================
+    //                                                                         Bonus Stage
+    //                                                                         ===========
     /**
      * Refactor if you want to fix (e.g. is it well-balanced name of method and variable?). <br>
      * (その他、気になるところがあったらリファクタリングしてみましょう (例えば、バランスの良いメソッド名や変数名になっていますか？))
