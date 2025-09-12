@@ -71,6 +71,8 @@ public class TicketBooth {
      * @return チケットとお釣りなど (NotNull)
      */
     public TicketBuyResult buyOneDayPassport(Integer handedMoney) {
+        // TODO iwata 修行++: 新しいPassportのpublicメソッド作る時のコピー修正で... by jflute (2025/09/12)
+        // 一箇所だけ直すでOKにしてみましょう。(現在3箇所/4箇所)
         return (buyPassport(TicketType.ONE_DAY, handedMoney, ONE_DAY_PRICE, 1, false));
     }
 
@@ -101,8 +103,17 @@ public class TicketBooth {
         return(buyPassport(TicketType.NIGHT_ONLY_TWO_DAY, handedMoney, NIGHT_ONLY_TWO_DAY_PRICE, 2, true));
     }
 
-    // TODO r.iwata buyAnyPassportのようにするか悩みましたがbuyPassportの方がシンプルでわかりやすいと思ったのでそう名付けました、一応doBuyと区別はできている、doBuyの方を変えた方がいいんですかね (2025/09/03)
-    // TODO jflute 1on1にてフォロー予定。privateが二段になっているので、さあどうしましょう？引数も多くなってきた (2025/09/11)
+    // done r.iwata buyAnyPassportのようにするか悩みましたがbuyPassportの方がシンプルでわかりやすいと思ったのでそう名付けました、一応doBuyと区別はできている、doBuyの方を変えた方がいいんですかね (2025/09/03)
+    // done jflute 1on1にてフォロー予定。privateが二段になっているので、さあどうしましょう？引数も多くなってきた (2025/09/11)
+    // #1on1: どこまでを購入の実処理と捉えるか次第ですが、doBuyに全部入れても問題ないくらいではあるかなと。
+    // 一方で、在庫減らす処理とかを特別に独立させてるのであれば、そっちの主軸を変えて...
+    // e.g. acceptPurchaseOrder() とか、売る側視点のメソッドにしてもいいかも。
+    // #1on1: メソッドの動詞の主語は誰？話。両方ありえる。jflute個人でも、感覚的に使い分けてる。
+    // DBのパターン:
+    //  e.g. memberController.insert(member);
+    //  e.g. member.insert(); // 自分をinsert (saveも場合も)
+    // TODO iwata [読み物課題] プログラマーに求められるデザイン脳 by jflute (2025/09/12)
+    // https://jflute.hatenadiary.jp/entry/20170623/desigraming
     private TicketBuyResult buyPassport(TicketType ticketType, Integer handedMoney, Integer ticketPrice, Integer availableDays, boolean nightOnly) {
         assertQuantityValid();
         assertHandedMoneyValid(handedMoney, ticketPrice);

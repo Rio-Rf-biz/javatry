@@ -7,10 +7,12 @@ import java.time.LocalTime;
 /**
  * @author Rio-Rf-biz
  */
-
+// TODO iwata 元々のTicketクラスであった、タグコメント (Attributeなど) もこっちへ by jflute (2025/09/12)
 // done iwata まあ、ここは大きな業務クラスなので、独立ファイルで作りましょう by jflute (2025/08/28)
 // Step6で使っていそうなTicketクラスが存在したのでTicketCustomizedという名前にしました。
 public class TicketCustomized {
+    // TODO iwata final付けられるものは付けちゃった方が何がimmutableなのか明示できる by jflute (2025/09/12)
+    // 固定的な情報なのか、状態的な情報なのか、を明示するためにもfinalが使える。
     private TicketType ticketType;
     private boolean alreadyIn = false;
     private int ticketPrice;
@@ -50,6 +52,7 @@ public class TicketCustomized {
             // 読みました！
             // 例外メッセージを誰がどんなシチュエーションで読むのかを考えずに実装していたなと気づきました。
             // 正しい日本語とかよりもまずは周辺の変数を出すべきということを理解しました。
+            // TODO iwata Ticketが移動(独立)してきたから、例外クラスもこっちに連れてきちゃっていいんじゃないかな？ by jflute (2025/09/12)
             throw new TicketBooth.TicketUnavailableException("No more days available: availableDays = " + availableDays);
         }
     }

@@ -258,9 +258,15 @@ public class Step05ClassTest extends PlainTestCase {
 
     // done iwata 修行++: 新しいチケット種別で、たまたまTwoDayと同じ金額のチケット追加されたら破綻する by jflute (2025/08/28)
     // ticketTypeフィールドを追加して、TicketType列挙型で種別を管理するようにした。
-    // TODO iwata [いいね] Good, チケットの種類って、無限の組み合わせで作ることできてしまいますから... by jflute (2025/09/11)
+    // done iwata [いいね] Good, チケットの種類って、無限の組み合わせで作ることできてしまいますから... by jflute (2025/09/11)
     // 紛れがないように正確にってなったら、チケット種別そのものを表現して判定するしかないということです。
     private void showTicketIfNeeds(TicketCustomized ticket) {
+        // #1on1: Javaだと...
+        //  new Integer(999) == new Integer(999) => false
+        //  new Integer(999).equals(new Integer(999)) => true
+        // "==" はインスタンスの同一性しか見ない
+        // enumは、インスタンスが限定されているので、(たまたま!?)インスタンスの同一性でもOKになる。
+        // (enum以外のオブジェクトでは == は使わないほうが良い)
         if (ticket.getTicketType() == TicketType.TWO_DAY) { // write determination for two-day passport
             log("two-day passport");
         } else {
@@ -296,6 +302,9 @@ public class Step05ClassTest extends PlainTestCase {
         log(change);
         TicketCustomized nightTwoDayPassport = buyResult.getTicket();
         nightTwoDayPassport.doInPark();
+        
+        // TODO iwata 修行++: UnitTestを実行する時間帯によって、エラーが出たり出なかったり... by jflute (2025/09/12)
+        // 理想的には、昼の状態の振る舞いと、夜の状態の振る舞いを、両方テストしたいところ。
     }
     // おつりが2600円になることを確認
     // org.docksidestage.bizfw.basic.buyticket.TicketBooth$NightOnlyException: Night-only ticket: available after 19:00
@@ -322,7 +331,7 @@ public class Step05ClassTest extends PlainTestCase {
     }
     // コメントを入れた
 
-    // TODO iwata ちょっとエクササイズ追加でお願いします by jflute (2025/08/28)
+    // TODO iwata ちょっとエクササイズ追加でお願いします (TicketCustomizedの方) by jflute (2025/08/28)
     /**
      * Write intelligent JavaDoc comments seriously on the public classes/constructors/methods of the Ticket class. <br>
      * (Ticketクラスのpublicなクラス/コンストラクター/メソッドに、気の利いたJavaDocコメントを本気で書いてみましょう)
@@ -334,7 +343,7 @@ public class Step05ClassTest extends PlainTestCase {
     // ===================================================================================
     //                                                                         Devil Stage
     //                                                                         ===========
-    // TODO iwata ちょっとエクササイズ追加でお願いします2 by jflute (2025/08/28)
+    // TODO iwata 修行++: ちょっとエクササイズ追加でお願いします2 by jflute (2025/08/28)
     /**
      * If your specification is to share inventory (quantity) between OneDay/TwoDay/...,
      * change the specification to separate inventory for each OneDay/TwoDay/.... <br>
