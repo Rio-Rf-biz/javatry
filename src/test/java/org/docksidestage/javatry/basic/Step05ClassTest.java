@@ -15,6 +15,10 @@
  */
 package org.docksidestage.javatry.basic;
 
+import static org.docksidestage.bizfw.basic.buyticket.TicketBooth.NIGHT_ONLY_START_HOUR;
+
+import java.time.LocalTime;
+
 import org.docksidestage.bizfw.basic.buyticket.TicketBooth;
 import org.docksidestage.bizfw.basic.buyticket.TicketBooth.TicketShortMoneyException;
 import org.docksidestage.bizfw.basic.buyticket.TicketCustomized;
@@ -203,9 +207,9 @@ public class Step05ClassTest extends PlainTestCase {
         // uncomment out after modifying the method
         TicketBooth booth = new TicketBooth();
         TicketCustomized oneDayPassport = booth.buyOneDayPassport(10000).getTicket();
-        log(oneDayPassport.getDisplayPrice()); // should be same as one-day price
+        log(oneDayPassport.getTicketPrice()); // should be same as one-day price
         log(oneDayPassport.isAlreadyIn()); // should be false
-        oneDayPassport.doInPark();
+        oneDayPassport.doInPark(LocalTime.now());
         log(oneDayPassport.isAlreadyIn()); // should be true
     }
     // 結果が7400, false, trueとなることを確認
@@ -221,7 +225,7 @@ public class Step05ClassTest extends PlainTestCase {
         TicketBooth.TicketBuyResult buyResult = booth.buyTwoDayPassport(handedMoney);
         TicketCustomized twoDayPassport = buyResult.getTicket();
         int change = buyResult.getChange();
-        log(twoDayPassport.getDisplayPrice() + change); // should be same as money
+        log(twoDayPassport.getTicketPrice() + change); // should be same as money
     }
     // claude codeと協力して作りました
     // TicketBuyResultクラスを作成して、フィールドにTicketを持たせるようにすることなどを教えてもらった
@@ -236,9 +240,9 @@ public class Step05ClassTest extends PlainTestCase {
         int handedMoney = 20000;
         TicketBooth.TicketBuyResult buyResult = booth.buyTwoDayPassport(handedMoney);
         TicketCustomized twoDayPassport = buyResult.getTicket();
-        twoDayPassport.doInPark();
+        twoDayPassport.doInPark(LocalTime.now());
         log(twoDayPassport.isAlreadyIn()); // should be true
-        twoDayPassport.doInPark();
+        twoDayPassport.doInPark(LocalTime.now());
         log(twoDayPassport.isAlreadyIn()); // should be true
         //        twoDayPassport.doInPark();
         //        log(twoDayPassport.isAlreadyIn()); // ここは実行されない
@@ -307,15 +311,37 @@ public class Step05ClassTest extends PlainTestCase {
      * Fix it to be able to buy night-only two-day passport (price is 7400), which can be used at only night. <br>
      * (NightOnlyTwoDayPassport (金額は7400) のチケットも買えるようにしましょう。夜しか使えないようにしましょう)
      */
-    public void test_class_moreFix_wonder_night() {
+    public void test_shoudReturnException_beforeNightOnlyStartHour() {
+        // Given
         TicketBooth booth = new TicketBooth();
-        int money = 10000;
-        TicketBooth.TicketBuyResult buyResult = booth.buyNightOnlyTwoDayPassport(money);
-        int change = buyResult.getChange();
-        log(change);
+        TicketBooth.TicketBuyResult buyResult = booth.buyNightOnlyTwoDayPassport(10000);
         TicketCustomized nightTwoDayPassport = buyResult.getTicket();
-        nightTwoDayPassport.doInPark();
-        
+
+        // When
+        LocalTime now = LocalTime.of(NIGHT_ONLY_START_HOUR, 0).minusHours(1);
+
+        // Then
+        assertException(TicketCustomized.NightOnlyException.class, () -> {
+            nightTwoDayPassport.doInPark(now);
+        });
+
+        // TODO done iwata 修行++: UnitTestを実行する時間帯によって、エラーが出たり出なかったり... by jflute (2025/09/12)
+        // 理想的には、昼の状態の振る舞いと、夜の状態の振る舞いを、両方テストしたいところ。
+    }
+
+    public void test_shoudReturnException_afterNightOnlyStartHour() {
+        // Given
+        TicketBooth booth = new TicketBooth();
+        TicketBooth.TicketBuyResult buyResult = booth.buyNightOnlyTwoDayPassport(10000);
+        TicketCustomized nightTwoDayPassport = buyResult.getTicket();
+
+        // When
+        LocalTime now = LocalTime.of(NIGHT_ONLY_START_HOUR, 0).plusHours(1);
+
+        // Then
+        nightTwoDayPassport.doInPark(now);
+        assertTrue(nightTwoDayPassport.isAlreadyIn());
+
         // TODO iwata 修行++: UnitTestを実行する時間帯によって、エラーが出たり出なかったり... by jflute (2025/09/12)
         // 理想的には、昼の状態の振る舞いと、夜の状態の振る舞いを、両方テストしたいところ。
     }
@@ -344,7 +370,7 @@ public class Step05ClassTest extends PlainTestCase {
     }
     // コメントを入れた
 
-    // TODO iwata ちょっとエクササイズ追加でお願いします (TicketCustomizedの方) by jflute (2025/08/28)
+    // TODO done iwata ちょっとエクササイズ追加でお願いします (TicketCustomizedの方) by jflute (2025/08/28)
     /**
      * Write intelligent JavaDoc comments seriously on the public classes/constructors/methods of the Ticket class. <br>
      * (Ticketクラスのpublicなクラス/コンストラクター/メソッドに、気の利いたJavaDocコメントを本気で書いてみましょう)

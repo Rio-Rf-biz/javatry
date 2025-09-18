@@ -15,8 +15,6 @@
  */
 package org.docksidestage.bizfw.basic.buyticket;
 
-import java.time.LocalTime;
-
 // done iwata @authorの追加をお願いします by jflute (2025/08/28)
 /**
  * @author jflute
@@ -73,7 +71,7 @@ public class TicketBooth {
     public TicketBuyResult buyOneDayPassport(Integer handedMoney) {
         // TODO iwata 修行++: 新しいPassportのpublicメソッド作る時のコピー修正で... by jflute (2025/09/12)
         // 一箇所だけ直すでOKにしてみましょう。(現在3箇所/4箇所)
-        return (buyPassport(TicketType.ONE_DAY, handedMoney, ONE_DAY_PRICE, 1, false));
+        return (doBuyPassport(TicketType.ONE_DAY, handedMoney, ONE_DAY_PRICE, 1, false));
     }
 
     // done iwata twoDayの方にも、@returnを付けましょう by jflute (2025/08/28)
@@ -85,11 +83,11 @@ public class TicketBooth {
      * @return チケットとお釣りなど (NotNull)
      */
     public TicketBuyResult buyTwoDayPassport(Integer handedMoney) {
-        return (buyPassport(TicketType.TWO_DAY, handedMoney, TWO_DAY_PRICE, 2, false));
+        return (doBuyPassport(TicketType.TWO_DAY, handedMoney, TWO_DAY_PRICE, 2, false));
     }
 
     public TicketBuyResult buyFourDayPassport(Integer handedMoney) {
-        return (buyPassport(TicketType.FOUR_DAY, handedMoney, FOUR_DAY_PRICE, 4, false));
+        return (doBuyPassport(TicketType.FOUR_DAY, handedMoney, FOUR_DAY_PRICE, 4, false));
     }
 
     // #1on1: 流れを再利用して極力コピペをしないで済むようにする一方で... (2025/08/28)
@@ -100,7 +98,7 @@ public class TicketBooth {
     // パッと出せる作業用のテキストスペースを準備しておくと良い話
 
     public TicketBuyResult buyNightOnlyTwoDayPassport(Integer handedMoney) {
-        return(buyPassport(TicketType.NIGHT_ONLY_TWO_DAY, handedMoney, NIGHT_ONLY_TWO_DAY_PRICE, 2, true));
+        return(doBuyPassport(TicketType.NIGHT_ONLY_TWO_DAY, handedMoney, NIGHT_ONLY_TWO_DAY_PRICE, 2, true));
     }
 
     // done r.iwata buyAnyPassportのようにするか悩みましたがbuyPassportの方がシンプルでわかりやすいと思ったのでそう名付けました、一応doBuyと区別はできている、doBuyの方を変えた方がいいんですかね (2025/09/03)
@@ -108,17 +106,18 @@ public class TicketBooth {
     // #1on1: どこまでを購入の実処理と捉えるか次第ですが、doBuyに全部入れても問題ないくらいではあるかなと。
     // 一方で、在庫減らす処理とかを特別に独立させてるのであれば、そっちの主軸を変えて...
     // e.g. acceptPurchaseOrder() とか、売る側視点のメソッドにしてもいいかも。
+    // TODO done r.iwata doBuyPassportをacceptPurchaseOrderに変更してbuyPassportをdoBuyPassportに変更 (2025/09/12)
     // #1on1: メソッドの動詞の主語は誰？話。両方ありえる。jflute個人でも、感覚的に使い分けてる。
     // DBのパターン:
     //  e.g. memberController.insert(member);
     //  e.g. member.insert(); // 自分をinsert (saveも場合も)
     // TODO iwata [読み物課題] プログラマーに求められるデザイン脳 by jflute (2025/09/12)
     // https://jflute.hatenadiary.jp/entry/20170623/desigraming
-    private TicketBuyResult buyPassport(TicketType ticketType, Integer handedMoney, Integer ticketPrice, Integer availableDays, boolean nightOnly) {
+    private TicketBuyResult doBuyPassport(TicketType ticketType, Integer handedMoney, Integer ticketPrice, Integer availableDays, boolean nightOnly) {
         assertQuantityValid();
         assertHandedMoneyValid(handedMoney, ticketPrice);
         TicketCustomized ticket = new TicketCustomized(ticketType, ticketPrice, availableDays, nightOnly);
-        int change = doBuyPassport(handedMoney, ticketPrice);
+        int change = acceptPurchaseOrder(handedMoney, ticketPrice);
         return new TicketBuyResult(ticket, change);
     }
 
@@ -185,7 +184,7 @@ public class TicketBooth {
     // publicのbuyメソッドに対して、privateのdoBuyPassport()メソッドみたいにdoをprefixとして付けるとか。
     // 他にも色々な区別の仕方はあるのですが、ぼくはけっこう「実処理」みたいなニュアンスで doXxx() はよく使います。
     // 会話上も言いやすく区別しやすいので。
-    private int doBuyPassport(Integer handedMoney, int price) {
+    private int acceptPurchaseOrder(Integer handedMoney, int price) {
         --quantity;
         if (salesProceeds != null) { // second or more purchase
             salesProceeds = salesProceeds + price;
@@ -211,24 +210,6 @@ public class TicketBooth {
 
         public TicketCustomized getTicket() {
             return ticket;
-        }
-    }
-
-    public static class NightOnlyException extends RuntimeException {
-
-        private static final long serialVersionUID = 1L;
-
-        public NightOnlyException(String msg) {
-            super(msg);
-        }
-    }
-
-    public static class TicketUnavailableException extends RuntimeException {
-
-        private static final long serialVersionUID = 1L;
-
-        public TicketUnavailableException(String msg) {
-            super(msg);
         }
     }
 
