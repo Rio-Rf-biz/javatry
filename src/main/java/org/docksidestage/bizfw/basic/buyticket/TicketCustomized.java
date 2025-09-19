@@ -7,7 +7,7 @@ import java.time.LocalTime;
 /**
  * @author Rio-Rf-biz
  */
-// TODO done iwata 元々のTicketクラスであった、タグコメント (Attributeなど) もこっちへ by jflute (2025/09/12)
+// done iwata 元々のTicketクラスであった、タグコメント (Attributeなど) もこっちへ by jflute (2025/09/12)
 // done iwata まあ、ここは大きな業務クラスなので、独立ファイルで作りましょう by jflute (2025/08/28)
 // Step6で使っていそうなTicketクラスが存在したのでTicketCustomizedという名前にしました。
 /**
@@ -15,20 +15,24 @@ import java.time.LocalTime;
  * チケットの種類、価格、入場可能日数、夜限定かどうかなどの情報を持ち、入場に伴うチケットのステータス管理などを行う
  */
 public class TicketCustomized {
-    // TODO done iwata final付けられるものは付けちゃった方が何がimmutableなのか明示できる by jflute (2025/09/12)
+    // done iwata final付けられるものは付けちゃった方が何がimmutableなのか明示できる by jflute (2025/09/12)
     // 固定的な情報なのか、状態的な情報なのか、を明示するためにもfinalが使える。
     // ===================================================================================
     //                                                                           Attribute
     //                                                                           =========
+    // TODO iwata インスタンス変数の並び順 by jflute (2025/09/19)
+    // #1on1: コンストラクタで扱われる項目たちとそれ以外、もしくは、immutable/mutable
+    // (DBFluteのLikeSearchOptionのコードを例に)
     private final TicketType ticketType;
-    private boolean alreadyIn = false;
     private final int ticketPrice;
     private int availableDays;
     private final boolean nightOnly;
+    private boolean alreadyIn = false;
 
     // ===================================================================================
     //                                                                         Constructor
     //                                                                         ===========
+    // TODO iwata ticketTypeの @param に、(NotNull) を付けてみてください by jflute (2025/09/19)
     /**
      * コンストラクタ
      * @param ticketType 入場可能日数、夜限定などのチケットの種類
@@ -46,6 +50,13 @@ public class TicketCustomized {
     // ===================================================================================
     //                                                                             In Park
     //                                                                             =======
+    // TODO iwata 修行++: 呼び出し側が現在日時を入れることができるということは... by jflute (2025/09/19)
+    // 意図的に違う日時を入れて何か処理をしようとするってこともできてしまうし...
+    // 間違えて違う日時を入れてしまって不具合というのもありえる...
+    // 本来mainコードとしては指定させる必要性がないけどtest都合で指定させているので、
+    // mainとしては若干安全性がロスしている。(できればmain都合を本来は優先したい)
+    // #1on1: いわたさん自身が何かmockを渡すみたいな感じでできれば...と仰っていた (2025/09/19)
+    // ということで、修行++ということで、もうちょい先に進んでからまた考えてみましょう。
     /**
      * 入場可能日数をデクリメントしてチケットのステータスを入場済みにする, 入場に伴うチケットのステータス管理用のメソッド.
      * @param currentTime 現在の時刻 (NotNull)
@@ -77,7 +88,7 @@ public class TicketCustomized {
             // 読みました！
             // 例外メッセージを誰がどんなシチュエーションで読むのかを考えずに実装していたなと気づきました。
             // 正しい日本語とかよりもまずは周辺の変数を出すべきということを理解しました。
-            // TODO done iwata Ticketが移動(独立)してきたから、例外クラスもこっちに連れてきちゃっていいんじゃないかな？ by jflute (2025/09/12)
+            // done iwata Ticketが移動(独立)してきたから、例外クラスもこっちに連れてきちゃっていいんじゃないかな？ by jflute (2025/09/12)
             throw new TicketUnavailableException("No more days available: availableDays = " + availableDays);
         }
     }
@@ -112,6 +123,7 @@ public class TicketCustomized {
     //                                                                            Accessor
     //                                                                            ========
     // done iwata getterたちは、クラスの最後に定義のがわりと多いので移動をお願い by jflute (2025/08/28)
+    // TODO iwata getterに関しては、@returnだけの説明でもOKかも (個人的な提案) by jflute (2025/09/19)
     /**
      * ticketTypeを返すゲッター
      * @return チケットの種類

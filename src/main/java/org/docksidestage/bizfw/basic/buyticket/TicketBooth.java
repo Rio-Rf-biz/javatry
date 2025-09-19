@@ -106,7 +106,7 @@ public class TicketBooth {
     // #1on1: どこまでを購入の実処理と捉えるか次第ですが、doBuyに全部入れても問題ないくらいではあるかなと。
     // 一方で、在庫減らす処理とかを特別に独立させてるのであれば、そっちの主軸を変えて...
     // e.g. acceptPurchaseOrder() とか、売る側視点のメソッドにしてもいいかも。
-    // TODO done r.iwata doBuyPassportをacceptPurchaseOrderに変更してbuyPassportをdoBuyPassportに変更 (2025/09/12)
+    // done r.iwata doBuyPassportをacceptPurchaseOrderに変更してbuyPassportをdoBuyPassportに変更 (2025/09/12)
     // #1on1: メソッドの動詞の主語は誰？話。両方ありえる。jflute個人でも、感覚的に使い分けてる。
     // DBのパターン:
     //  e.g. memberController.insert(member);

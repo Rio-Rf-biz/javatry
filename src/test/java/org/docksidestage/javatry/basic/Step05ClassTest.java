@@ -44,6 +44,9 @@ import org.docksidestage.unit.PlainTestCase;
 // 特にUnitTestのメソッド名は、仕様を表現するので、やはり慣れた自然言語じゃないと書きづらいとは思う。
 //  by jflute
 
+// #1on1: デバッグ手順(スタックトレース重要) (2025/09/19)
+// https://jflute.hatenadiary.jp/entry/20090224/1235473382
+
 /**
  * The test of class. <br>
  * Operate exercise as javadoc. If it's question style, write your answer before test execution. <br>
@@ -325,10 +328,10 @@ public class Step05ClassTest extends PlainTestCase {
             nightTwoDayPassport.doInPark(now);
         });
 
-        // TODO done iwata 修行++: UnitTestを実行する時間帯によって、エラーが出たり出なかったり... by jflute (2025/09/12)
+        // done iwata 修行++: UnitTestを実行する時間帯によって、エラーが出たり出なかったり... by jflute (2025/09/12)
         // 理想的には、昼の状態の振る舞いと、夜の状態の振る舞いを、両方テストしたいところ。
     }
-
+    
     public void test_shoudReturnException_afterNightOnlyStartHour() {
         // Given
         TicketBooth booth = new TicketBooth();
@@ -336,14 +339,30 @@ public class Step05ClassTest extends PlainTestCase {
         TicketCustomized nightTwoDayPassport = buyResult.getTicket();
 
         // When
+        // TODO iwata doInPark(now)を呼ぶのは、Whenじゃない？ by jflute (2025/09/19)
+        // UI のテストは AAA パターンより Given-When-Then パターンの方がしっくりくるかもしれない
+        // https://zenn.dev/m10maeda/articles/gwt-might-feel-more-natural-than-3a-for-ui-testing
+        // #1on1: LastaFluteのUnitTestのコメントも参考にしながら (2025/09/19)
         LocalTime now = LocalTime.of(NIGHT_ONLY_START_HOUR, 0).plusHours(1);
 
         // Then
         nightTwoDayPassport.doInPark(now);
         assertTrue(nightTwoDayPassport.isAlreadyIn());
 
-        // TODO iwata 修行++: UnitTestを実行する時間帯によって、エラーが出たり出なかったり... by jflute (2025/09/12)
+        // done iwata 修行++: UnitTestを実行する時間帯によって、エラーが出たり出なかったり... by jflute (2025/09/12)
         // 理想的には、昼の状態の振る舞いと、夜の状態の振る舞いを、両方テストしたいところ。
+        
+        // #1on1: 伝統的な区分けのやり方として、Arrange,Act,Assertもある
+        //// ## Arrange ##
+        //TicketBooth booth = new TicketBooth();
+        //TicketBooth.TicketBuyResult buyResult = booth.buyNightOnlyTwoDayPassport(10000);
+        //TicketCustomized nightTwoDayPassport = buyResult.getTicket();
+        //
+        //// ## Act ##
+        //nightTwoDayPassport.doInPark(now);
+        //
+        //// ## Assert ##
+        //assertTrue(nightTwoDayPassport.isAlreadyIn());
     }
     // おつりが2600円になることを確認
     // org.docksidestage.bizfw.basic.buyticket.TicketBooth$NightOnlyException: Night-only ticket: available after 19:00
@@ -370,7 +389,7 @@ public class Step05ClassTest extends PlainTestCase {
     }
     // コメントを入れた
 
-    // TODO done iwata ちょっとエクササイズ追加でお願いします (TicketCustomizedの方) by jflute (2025/08/28)
+    // done iwata ちょっとエクササイズ追加でお願いします (TicketCustomizedの方) by jflute (2025/08/28)
     /**
      * Write intelligent JavaDoc comments seriously on the public classes/constructors/methods of the Ticket class. <br>
      * (Ticketクラスのpublicなクラス/コンストラクター/メソッドに、気の利いたJavaDocコメントを本気で書いてみましょう)
