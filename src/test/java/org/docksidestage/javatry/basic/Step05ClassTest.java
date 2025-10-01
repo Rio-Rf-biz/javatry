@@ -319,10 +319,9 @@ public class Step05ClassTest extends PlainTestCase {
         TicketBooth booth = new TicketBooth();
         TicketBooth.TicketBuyResult buyResult = booth.buyNightOnlyTwoDayPassport(10000);
         TicketCustomized nightTwoDayPassport = buyResult.getTicket();
-
-        // When
         LocalTime now = LocalTime.of(NIGHT_ONLY_START_HOUR, 0).minusHours(1);
 
+        // When
         // Then
         assertException(TicketCustomized.NightOnlyException.class, () -> {
             nightTwoDayPassport.doInPark(now);
@@ -337,16 +336,16 @@ public class Step05ClassTest extends PlainTestCase {
         TicketBooth booth = new TicketBooth();
         TicketBooth.TicketBuyResult buyResult = booth.buyNightOnlyTwoDayPassport(10000);
         TicketCustomized nightTwoDayPassport = buyResult.getTicket();
+        LocalTime now = LocalTime.of(NIGHT_ONLY_START_HOUR, 0).plusHours(1);
 
         // When
-        // TODO iwata doInPark(now)を呼ぶのは、Whenじゃない？ by jflute (2025/09/19)
+        // TODO done iwata doInPark(now)を呼ぶのは、Whenじゃない？ by jflute (2025/09/19)
         // UI のテストは AAA パターンより Given-When-Then パターンの方がしっくりくるかもしれない
         // https://zenn.dev/m10maeda/articles/gwt-might-feel-more-natural-than-3a-for-ui-testing
         // #1on1: LastaFluteのUnitTestのコメントも参考にしながら (2025/09/19)
-        LocalTime now = LocalTime.of(NIGHT_ONLY_START_HOUR, 0).plusHours(1);
+        nightTwoDayPassport.doInPark(now);
 
         // Then
-        nightTwoDayPassport.doInPark(now);
         assertTrue(nightTwoDayPassport.isAlreadyIn());
 
         // done iwata 修行++: UnitTestを実行する時間帯によって、エラーが出たり出なかったり... by jflute (2025/09/12)

@@ -20,31 +20,34 @@ public class TicketCustomized {
     // ===================================================================================
     //                                                                           Attribute
     //                                                                           =========
-    // TODO iwata インスタンス変数の並び順 by jflute (2025/09/19)
+    // TODO done iwata インスタンス変数の並び順 by jflute (2025/09/19)
     // #1on1: コンストラクタで扱われる項目たちとそれ以外、もしくは、immutable/mutable
     // (DBFluteのLikeSearchOptionのコードを例に)
     private final TicketType ticketType;
     private final int ticketPrice;
-    private int availableDays;
     private final boolean nightOnly;
+
+    private int availableDays;
     private boolean alreadyIn = false;
 
     // ===================================================================================
     //                                                                         Constructor
     //                                                                         ===========
-    // TODO iwata ticketTypeの @param に、(NotNull) を付けてみてください by jflute (2025/09/19)
+    // TODO done iwata ticketTypeの @param に、(NotNull) を付けてみてください by jflute (2025/09/19)
     /**
      * コンストラクタ
-     * @param ticketType 入場可能日数、夜限定などのチケットの種類
+     * @param ticketType 入場可能日数、夜限定などのチケットの種類 (NotNull)
      * @param ticketPrice チケットの価格
-     * @param availableDays 入場可能日数
      * @param nightOnly 夜限定チケットかどうか
+     *
+     * @param availableDays 入場可能日数
      */
-    public TicketCustomized(TicketType ticketType, int ticketPrice, int availableDays, boolean nightOnly) { // コンストラクタ
+    public TicketCustomized(TicketType ticketType, int ticketPrice, boolean nightOnly, int availableDays) { // コンストラクタ
         this.ticketType = ticketType;
         this.ticketPrice = ticketPrice;
-        this.availableDays = availableDays;
         this.nightOnly = nightOnly;
+
+        this.availableDays = availableDays;
     }
 
     // ===================================================================================
@@ -123,9 +126,8 @@ public class TicketCustomized {
     //                                                                            Accessor
     //                                                                            ========
     // done iwata getterたちは、クラスの最後に定義のがわりと多いので移動をお願い by jflute (2025/08/28)
-    // TODO iwata getterに関しては、@returnだけの説明でもOKかも (個人的な提案) by jflute (2025/09/19)
+    // TODO done iwata getterに関しては、@returnだけの説明でもOKかも (個人的な提案) by jflute (2025/09/19)
     /**
-     * ticketTypeを返すゲッター
      * @return チケットの種類
      */
     public TicketType getTicketType() {
@@ -133,7 +135,6 @@ public class TicketCustomized {
     }
 
     /**
-     * ticketPriceを返すゲッター
      * @return チケットの価格
      */
     public int getTicketPrice() {
@@ -141,7 +142,6 @@ public class TicketCustomized {
     }
 
     /**
-     * alreadyInを返すゲッター
      * @return 入場済みかどうか
      */
     public boolean isAlreadyIn() {

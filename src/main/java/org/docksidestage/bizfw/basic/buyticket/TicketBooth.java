@@ -111,8 +111,13 @@ public class TicketBooth {
     // DBのパターン:
     //  e.g. memberController.insert(member);
     //  e.g. member.insert(); // 自分をinsert (saveも場合も)
-    // TODO iwata [読み物課題] プログラマーに求められるデザイン脳 by jflute (2025/09/12)
+    // TODO done iwata [読み物課題] プログラマーに求められるデザイン脳 by jflute (2025/09/12)
     // https://jflute.hatenadiary.jp/entry/20170623/desigraming
+    // 読みました！
+    // 周りの名前や全体の中の位置付けを把握して初めてその名前をつけられる
+    // → 役割を考えて名前をつけますが似た役割の存在に気づかずに命名してしまう可能性もあるので全体を把握する姿勢が大事だと納得しました
+    // コメントを書くときに何が書いてあったら読む人が嬉しいか、という記述は以前のエラーログで変数の中身を渡す話と繋がりました
+    // なぜそういう〇〇(ex. メソッド名、コメント...)にしたの？という質問に答えられるようにする
     private TicketBuyResult doBuyPassport(TicketType ticketType, Integer handedMoney, Integer ticketPrice, Integer availableDays, boolean nightOnly) {
         assertQuantityValid();
         assertHandedMoneyValid(handedMoney, ticketPrice);

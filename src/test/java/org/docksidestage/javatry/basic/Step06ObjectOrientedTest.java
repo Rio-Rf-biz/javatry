@@ -46,7 +46,7 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      * Fix several mistakes (except simulation) in buying one-day passport and in-park process. <br>
      * (OneDayPassportを買って InPark する処理の中で、(simulationを除いて)間違いがいくつかあるので修正しましょう)
      */
-    public void test_objectOriented_aboutObject_againstObject() {
+    public void test_objectOriented_aboutObject_againstObject() { // TODO r.iwata このテストの意図がわからなかったので1on1で確認する (2025/10/01)
         //
         // [ticket booth info]
         //
@@ -60,11 +60,11 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         //
         // simulation: actually this money should be from customer
         int handedMoney = 10000;
-        if (quantity <= 0) {
+        if (quantity <= 0) { // quantity = 10なのでこの条件は必ず実行されないので不要。このエラーが正しく機能することを確認したいのであれば修正する必要がある
             throw new IllegalStateException("Sold out");
         }
         --quantity;
-        if (handedMoney < oneDayPrice) {
+        if (handedMoney < oneDayPrice) { // handedMoney = 10000, oneDayPrice = 7400なのでこの条件は必ず実行されないので不要。このエラーが正しく機能することを確認したいのであれば修正する必要がある
             throw new IllegalStateException("Short money: handedMoney=" + handedMoney);
         }
         salesProceeds = handedMoney;
@@ -73,7 +73,7 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         // [ticket info]
         //
         // simulation: actually these variables should be more wide scope
-        int displayPrice = quantity;
+        int displayPrice = oneDayPrice;
         boolean alreadyIn = false;
 
         // other processes here...
