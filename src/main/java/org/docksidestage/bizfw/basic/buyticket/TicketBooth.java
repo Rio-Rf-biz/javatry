@@ -111,7 +111,7 @@ public class TicketBooth {
     // DBのパターン:
     //  e.g. memberController.insert(member);
     //  e.g. member.insert(); // 自分をinsert (saveも場合も)
-    // TODO done iwata [読み物課題] プログラマーに求められるデザイン脳 by jflute (2025/09/12)
+    // done iwata [読み物課題] プログラマーに求められるデザイン脳 by jflute (2025/09/12)
     // https://jflute.hatenadiary.jp/entry/20170623/desigraming
     // 読みました！
     // 周りの名前や全体の中の位置付けを把握して初めてその名前をつけられる
@@ -121,6 +121,8 @@ public class TicketBooth {
     private TicketBuyResult doBuyPassport(TicketType ticketType, Integer handedMoney, Integer ticketPrice, Integer availableDays, boolean nightOnly) {
         assertQuantityValid();
         assertHandedMoneyValid(handedMoney, ticketPrice);
+        // TODO iwata コンパイルエラーが出ています (凡ミス: リファクタリングの影響) by jflute (2025/10/03)
+        // 教訓: リファクタリングした後は、動作確認すること
         TicketCustomized ticket = new TicketCustomized(ticketType, ticketPrice, availableDays, nightOnly);
         int change = acceptPurchaseOrder(handedMoney, ticketPrice);
         return new TicketBuyResult(ticket, change);

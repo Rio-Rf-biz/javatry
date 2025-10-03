@@ -339,7 +339,7 @@ public class Step05ClassTest extends PlainTestCase {
         LocalTime now = LocalTime.of(NIGHT_ONLY_START_HOUR, 0).plusHours(1);
 
         // When
-        // TODO done iwata doInPark(now)を呼ぶのは、Whenじゃない？ by jflute (2025/09/19)
+        // done iwata doInPark(now)を呼ぶのは、Whenじゃない？ by jflute (2025/09/19)
         // UI のテストは AAA パターンより Given-When-Then パターンの方がしっくりくるかもしれない
         // https://zenn.dev/m10maeda/articles/gwt-might-feel-more-natural-than-3a-for-ui-testing
         // #1on1: LastaFluteのUnitTestのコメントも参考にしながら (2025/09/19)

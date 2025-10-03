@@ -46,7 +46,13 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      * Fix several mistakes (except simulation) in buying one-day passport and in-park process. <br>
      * (OneDayPassportを買って InPark する処理の中で、(simulationを除いて)間違いがいくつかあるので修正しましょう)
      */
-    public void test_objectOriented_aboutObject_againstObject() { // TODO r.iwata このテストの意図がわからなかったので1on1で確認する (2025/10/01)
+    public void test_objectOriented_aboutObject_againstObject() { // done r.iwata このテストの意図がわからなかったので1on1で確認する (2025/10/01)
+        // #1on1: 単純に既存コードの間違いを見つけるトレーニング。(オブジェクト指向と関係なく)
+        // そして、オブジェクトを使ったやり方との比較をしてもらう。(これはオブジェクト指向と関係ある)
+
+        // TODO iwata あと5個あります。by jflute (2025/10/03)
+        // すべて単純ではあるけれども、単純中に種類がある。
+        // → あと2個 → あと1個
         //
         // [ticket booth info]
         //
@@ -63,11 +69,13 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         if (quantity <= 0) { // quantity = 10なのでこの条件は必ず実行されないので不要。このエラーが正しく機能することを確認したいのであれば修正する必要がある
             throw new IllegalStateException("Sold out");
         }
-        --quantity;
         if (handedMoney < oneDayPrice) { // handedMoney = 10000, oneDayPrice = 7400なのでこの条件は必ず実行されないので不要。このエラーが正しく機能することを確認したいのであれば修正する必要がある
             throw new IllegalStateException("Short money: handedMoney=" + handedMoney);
         }
-        salesProceeds = handedMoney;
+        // #1on1: いわたさんが見つけてくれた (2025/10/03)
+        --quantity;
+        // #1on1: いわたさんが見つけてくれた (2025/10/03)
+        salesProceeds = oneDayPrice;
 
         //
         // [ticket info]
@@ -92,14 +100,37 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         //
         // [final process]
         //
-        saveBuyingHistory(quantity, displayPrice, salesProceeds, alreadyIn);
+        // #1on1: いわたさんが自分で見つけてくれた (2025/10/03)
+        // #1on1: 引数入れ替え事件の深堀り (2025/10/03)
+        // int, int, int 怖い話。
+        //
+        // まず作り手として、できるだけこうならないよう努力/工夫する。
+        // 業務的にこうならないようにしたり、入れ物クラス作ったり、Value的オブジェクト作ったり、引数順序変えたり...
+        // JavaDocで引数にもっとフォーカスを当てやすく演出したり...
+        //
+        // そして呼び出し側として、できるだけ間違えないような努力/工夫する。
+        // o 指差し確認。その5秒やる習慣があるかどうか？
+        // o 間違えそうなポイントを経験上知っているか？意識しているか？ (嗅覚)
+        // o そのポイントが目の前の来たら、集中力を高める (アクセル踏む) // 精神状態のコントロール
+        //
+        // レビューのポイントにもつながる by いわたさん
+        // #1on1: それだけレビューワーって大変、くまなく見るの大変。(レビュー時間が見積もりで確保されているか話)
+        // だからこそ、レビューイーがレビューしやすいコードを書くこと大事。
+        //
+        // TODO iwata [読み物課題] プルリクであれこれ説明するならコードにコメントに書こう by jflute (2025/10/03)
+        // https://jflute.hatenadiary.jp/entry/20181016/pulcomment
+        //
+        // TODO iwata [読み物課題] レビューしやすいコード (Reviewable Code) by jflute (2025/10/03)
+        // https://jflute.hatenadiary.jp/entry/20160912/reviewable
+        saveBuyingHistory(quantity, salesProceeds, displayPrice, alreadyIn);
     }
 
     private void saveBuyingHistory(int quantity, Integer salesProceeds, int displayPrice, boolean alreadyIn) {
         if (alreadyIn) {
             // simulation: only logging here (normally e.g. DB insert)
-            showTicketBooth(displayPrice, salesProceeds);
-            showYourTicket(quantity, alreadyIn);
+            // #1on1: いわたさんが自分で見つけてくれた (2025/10/03)
+            showTicketBooth(quantity, salesProceeds);
+            showYourTicket(displayPrice, alreadyIn);
         }
     }
 

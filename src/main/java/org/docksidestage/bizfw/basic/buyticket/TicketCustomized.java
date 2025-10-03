@@ -20,7 +20,7 @@ public class TicketCustomized {
     // ===================================================================================
     //                                                                           Attribute
     //                                                                           =========
-    // TODO done iwata インスタンス変数の並び順 by jflute (2025/09/19)
+    // done iwata インスタンス変数の並び順 by jflute (2025/09/19)
     // #1on1: コンストラクタで扱われる項目たちとそれ以外、もしくは、immutable/mutable
     // (DBFluteのLikeSearchOptionのコードを例に)
     private final TicketType ticketType;
@@ -33,7 +33,7 @@ public class TicketCustomized {
     // ===================================================================================
     //                                                                         Constructor
     //                                                                         ===========
-    // TODO done iwata ticketTypeの @param に、(NotNull) を付けてみてください by jflute (2025/09/19)
+    // done iwata ticketTypeの @param に、(NotNull) を付けてみてください by jflute (2025/09/19)
     /**
      * コンストラクタ
      * @param ticketType 入場可能日数、夜限定などのチケットの種類 (NotNull)
@@ -126,7 +126,7 @@ public class TicketCustomized {
     //                                                                            Accessor
     //                                                                            ========
     // done iwata getterたちは、クラスの最後に定義のがわりと多いので移動をお願い by jflute (2025/08/28)
-    // TODO done iwata getterに関しては、@returnだけの説明でもOKかも (個人的な提案) by jflute (2025/09/19)
+    // done iwata getterに関しては、@returnだけの説明でもOKかも (個人的な提案) by jflute (2025/09/19)
     /**
      * @return チケットの種類
      */
