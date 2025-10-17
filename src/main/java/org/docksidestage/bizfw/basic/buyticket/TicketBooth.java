@@ -121,9 +121,9 @@ public class TicketBooth {
     private TicketBuyResult doBuyPassport(TicketType ticketType, Integer handedMoney, Integer ticketPrice, Integer availableDays, boolean nightOnly) {
         assertQuantityValid();
         assertHandedMoneyValid(handedMoney, ticketPrice);
-        // TODO iwata コンパイルエラーが出ています (凡ミス: リファクタリングの影響) by jflute (2025/10/03)
+        // TODO done iwata コンパイルエラーが出ています (凡ミス: リファクタリングの影響) by jflute (2025/10/03)
         // 教訓: リファクタリングした後は、動作確認すること
-        TicketCustomized ticket = new TicketCustomized(ticketType, ticketPrice, availableDays, nightOnly);
+        TicketCustomized ticket = new TicketCustomized(ticketType, ticketPrice, nightOnly, availableDays);
         int change = acceptPurchaseOrder(handedMoney, ticketPrice);
         return new TicketBuyResult(ticket, change);
     }

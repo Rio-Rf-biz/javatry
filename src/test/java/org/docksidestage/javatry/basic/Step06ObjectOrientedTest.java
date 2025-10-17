@@ -15,8 +15,11 @@
  */
 package org.docksidestage.javatry.basic;
 
+import java.time.LocalTime;
+
 import org.docksidestage.bizfw.basic.buyticket.Ticket;
 import org.docksidestage.bizfw.basic.buyticket.TicketBooth;
+import org.docksidestage.bizfw.basic.buyticket.TicketCustomized;
 import org.docksidestage.bizfw.basic.objanimal.Animal;
 import org.docksidestage.bizfw.basic.objanimal.BarkedSound;
 import org.docksidestage.bizfw.basic.objanimal.Cat;
@@ -76,6 +79,7 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         --quantity;
         // #1on1: いわたさんが見つけてくれた (2025/10/03)
         salesProceeds = oneDayPrice;
+        handedMoney -= oneDayPrice; // 見つけた
 
         //
         // [ticket info]
@@ -117,20 +121,28 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         // #1on1: それだけレビューワーって大変、くまなく見るの大変。(レビュー時間が見積もりで確保されているか話)
         // だからこそ、レビューイーがレビューしやすいコードを書くこと大事。
         //
-        // TODO iwata [読み物課題] プルリクであれこれ説明するならコードにコメントに書こう by jflute (2025/10/03)
+        // TODO done iwata [読み物課題] プルリクであれこれ説明するならコードにコメントに書こう by jflute (2025/10/03)
         // https://jflute.hatenadiary.jp/entry/20181016/pulcomment
+        // 読みました！
+        // ソースコードのコメントは未来の人と通じ合える優秀なコミュニケーションツール
+        // 自分が実装するときにコメントがあるとありがたいのでPRでやりとりが生じたらコメントで書いた方がいいかな？と疑問を持つようにします
         //
-        // TODO iwata [読み物課題] レビューしやすいコード (Reviewable Code) by jflute (2025/10/03)
+        // TODO done iwata [読み物課題] レビューしやすいコード (Reviewable Code) by jflute (2025/10/03)
         // https://jflute.hatenadiary.jp/entry/20160912/reviewable
-        saveBuyingHistory(quantity, salesProceeds, displayPrice, alreadyIn);
+        // 読みました！
+        // そもそもレビューしやすいコードを書くべきということに納得です
+        // メモ: 統一的なコードと理路整然としたコード
+        // メモ: 考え続けることが答え、世の中そんな簡単な世界じゃない
+        saveBuyingHistory(quantity, salesProceeds, displayPrice, alreadyIn, handedMoney); // handedMoneyもログで確認したいので追加
     }
 
-    private void saveBuyingHistory(int quantity, Integer salesProceeds, int displayPrice, boolean alreadyIn) {
+    private void saveBuyingHistory(int quantity, Integer salesProceeds, int displayPrice, boolean alreadyIn, int handedMoney) {
         if (alreadyIn) {
             // simulation: only logging here (normally e.g. DB insert)
             // #1on1: いわたさんが自分で見つけてくれた (2025/10/03)
             showTicketBooth(quantity, salesProceeds);
             showYourTicket(displayPrice, alreadyIn);
+            showHandedMoney(handedMoney);
         }
     }
 
@@ -140,6 +152,10 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
 
     private void showYourTicket(int displayPrice, boolean alreadyIn) {
         log("Ticket: displayPrice={}, alreadyIn={}", displayPrice, alreadyIn);
+    }
+
+    private void showHandedMoney(int handedMoney) {
+        log("Handed Money: handedMoney={}", handedMoney);
     }
 
     // -----------------------------------------------------
@@ -164,9 +180,7 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         // [buy one-day passport]
         //
         // if step05 has been finished, you can use this code by jflute (2019/06/15)
-        //Ticket ticket = booth.buyOneDayPassport(10000);
-        booth.buyOneDayPassport(10000); // as temporary, remove if you finished step05
-        Ticket ticket = new Ticket(7400); // also here
+        TicketBooth.TicketBuyResult ticketBuyResult = booth.buyOneDayPassport(10000);
 
         // *buyOneDayPassport() has this process:
         //if (quantity <= 0) {
@@ -189,7 +203,8 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         //
         // [do in park now!!!]
         //
-        ticket.doInPark();
+        TicketCustomized ticket = ticketBuyResult.getTicket();
+        ticket.doInPark(LocalTime.now());
 
         // *doInPark() has this process:
         //if (alreadyIn) {
@@ -203,7 +218,7 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         saveBuyingHistory(booth, ticket);
     }
 
-    private void saveBuyingHistory(TicketBooth booth, Ticket ticket) {
+    private void saveBuyingHistory(TicketBooth booth, TicketCustomized ticket) {
         if (ticket.isAlreadyIn()) {
             // only logging here (normally e.g. DB insert)
             doShowTicketBooth(booth);
@@ -215,13 +230,17 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         log("Ticket Booth: quantity={}, salesProceeds={}", booth.getQuantity(), booth.getSalesProceeds());
     }
 
-    private void doShowYourTicket(Ticket ticket) {
-        log("Your Ticket: displayPrice={}, alreadyIn={}", ticket.getDisplayPrice(), ticket.isAlreadyIn());
+    private void doShowYourTicket(TicketCustomized ticket) {
+        log("Your Ticket: displayPrice={}, alreadyIn={}", ticket.getTicketPrice(), ticket.isAlreadyIn());
     }
 
     // write your memo here:
     // _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
     // what is object?
+    // - データと処理をまとめて保持できる入れ物
+    //   - 処理の単位でまとめることができるのでどこまでが一連の処理かという観点でみやすい、管理しやすい
+    // - privateにしておけば外部から直接アクセスできない
+    //   - 意図しない変更を防げる
     //
     // _/_/_/_/_/_/_/_/_/_/
 
@@ -236,29 +255,35 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         Dog dog = new Dog();
         BarkedSound sound = dog.bark();
         String sea = sound.getBarkWord();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => null
         int land = dog.getHitPoint();
-        log(land); // your answer? => 
+        log(land); // your answer? => 7
     }
+    // log(sea)がwanだった
+    // log(land)は正解
+    //
+    // log(land)は初期HPが10かつそれぞれのメソッドの中身を確認して3回デクリメントされていることを確認した
+    // getBarkWord()に対してエディタのジャンプ機能を使うと抽象メソッドの方にジャンプしたので間違えた、抽象メソッドである時点で実装されていることを疑うべきだった
+    // DogクラスにgetBarkWord()の実装があることを確認した
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_objectOriented_polymorphism_2nd_asAbstract() {
-        Animal animal = new Dog();
+        Animal animal = new Dog(); // DogはgetBarkWord()を実装している
         BarkedSound sound = animal.bark();
         String sea = sound.getBarkWord();
-        log(sea); // your answer? => 
-        int land = animal.getHitPoint();
-        log(land); // your answer? => 
+        log(sea); // your answer? => wan
+        int land = animal.getHitPoint(); // bark()内で3回downHitPoint()が呼ばれている
+        log(land); // your answer? => 7
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_objectOriented_polymorphism_3rd_fromMethod() {
-        Animal animal = createAnyAnimal();
+        Animal animal = createAnyAnimal(); // Dogインスタンスがanimalに入る
         BarkedSound sound = animal.bark();
         String sea = sound.getBarkWord();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => wan
         int land = animal.getHitPoint();
-        log(land); // your answer? => 
+        log(land); // your answer? => 7
     }
 
     private Animal createAnyAnimal() {
@@ -268,35 +293,35 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_objectOriented_polymorphism_4th_toMethod() {
         Dog dog = new Dog();
-        doAnimalSeaLand_for_4th(dog);
+        doAnimalSeaLand_for_4th(dog); // dogインスタンスがanimalに入る
     }
 
     private void doAnimalSeaLand_for_4th(Animal animal) {
         BarkedSound sound = animal.bark();
         String sea = sound.getBarkWord();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => wan
         int land = animal.getHitPoint();
-        log(land); // your answer? => 
+        log(land); // your answer? => 7
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_objectOriented_polymorphism_5th_overrideWithSuper() {
-        Animal animal = new Cat();
+        Animal animal = new Cat(); // catの鳴き声は"nya-", downHitPoint()もオーバーライドされている(デクリメントして偶数だったらさらにデクリメント)
         BarkedSound sound = animal.bark();
         String sea = sound.getBarkWord();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => nya-
         int land = animal.getHitPoint();
-        log(land); // your answer? => 
+        log(land); // your answer? => 5
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_objectOriented_polymorphism_6th_overriddenWithoutSuper() {
-        Animal animal = new Zombie();
+        Animal animal = new Zombie(); // 初期HPは-1, 鳴き声は"uooo", downHitPoint()はオーバーライドされて何もしない
         BarkedSound sound = animal.bark();
         String sea = sound.getBarkWord();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => uooo
         int land = animal.getHitPoint();
-        log(land); // your answer? => 
+        log(land); // your answer? => -1
     }
 
     /**
@@ -307,7 +332,9 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         // write your memo here:
         // _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
         // what is happy?
-        //
+        // コードのほとんどを変えずに同じことができる
+        // 例えば5thと6thの違いはnew XX()の部分だけだがlogにそれぞれの特徴を反映した結果を出力できる
+        // = 拡張性が高い
         // _/_/_/_/_/_/_/_/_/_/
     }
 
@@ -316,20 +343,26 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
     //                                                              ======================
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_objectOriented_polymorphism_interface_dispatch() {
-        Loudable loudable = new Zombie();
-        String sea = loudable.soundLoudly();
-        log(sea); // your answer? => 
+        Loudable loudable = new Zombie(); // interfaceにZombieインスタンスを入れている
+        String sea = loudable.soundLoudly(); // AnimalクラスはLoudableを実装している, return bark().getBarkWord();
+        log(sea); // your answer? => uooo
         String land = ((Zombie) loudable).bark().getBarkWord();
-        log(land); // your answer? => 
+        log(land); // your answer? => uooo
     }
+
+    // interface型の変数loudableにZombieインスタンスを入れている
+    // LoudableインターフェースのsoundLoudly()メソッドはAnimalクラスで実装されている
+    // ZombieインスタンスはAnimalクラスを実装しているので、AnimalクラスのsoundLoudly()メソッドが呼ばれる
+    // loudable変数からは、Loudableインターフェースで定義されたメソッド（soundLoudly()）のみ呼び出せる
+
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_objectOriented_polymorphism_interface_hierarchy() {
         Loudable loudable = new AlarmClock();
         String sea = loudable.soundLoudly();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => jiri jiri jiri---
         boolean land = loudable instanceof Animal;
-        log(land); // your answer? => 
+        log(land); // your answer? => false
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
@@ -337,9 +370,9 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         Animal seaAnimal = new Cat();
         Animal landAnimal = new Zombie();
         boolean sea = seaAnimal instanceof FastRunner;
-        log(sea); // your answer? => 
+        log(sea); // your answer? => true
         boolean land = landAnimal instanceof FastRunner;
-        log(land); // your answer? => 
+        log(land); // your answer? => false
     }
 
     /**
