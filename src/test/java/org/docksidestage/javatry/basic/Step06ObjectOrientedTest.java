@@ -121,13 +121,13 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         // #1on1: それだけレビューワーって大変、くまなく見るの大変。(レビュー時間が見積もりで確保されているか話)
         // だからこそ、レビューイーがレビューしやすいコードを書くこと大事。
         //
-        // TODO done iwata [読み物課題] プルリクであれこれ説明するならコードにコメントに書こう by jflute (2025/10/03)
+        // done iwata [読み物課題] プルリクであれこれ説明するならコードにコメントに書こう by jflute (2025/10/03)
         // https://jflute.hatenadiary.jp/entry/20181016/pulcomment
         // 読みました！
         // ソースコードのコメントは未来の人と通じ合える優秀なコミュニケーションツール
         // 自分が実装するときにコメントがあるとありがたいのでPRでやりとりが生じたらコメントで書いた方がいいかな？と疑問を持つようにします
         //
-        // TODO done iwata [読み物課題] レビューしやすいコード (Reviewable Code) by jflute (2025/10/03)
+        // done iwata [読み物課題] レビューしやすいコード (Reviewable Code) by jflute (2025/10/03)
         // https://jflute.hatenadiary.jp/entry/20160912/reviewable
         // 読みました！
         // そもそもレビューしやすいコードを書くべきということに納得です
@@ -237,6 +237,8 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
     // write your memo here:
     // _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
     // what is object?
+    // - #1on1: データの関連性を見出して抽出した概念 ☆
+    // 
     // - データと処理をまとめて保持できる入れ物
     //   - 処理の単位でまとめることができるのでどこまでが一連の処理かという観点でみやすい、管理しやすい
     // - privateにしておけば外部から直接アクセスできない
@@ -268,6 +270,8 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_objectOriented_polymorphism_2nd_asAbstract() {
+        // #1on1: is-aの関係にある, Dog is an animal (犬は動物である)
+        // より抽象的な概念で取り扱うことができる。
         Animal animal = new Dog(); // DogはgetBarkWord()を実装している
         BarkedSound sound = animal.bark();
         String sea = sound.getBarkWord();
@@ -278,6 +282,8 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_objectOriented_polymorphism_3rd_fromMethod() {
+        // #1on1: test_メソッドはDogに(コード的に)依存しなくなった、と言える
+        // Catに変えても、test_メソッドは一文字も変えなくていい。なのに挙動は変わる。
         Animal animal = createAnyAnimal(); // Dogインスタンスがanimalに入る
         BarkedSound sound = animal.bark();
         String sea = sound.getBarkWord();
@@ -296,14 +302,14 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         doAnimalSeaLand_for_4th(dog); // dogインスタンスがanimalに入る
     }
 
-    private void doAnimalSeaLand_for_4th(Animal animal) {
+    private void doAnimalSeaLand_for_4th(Dog animal) {
         BarkedSound sound = animal.bark();
         String sea = sound.getBarkWord();
         log(sea); // your answer? => wan
         int land = animal.getHitPoint();
         log(land); // your answer? => 7
     }
-
+    
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_objectOriented_polymorphism_5th_overrideWithSuper() {
         Animal animal = new Cat(); // catの鳴き声は"nya-", downHitPoint()もオーバーライドされている(デクリメントして偶数だったらさらにデクリメント)
@@ -336,6 +342,8 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         // 例えば5thと6thの違いはnew XX()の部分だけだがlogにそれぞれの特徴を反映した結果を出力できる
         // = 拡張性が高い
         // _/_/_/_/_/_/_/_/_/_/
+        // #1on1: ポリモーフィズムは、多態性、多相性と翻訳されることがある。 (2025/10/22)
+        // 日常生活でも、たくさん使われている。
     }
 
     // ===================================================================================
@@ -374,6 +382,19 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         boolean land = landAnimal instanceof FastRunner;
         log(land); // your answer? => false
     }
+    // #1on1: interfaceは操作にフォーカスが当たっている。(abstractは物にフォーカス)
+    // どちらもポリモーフィズムができてるし、is-aの関係でもあるが、方向性がちょっと違う。
+    // オブジェクト指向とインターフェースの考え方は、そもそも出どころが別。
+    // それが、同じ言語(Java)に混在している。
+    // Javaのオブジェクト指向は、実は制限されている。なので、足りないところがある。
+    // 多重継承ができない。でも現実、多重継承は概念として存在する。
+    // 多重継承をOKにした言語(C++)があって、それで多重継承乱立でカオスになったと言われるのでJavaでは制限した。
+    // でも多重ポリモーフィズム(造語)はしたい。PetとAnimal両方で扱いたい。
+    // そこでinterface, interfaceは実装は継承できない、でもポリモーフィズムだけできる。
+    //
+    // オブジェクト指向は、モノが中心。(システムだから実際呼ばれるんだけど、モノを中心に考えてデザインする)
+    // インターフェースは、操作が中心。(呼ばれること前提)
+    // TODO jflute 次回1on1ここから (2025/10/22)
 
     /**
      * Make Dog class implement FastRunner interface. (the method implementation is same as Cat class) <br>
