@@ -20,14 +20,14 @@ import java.time.LocalTime;
 import org.docksidestage.bizfw.basic.buyticket.Ticket;
 import org.docksidestage.bizfw.basic.buyticket.TicketBooth;
 import org.docksidestage.bizfw.basic.buyticket.TicketCustomized;
-import org.docksidestage.bizfw.basic.objanimal.Animal;
-import org.docksidestage.bizfw.basic.objanimal.BarkedSound;
-import org.docksidestage.bizfw.basic.objanimal.Cat;
-import org.docksidestage.bizfw.basic.objanimal.Dog;
-import org.docksidestage.bizfw.basic.objanimal.Zombie;
+import org.docksidestage.bizfw.basic.objanimal.*;
 import org.docksidestage.bizfw.basic.objanimal.loud.AlarmClock;
 import org.docksidestage.bizfw.basic.objanimal.loud.Loudable;
 import org.docksidestage.bizfw.basic.objanimal.runner.FastRunner;
+import org.docksidestage.bizfw.basic.objanimal.walker.SlowlyWalker;
+import org.docksidestage.javatry.basic.st6.dbms.Database;
+import org.docksidestage.javatry.basic.st6.dbms.St6MySql;
+import org.docksidestage.javatry.basic.st6.dbms.St6PostgreSql;
 import org.docksidestage.unit.PlainTestCase;
 
 /**
@@ -53,7 +53,7 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         // #1on1: 単純に既存コードの間違いを見つけるトレーニング。(オブジェクト指向と関係なく)
         // そして、オブジェクトを使ったやり方との比較をしてもらう。(これはオブジェクト指向と関係ある)
 
-        // TODO iwata あと5個あります。by jflute (2025/10/03)
+        // TODO done iwata あと5個あります。by jflute (2025/10/03)
         // すべて単純ではあるけれども、単純中に種類がある。
         // → あと2個 → あと1個
         //
@@ -401,7 +401,9 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      * (DogもFastRunnerインターフェースをimplementsしてみましょう (メソッドの実装はCatと同じで))
      */
     public void test_objectOriented_polymorphism_interface_runnerImpl() {
-        // your confirmation code here
+        Animal seaAnimal = new Dog();
+        boolean sea = seaAnimal instanceof FastRunner;
+        log(sea);
     }
 
     /**
@@ -412,7 +414,13 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         // write your memo here:
         // _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
         // what is difference?
+        // 抽象クラス
+        // - 多重継承(複数の親クラスを継承する)ができない
+        // - is-a の関係(モノ、名詞的)
         //
+        // インターフェース
+        // - 複数のインターフェースを実装することができる
+        // - is-a の関係(操作、形容詞的)
         // _/_/_/_/_/_/_/_/_/_/
     }
 
@@ -424,15 +432,21 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      * (FastRunnerではないAnimalクラスのコンクリートクラスをobjanimalパッケージに作成しましょう (実装はお好きなように))
      */
     public void test_objectOriented_polymorphism_makeConcrete() {
-        // your confirmation code here
+        Animal seaAnimal = new Elephant();
+        boolean sea = seaAnimal instanceof Animal;
+        log(sea);
     }
+    // concrete class(具象クラス)
+    // インスタンス化が可能、抽象メソッドを持たない、すべてのメソッドが実装されている、いわゆる通常のクラス
 
     /**
      * Make interface implemented by part of Animal concrete class in new package under "objanimal" package. (implementation is as you like) <br>
      * (Animalクラスの一部のコンクリートクラスだけがimplementsするインターフェースをobjanimal配下の新しいパッケージに作成しましょう (実装はお好きなように))
      */
     public void test_objectOriented_polymorphism_makeInterface() {
-        // your confirmation code here
+        Animal seaAnimal = new Elephant();
+        boolean sea = seaAnimal instanceof SlowlyWalker;
+        log(sea);
     }
 
     // ===================================================================================
@@ -443,7 +457,12 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      * (St6MySql, St6PostgreSql (basic.st6.dbms) から抽象クラスを抽出してみましょう (スーパークラスとサブクラスの関係に))
      */
     public void test_objectOriented_writing_generalization_extractToAbstract() {
-        // your confirmation code here
+        Database seaDatabase = new St6MySql();
+        boolean sea = seaDatabase instanceof Database;
+        log(sea);
+        Database landDatabase = new St6PostgreSql();
+        boolean land = landDatabase instanceof Database;
+        log(land);
     }
 
     /**
