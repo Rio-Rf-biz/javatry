@@ -30,6 +30,8 @@ import org.docksidestage.javatry.basic.st6.dbms.St6MySql;
 import org.docksidestage.javatry.basic.st6.dbms.St6PostgreSql;
 import org.docksidestage.unit.PlainTestCase;
 
+// TODO iwata ↑import文にunusedがある by jflute (2025/10/30)
+
 /**
  * The test of object-oriented. <br>
  * Operate exercise as javadoc. If it's question style, write your answer before test execution. <br>
@@ -53,7 +55,7 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         // #1on1: 単純に既存コードの間違いを見つけるトレーニング。(オブジェクト指向と関係なく)
         // そして、オブジェクトを使ったやり方との比較をしてもらう。(これはオブジェクト指向と関係ある)
 
-        // TODO done iwata あと5個あります。by jflute (2025/10/03)
+        // done iwata あと5個あります。by jflute (2025/10/03)
         // すべて単純ではあるけれども、単純中に種類がある。
         // → あと2個 → あと1個
         //
@@ -394,7 +396,7 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
     //
     // オブジェクト指向は、モノが中心。(システムだから実際呼ばれるんだけど、モノを中心に考えてデザインする)
     // インターフェースは、操作が中心。(呼ばれること前提)
-    // TODO jflute 次回1on1ここから (2025/10/22)
+    // done jflute 次回1on1ここから (2025/10/22)
 
     /**
      * Make Dog class implement FastRunner interface. (the method implementation is same as Cat class) <br>
@@ -422,6 +424,7 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         // - 複数のインターフェースを実装することができる
         // - is-a の関係(操作、形容詞的)
         // _/_/_/_/_/_/_/_/_/_/
+        // #1on1 インターフェースの方はcan-doの関係とも言われたりする (2025/10/30)
     }
 
     // ===================================================================================
