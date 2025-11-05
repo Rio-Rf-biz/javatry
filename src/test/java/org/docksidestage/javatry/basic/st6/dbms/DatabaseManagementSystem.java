@@ -8,9 +8,14 @@ package org.docksidestage.javatry.basic.st6.dbms;
 /**
  * @author Rio-Rf-biz
  */
-public abstract class Database {
+public abstract class DatabaseManagementSystem {
 
-    // TODO iwata protectedだと外から呼べないので、ポリモーフィズムになってない。 by jflute (2025/10/30)
-    protected abstract String buildPagingQuery(int pageSize, int pageNumber);
+    // TODO done iwata protectedだと外から呼べないので、ポリモーフィズムになってない。 by jflute (2025/10/30)
+    public final String buildPagingQuery(int pageSize, int pageNumber){
+        int offset = pageSize * (pageNumber - 1);
+        return buildPagingQueryString(offset, pageSize);
+    }
+
+    protected abstract String buildPagingQueryString(int offset, int pageSize);
 
 }

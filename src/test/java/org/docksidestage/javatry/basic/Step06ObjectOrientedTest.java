@@ -17,7 +17,6 @@ package org.docksidestage.javatry.basic;
 
 import java.time.LocalTime;
 
-import org.docksidestage.bizfw.basic.buyticket.Ticket;
 import org.docksidestage.bizfw.basic.buyticket.TicketBooth;
 import org.docksidestage.bizfw.basic.buyticket.TicketCustomized;
 import org.docksidestage.bizfw.basic.objanimal.*;
@@ -25,12 +24,12 @@ import org.docksidestage.bizfw.basic.objanimal.loud.AlarmClock;
 import org.docksidestage.bizfw.basic.objanimal.loud.Loudable;
 import org.docksidestage.bizfw.basic.objanimal.runner.FastRunner;
 import org.docksidestage.bizfw.basic.objanimal.walker.SlowlyWalker;
-import org.docksidestage.javatry.basic.st6.dbms.Database;
+import org.docksidestage.javatry.basic.st6.dbms.DatabaseManagementSystem;
 import org.docksidestage.javatry.basic.st6.dbms.St6MySql;
 import org.docksidestage.javatry.basic.st6.dbms.St6PostgreSql;
 import org.docksidestage.unit.PlainTestCase;
 
-// TODO iwata ↑import文にunusedがある by jflute (2025/10/30)
+// TODO done iwata ↑import文にunusedがある by jflute (2025/10/30)
 
 /**
  * The test of object-oriented. <br>
@@ -311,7 +310,7 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         int land = animal.getHitPoint();
         log(land); // your answer? => 7
     }
-    
+
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_objectOriented_polymorphism_5th_overrideWithSuper() {
         Animal animal = new Cat(); // catの鳴き声は"nya-", downHitPoint()もオーバーライドされている(デクリメントして偶数だったらさらにデクリメント)
@@ -364,7 +363,6 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
     // LoudableインターフェースのsoundLoudly()メソッドはAnimalクラスで実装されている
     // ZombieインスタンスはAnimalクラスを実装しているので、AnimalクラスのsoundLoudly()メソッドが呼ばれる
     // loudable変数からは、Loudableインターフェースで定義されたメソッド（soundLoudly()）のみ呼び出せる
-
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_objectOriented_polymorphism_interface_hierarchy() {
@@ -460,12 +458,16 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      * (St6MySql, St6PostgreSql (basic.st6.dbms) から抽象クラスを抽出してみましょう (スーパークラスとサブクラスの関係に))
      */
     public void test_objectOriented_writing_generalization_extractToAbstract() {
-        Database seaDatabase = new St6MySql();
-        boolean sea = seaDatabase instanceof Database;
+        DatabaseManagementSystem seaDatabaseManagementSystem = new St6MySql();
+        boolean sea = seaDatabaseManagementSystem instanceof DatabaseManagementSystem;
         log(sea);
-        Database landDatabase = new St6PostgreSql();
-        boolean land = landDatabase instanceof Database;
+        String seaString = seaDatabaseManagementSystem.buildPagingQuery(10, 3);
+        log(seaString);
+        DatabaseManagementSystem landDatabaseManagementSystem = new St6PostgreSql();
+        boolean land = landDatabaseManagementSystem instanceof DatabaseManagementSystem;
         log(land);
+        String landString = landDatabaseManagementSystem.buildPagingQuery(10, 3);
+        log(landString);
     }
 
     /**

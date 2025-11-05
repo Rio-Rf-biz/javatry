@@ -18,11 +18,11 @@ package org.docksidestage.javatry.basic.st6.dbms;
 /**
  * @author jflute
  */
-public class St6PostgreSql extends Database{
+public class St6PostgreSql extends DatabaseManagementSystem {
 
-    // TODO iwata @Overrideが付いてたり付いてなかったり by jflute (2025/10/30)
-    protected String buildPagingQuery(int pageSize, int pageNumber) {
-        int offset = pageSize * (pageNumber - 1);
+    // TODO done iwata @Overrideが付いてたり付いてなかったり by jflute (2025/10/30)
+    @Override
+    protected String buildPagingQueryString(int offset, int pageSize){
         return "offset " + offset + " limit " + pageSize;
     }
 }

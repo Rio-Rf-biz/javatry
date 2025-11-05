@@ -15,14 +15,15 @@
  */
 package org.docksidestage.javatry.basic.st6.dbms;
 
-// TODO iwata author追加でお願いします by jflute (2025/10/30)
+// TODO done iwata author追加でお願いします by jflute (2025/10/30)
 /**
  * @author jflute
+ * @author Rio-Rf-biz
  */
-public class St6MySql extends Database{
+public class St6MySql extends DatabaseManagementSystem {
 
-    // TODO iwata offsetの計算はDBMSに依存しないので、再利用しましょう。 by jflute (2025/10/30)
-    // TODO iwata もし仕様変更で... by jflute (2025/10/30)
+    // TODO done iwata offsetの計算はDBMSに依存しないので、再利用しましょう。 by jflute (2025/10/30)
+    // TODO done iwata もし仕様変更で... by jflute (2025/10/30)
     // 現状の2stepが3stepに変わったら:
     // 1. offsetの導出
     // 2. query文字列の生成
@@ -33,9 +34,14 @@ public class St6MySql extends Database{
     // こういうことがあったとき、現状だと2箇所(以上)修正しないといけないですが、
     // 1箇所で済むようにしてみましょう。
     // (つまり、現状は流れが再利用できていないと言える)
+    //
+    // こちらを参考にしてみました https://zenn.dev/komorimisaki422/articles/68ffd0f82031da
+    // Template Methodパターン
+    // 共通処理のメソッドにfinalをつけるのは骨組みなので上書きを想定していないためか
+    // 抽象メソッドにprotectedをつけるのは共通処理のメソッドを構成する一部なので、あくまで共通処理のメソッドだけで使うことを強調するためか
+    // 仕様変更で新しい独立ロジックを追加するのであれば抽象メソッドを増やして共通処理のメソッドに追加する
     @Override
-    protected String buildPagingQuery(int pageSize, int pageNumber) {
-        int offset = pageSize * (pageNumber - 1);
+    protected String buildPagingQueryString(int offset, int pageSize) {
         return "limit " + offset + ", " + pageSize;
     }
 }
