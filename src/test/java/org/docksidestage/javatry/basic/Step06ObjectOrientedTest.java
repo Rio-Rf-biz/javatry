@@ -24,12 +24,13 @@ import org.docksidestage.bizfw.basic.objanimal.loud.AlarmClock;
 import org.docksidestage.bizfw.basic.objanimal.loud.Loudable;
 import org.docksidestage.bizfw.basic.objanimal.runner.FastRunner;
 import org.docksidestage.bizfw.basic.objanimal.walker.SlowlyWalker;
+import org.docksidestage.bizfw.colorbox.ColorBox;
 import org.docksidestage.javatry.basic.st6.dbms.DatabaseManagementSystem;
 import org.docksidestage.javatry.basic.st6.dbms.St6MySql;
 import org.docksidestage.javatry.basic.st6.dbms.St6PostgreSql;
 import org.docksidestage.unit.PlainTestCase;
 
-// TODO done iwata ↑import文にunusedがある by jflute (2025/10/30)
+// done iwata ↑import文にunusedがある by jflute (2025/10/30)
 
 /**
  * The test of object-oriented. <br>
@@ -395,6 +396,18 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
     // オブジェクト指向は、モノが中心。(システムだから実際呼ばれるんだけど、モノを中心に考えてデザインする)
     // インターフェースは、操作が中心。(呼ばれること前提)
     // done jflute 次回1on1ここから (2025/10/22)
+    // #1on1: インターフェースのちょっと応用的な使い方が実際には行われている (2025/11/07)
+    // public abstract class AbstractColorBox implements ColorBox {
+    // o 別にインターフェースはなくても、同じことは実現できるはず (ColorBoxをabstract classにすれば)
+    // なぜインターフェースがある？
+    // o インターフェースがあると、外部から何が呼べるメソッドなのか？スッキリしててわかりやすい
+    // o abstractで内部用のpublicにせざるを得ないメソッドを半隠蔽できる (半でも大事)
+    // o abstractが提供してる実装を無視してポリモーフィズムしたい人も時々いる
+    //
+    // 抽象クラスの二つの役割、ポリモーフィズムと実装クラスの形付け。
+    // ポリモーフィズムの役割をインターフェースに丸投げ、自分は実装クラスの形付けに集中する。
+    //
+    // 外交はインターフェース、内政は抽象クラス、みたいな感覚。
 
     /**
      * Make Dog class implement FastRunner interface. (the method implementation is same as Cat class) <br>

@@ -10,7 +10,7 @@ package org.docksidestage.javatry.basic.st6.dbms;
  */
 public abstract class DatabaseManagementSystem {
 
-    // TODO done iwata protectedだと外から呼べないので、ポリモーフィズムになってない。 by jflute (2025/10/30)
+    // done iwata protectedだと外から呼べないので、ポリモーフィズムになってない。 by jflute (2025/10/30)
     public final String buildPagingQuery(int pageSize, int pageNumber){
         int offset = pageSize * (pageNumber - 1);
         return buildPagingQueryString(offset, pageSize);
