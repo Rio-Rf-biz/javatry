@@ -20,14 +20,18 @@ import java.time.LocalTime;
 import org.docksidestage.bizfw.basic.buyticket.TicketBooth;
 import org.docksidestage.bizfw.basic.buyticket.TicketCustomized;
 import org.docksidestage.bizfw.basic.objanimal.*;
+import org.docksidestage.bizfw.basic.objanimal.barking.BarkedSound;
 import org.docksidestage.bizfw.basic.objanimal.loud.AlarmClock;
 import org.docksidestage.bizfw.basic.objanimal.loud.Loudable;
 import org.docksidestage.bizfw.basic.objanimal.runner.FastRunner;
 import org.docksidestage.bizfw.basic.objanimal.walker.SlowlyWalker;
-import org.docksidestage.bizfw.colorbox.ColorBox;
 import org.docksidestage.javatry.basic.st6.dbms.DatabaseManagementSystem;
 import org.docksidestage.javatry.basic.st6.dbms.St6MySql;
 import org.docksidestage.javatry.basic.st6.dbms.St6PostgreSql;
+import org.docksidestage.javatry.basic.st6.os.Mac;
+import org.docksidestage.javatry.basic.st6.os.OldWindows;
+import org.docksidestage.javatry.basic.st6.os.St6OperationSystem;
+import org.docksidestage.javatry.basic.st6.os.Windows;
 import org.docksidestage.unit.PlainTestCase;
 
 // done iwata ↑import文にunusedがある by jflute (2025/10/30)
@@ -488,7 +492,15 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      * (St6OperationSystem (basic.st6.os) からコンクリートクラスを抽出してみましょう (スーパークラスとサブクラスの関係に))
      */
     public void test_objectOriented_writing_specialization_extractToConcrete() {
-        // your confirmation code here
+        St6OperationSystem seaOs = new Mac("myMacId");
+        String seaPath = seaOs.buildUserResourcePath("documents");
+        log(seaPath);
+        St6OperationSystem landOs = new Windows("myWindowsId");
+        String landPath = landOs.buildUserResourcePath("documents");
+        log(landPath);
+        St6OperationSystem skyOs = new OldWindows("myOldWindowsId");
+        String skyPath = skyOs.buildUserResourcePath("documents");
+        log(skyPath);
     }
 
     // ===================================================================================
@@ -499,7 +511,9 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      * (抽象クラス肥大化を抑制するためにも、Animalのbark()のプロセス(処理)をBarkingProcessクラスとして切り出しましょう)
      */
     public void test_objectOriented_writing_withDelegation() {
-        // your confirmation code here
+        Animal seaAnimal = new Dog();
+        String seaString = seaAnimal.bark().getBarkWord();
+        log(seaString);
     }
 
     /**
@@ -520,8 +534,12 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
      * </pre>
      */
     public void test_objectOriented_writing_withPackageRefactoring() {
-        // your confirmation code here
+        Animal seaAnimal = new Dog();
+        String seaString = seaAnimal.bark().getBarkWord();
+        log(seaString);
     }
+    // パッケージ構成が変わったことでbreatheIn()などのメソッドをprotectedからpublicにする必要があった
+    // protectedは同一パッケージ内でアクセス可能
 
     /**
      * Is Zombie correct as sub-class of Animal? Analyze it in thirty seconds. (thinking only) <br>
@@ -531,7 +549,9 @@ public class Step06ObjectOrientedTest extends PlainTestCase {
         // write your memo here:
         // _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
         // is it corrent?
-        //
+        // 動物と似た特徴を持つが、死んでいるという点で特異である。
+        // 動物の中で特殊な存在という扱いもできるし、動物とは別の概念とも考えられる。
+        // ユースケースによるのだと思う。
         // _/_/_/_/_/_/_/_/_/_/
     }
 }

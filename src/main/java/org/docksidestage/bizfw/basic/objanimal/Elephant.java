@@ -25,7 +25,7 @@ public class Elephant extends Animal implements SlowlyWalker {
     //                                                                               Bark
     //                                                                              ======
     @Override
-    protected String getBarkWord() { return "pao-"; } // trumpet? in English
+    public String getBarkWord() { return "pao-"; } // trumpet? in English
 
     // ===================================================================================
     //                                                                              Walker
