@@ -55,6 +55,10 @@ public abstract class Animal implements Loudable {
         return BarkingProcess.bark(this);
     }
 
+    // TODO iwata 修行++: protectedに戻したいですねぇ... (packageは今のまま変えずに) by jflute (2025/11/21)
+    // カプセル化が壊れてしまっているので、それはやりたくない。
+    // TODO iwata ちなみに、barkingに依存した息継ぎのつもりなので BarkingProcess に移動 by jflute (2025/11/21)
+    // もし汎用息継ぎなのであればAnimalに留まったほうがいいけど、固有処理なので固有の場所で定義したい。
     public void breatheIn() { // actually depends on barking
         logger.debug("...Breathing in for barking"); // dummy implementation
         downHitPoint();
