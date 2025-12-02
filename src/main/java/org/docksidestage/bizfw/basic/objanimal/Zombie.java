@@ -15,6 +15,8 @@
  */
 package org.docksidestage.bizfw.basic.objanimal;
 
+import org.docksidestage.bizfw.basic.objanimal.barking.BarkingProcess;
+
 /**
  * The object for zombie(ゾンビ).
  * @author jflute
@@ -53,9 +55,8 @@ public class Zombie extends Animal {
     // ===================================================================================
     //                                                                               Bark
     //                                                                              ======
-    @Override
     public void breatheIn() {
-        super.breatheIn();
+        BarkingProcess.breatheIn(this);
         zombieDiary.countBreatheIn();
     }
 
@@ -68,7 +69,7 @@ public class Zombie extends Animal {
     //                                                                           Hit Point
     //                                                                           =========
     @Override
-    protected void downHitPoint() {
+    public void downHitPoint() {
         // do nothing, infinity hit point
     }
 

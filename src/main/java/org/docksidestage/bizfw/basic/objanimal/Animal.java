@@ -55,23 +55,29 @@ public abstract class Animal implements Loudable {
         return BarkingProcess.bark(this);
     }
 
-    // TODO iwata 修行++: protectedに戻したいですねぇ... (packageは今のまま変えずに) by jflute (2025/11/21)
+    // TODO done iwata 修行++: protectedに戻したいですねぇ... (packageは今のまま変えずに) by jflute (2025/11/21)
     // カプセル化が壊れてしまっているので、それはやりたくない。
-    // TODO iwata ちなみに、barkingに依存した息継ぎのつもりなので BarkingProcess に移動 by jflute (2025/11/21)
-    // もし汎用息継ぎなのであればAnimalに留まったほうがいいけど、固有処理なので固有の場所で定義したい。
-    public void breatheIn() { // actually depends on barking
-        logger.debug("...Breathing in for barking"); // dummy implementation
-        downHitPoint();
-    }
+    // 仲介するクラスを作成して、そこから呼び出すように変更した
+    // 10分考えて思いつかなかったのでGeminiに聞きました
+    // 解決策A（匿名内部クラス）
+    //
+    //推奨
+    //
+    //カプセル化が最も堅牢です（Animal 自身が許可したタイミングでしか実行されない）。
+    //
+    //現在主流の設計パターン（Strategyパターン/Commandパターン）に沿っています。
+    //
+    //解決策B（仲介者クラス）
+    //
+    //「メソッドの中にクラス定義（new Interface() {...}）を書くのが気持ち悪い・読みづらい」と感じる場合に有効です。
+    //
+    //構造が単純で、昔ながらのJavaらしい解決策です。
+    //
+    // 解決策Aは理解が難しかったため、解決策Bを採用しました。
 
-    public void prepareAbdominalMuscle() { // also actually depends on barking
-        logger.debug("...Using my abdominal muscle for barking"); // dummy implementation
-        downHitPoint();
-    }
+    protected abstract String getBarkWord();
 
-    public abstract String getBarkWord();
-
-    public BarkedSound doBark(String barkWord) {
+    protected BarkedSound doBark(String barkWord) {
         downHitPoint();
         return new BarkedSound(barkWord);
     }
@@ -79,7 +85,7 @@ public abstract class Animal implements Loudable {
     // ===================================================================================
     //                                                                           Hit Point
     //                                                                           =========
-    protected void downHitPoint() {
+    public void downHitPoint() {
         --hitPoint;
         if (hitPoint <= 0) {
             throw new IllegalStateException("I'm very tired, so I want to sleep" + getBarkWord());
