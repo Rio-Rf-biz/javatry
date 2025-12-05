@@ -22,7 +22,7 @@ public class BarkingProcess {
         return bridge.executeBark(animal);
     }
 
-    // TODO done iwata ちなみに、barkingに依存した息継ぎのつもりなので BarkingProcess に移動 by jflute (2025/11/21)
+    // done iwata ちなみに、barkingに依存した息継ぎのつもりなので BarkingProcess に移動 by jflute (2025/11/21)
     // もし汎用息継ぎなのであればAnimalに留まったほうがいいけど、固有処理なので固有の場所で定義したい。
     public static void breatheIn(Animal animal) { // actually depends on barking
         logger.debug("...Breathing in for barking"); // dummy implementation

@@ -20,6 +20,7 @@ import org.docksidestage.javatry.basic.st7.St7BasicExceptionThrower;
 import org.docksidestage.javatry.basic.st7.St7ConstructorChallengeException;
 import org.docksidestage.unit.PlainTestCase;
 
+// TODO iwata authorおねがいしまーす by jflute (2025/12/05)
 /**
  * The test of variable. <br>
  * Operate as javadoc. If it's question style, write your answer before test execution. <br>
@@ -112,6 +113,7 @@ public class Step07ExceptionTest extends PlainTestCase {
         log(sea); // your answer? => true
     }
     // falseだった
+    // #1on1: ErrorはExceptionの隣なので、縦の関係にはならないからfalse (2025/12/05)
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_exception_hierarchy_Runtime_instanceof_Throwable() {
@@ -126,6 +128,57 @@ public class Step07ExceptionTest extends PlainTestCase {
         boolean sea = exp instanceof Exception;
         log(sea); // your answer? => false
     }
+    
+    // #1on1: 例外の階層構造 (2025/12/05)
+    // https://dbflute.seasar.org/ja/manual/topic/programming/java/exception.html
+    /*
+                           +-----------------+
+                           |                 |
+                  +------------------+       |
+                  |     Throwable    | <>----+
+                  +------------------+
+                           △ 
+                           ｜
+            +------------------------------+
+            |                              |
+   +--------------------+        +-------------------+
+   |       Error        |        |    Exception      |
+   +--------------------+        +-------------------+
+     NoSuchMethodError                    △ 
+     OutOfMemoryError                     ｜
+                           +------------------------------+
+                           |                              |
+                 +--------------------+        +-------------------+
+                 |  RuntimeException  |        |    XxxException   |
+                 +--------------------+        +-------------------+
+                           △                 IOException, SQLException
+                           ｜
+                   NullPointerException            
+                   IllegalStateException
+     */
+    //
+    // #1on1: 例外の中に、エラーも含まれるが、エラー(扱い)じゃない状況も含まれる (2025/12/05)
+    // エラー(扱い)じゃない例外とは？
+    // o 業務例外: 通常ではないレアな(システムとしては)正常ケース
+    // o リカバリできる例外: リトライ想定の例外ケースとか
+    //
+    // 例外をthrowする人は、それが業務例外か？リカバリ可能か？などは判断付かない。
+    // 呼び出している人が、それを状況を加味して判断できる。
+    //
+    // なので、throwした瞬間は、とりあえず「例外」という扱いしかできない。
+    // その例外が、エラー扱いなのか？正常なレアケースなのか？はcatchした人じゃないと決められない。
+    //
+    // じゃあ、Errorは？発生した瞬間にシステムとしてダメってのが確定する者たち。
+    // メモリが足らない、(コンパイル時にいたはずの)メソッドがない、とかは発覚した時点で論外(エラー)。
+    //
+    // とくある例外をエラー扱いするプログラム:
+    //try {
+    //    memberBhv.selectByPK(1);
+    //} catch (RuntimeException e) { // まだ扱いがわからなかった例外を...
+    //    logger.error("aaaaaaaa"); // エラーログに出す → エラー扱いする
+    //}
+    //
+    // 例外という概念の話でした。
 
     // ===================================================================================
     //                                                                         NullPointer
@@ -320,4 +373,6 @@ public class Step07ExceptionTest extends PlainTestCase {
         //
         // _/_/_/_/_/_/_/_/_/_/
     }
+    // #1on1: 何が違うんだ？ (2025/12/05)
+    // 
 }

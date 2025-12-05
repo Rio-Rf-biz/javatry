@@ -55,7 +55,7 @@ public abstract class Animal implements Loudable {
         return BarkingProcess.bark(this);
     }
 
-    // TODO done iwata 修行++: protectedに戻したいですねぇ... (packageは今のまま変えずに) by jflute (2025/11/21)
+    // done iwata 修行++: protectedに戻したいですねぇ... (packageは今のまま変えずに) by jflute (2025/11/21)
     // カプセル化が壊れてしまっているので、それはやりたくない。
     // 仲介するクラスを作成して、そこから呼び出すように変更した
     // 10分考えて思いつかなかったのでGeminiに聞きました
@@ -74,6 +74,11 @@ public abstract class Animal implements Loudable {
     //構造が単純で、昔ながらのJavaらしい解決策です。
     //
     // 解決策Aは理解が難しかったため、解決策Bを採用しました。
+    
+    // TODO iwata 修行++: getBarkWord(), Bridge が public なのでどうにかしたい by jflute (2025/12/05)
+    // hint1: downHitPoint() よりは簡単。
+    // hint2: わかっちゃえば、「なーんだ」とか「あああああ、なんで思いつかなかった＞＜」って感じ。
+    // hint3: (↑つまり、オブジェクト指向とかそういういう大げさなものじゃない)
 
     protected abstract String getBarkWord();
 
@@ -85,6 +90,9 @@ public abstract class Animal implements Loudable {
     // ===================================================================================
     //                                                                           Hit Point
     //                                                                           =========
+    // TODO iwata 修行#: downHitPoint() が public なのでどうにかしたい、あと by jflute (2025/12/05)
+    // hint1: Gemini の解決策Bは一瞬「おっ」って感じでおおぉ。
+    // hint2: step7,8とか先に進んでからアプローチしてもOK
     public void downHitPoint() {
         --hitPoint;
         if (hitPoint <= 0) {

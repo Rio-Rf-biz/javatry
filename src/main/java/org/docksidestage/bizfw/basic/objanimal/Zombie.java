@@ -55,6 +55,11 @@ public class Zombie extends Animal {
     // ===================================================================================
     //                                                                               Bark
     //                                                                              ======
+    // TODO iwata 修行++: Zombie, これだと、bark()したときのbreatheIn処理と繋がってない by jflute (2025/12/05)
+    // 元々はオーバーライドで、bark()が呼ばれた時のbreatheIn処理で、このオーバーライドメソッドが呼ばれて、
+    // Zombieだけ日記を付けるという追加処理が入るようになっていた。
+    // 今、new Zombie().bark() しても、BarkingProcessのbreatheIn()で、このcountBreatheIn()は呼ばれない。
+    // hint1: オブジェクト指向の範疇内で実現可能
     public void breatheIn() {
         BarkingProcess.breatheIn(this);
         zombieDiary.countBreatheIn();
