@@ -18,19 +18,12 @@ package org.docksidestage.bizfw.basic.objanimal;
 import org.docksidestage.bizfw.basic.objanimal.barking.BarkedSound;
 import org.docksidestage.bizfw.basic.objanimal.barking.BarkingProcess;
 import org.docksidestage.bizfw.basic.objanimal.loud.Loudable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The object for animal(動物).
  * @author jflute
  */
 public abstract class Animal implements Loudable {
-
-    // ===================================================================================
-    //                                                                          Definition
-    //                                                                          ==========
-    private static final Logger logger = LoggerFactory.getLogger(Animal.class);
 
     // ===================================================================================
     //                                                                           Attribute
@@ -51,9 +44,6 @@ public abstract class Animal implements Loudable {
     // ===================================================================================
     //                                                                               Bark
     //                                                                              ======
-    public BarkedSound bark() {
-        return BarkingProcess.bark(this);
-    }
 
     // done iwata 修行++: protectedに戻したいですねぇ... (packageは今のまま変えずに) by jflute (2025/11/21)
     // カプセル化が壊れてしまっているので、それはやりたくない。
@@ -74,26 +64,47 @@ public abstract class Animal implements Loudable {
     //構造が単純で、昔ながらのJavaらしい解決策です。
     //
     // 解決策Aは理解が難しかったため、解決策Bを採用しました。
-    
-    // TODO iwata 修行++: getBarkWord(), Bridge が public なのでどうにかしたい by jflute (2025/12/05)
+
+    // TODO done iwata 修行++: getBarkWord(), Bridge が public なのでどうにかしたい by jflute (2025/12/05)
     // hint1: downHitPoint() よりは簡単。
     // hint2: わかっちゃえば、「なーんだ」とか「あああああ、なんで思いつかなかった＞＜」って感じ。
     // hint3: (↑つまり、オブジェクト指向とかそういういう大げさなものじゃない)
 
+    public BarkedSound bark() {
+        AnimalBarkingBridge bridge = new AnimalBarkingBridge(this);
+        return BarkingProcess.bark(bridge);
+    }
+
+    // ===================================================================================
+    //                                                                               Bark
+    //                                                                              ======
+    // TODO done iwata 修行++: Zombie, これだと、bark()したときのbreatheIn処理と繋がってない by jflute (2025/12/05)
+    // 元々はオーバーライドで、bark()が呼ばれた時のbreatheIn処理で、このオーバーライドメソッドが呼ばれて、
+    // Zombieだけ日記を付けるという追加処理が入るようになっていた。
+    // 今、new Zombie().bark() しても、BarkingProcessのbreatheIn()で、このcountBreatheIn()は呼ばれない。
+    // hint1: オブジェクト指向の範疇内で実現可能
     protected abstract String getBarkWord();
 
-    protected BarkedSound doBark(String barkWord) {
+    protected BarkedSound doBark() {
         downHitPoint();
-        return new BarkedSound(barkWord);
+        return new BarkedSound(getBarkWord());
+    }
+
+    // ZombieがOverrideできるようにdoBreatheInを追加した
+    protected void doBreatheIn() {
+        downHitPoint();
     }
 
     // ===================================================================================
     //                                                                           Hit Point
     //                                                                           =========
-    // TODO iwata 修行#: downHitPoint() が public なのでどうにかしたい、あと by jflute (2025/12/05)
+    // TODO done iwata 修行#: downHitPoint() が public なのでどうにかしたい、あと by jflute (2025/12/05)
     // hint1: Gemini の解決策Bは一瞬「おっ」って感じでおおぉ。
     // hint2: step7,8とか先に進んでからアプローチしてもOK
-    public void downHitPoint() {
+
+    // downHitPointをprotectedに変更してbridege経由で呼び出すようにした
+    // Bridgeにprotectedなコンストラクタを用意してnewできる範囲を制限した by iwata
+    protected void downHitPoint() {
         --hitPoint;
         if (hitPoint <= 0) {
             throw new IllegalStateException("I'm very tired, so I want to sleep" + getBarkWord());

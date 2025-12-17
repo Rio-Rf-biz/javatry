@@ -10,9 +10,30 @@ import org.docksidestage.bizfw.basic.objanimal.barking.BarkedSound;
  */
 public class AnimalBarkingBridge {
 
-    public BarkedSound executeBark(Animal animal) {
+    // ===================================================================================
+    //                                                                           Attribute
+    //                                                                           =========
+    private final Animal animal;
+
+    // ===================================================================================
+    //                                                                         Constructor
+    //                                                                         ===========
+    // pretedcted にして、同じパッケージからしかインスタンス化できないようにした
+    protected AnimalBarkingBridge(Animal animal) {
+        this.animal = animal;
+    }
+
+    public BarkedSound executeBark() {
         // 同じパッケージにいるので、animalの protected メソッドが見える
-        String barkWord = animal.getBarkWord();
-        return animal.doBark(barkWord);
+        return animal.doBark();
+    }
+
+    public void breatheIn() {
+        animal.doBreatheIn();
+    }
+
+    public void prepareAbdominalMuscle() {
+        // 同じパッケージなので protected な downHitPoint が見える
+        animal.downHitPoint();
     }
 }

@@ -20,13 +20,13 @@ import org.docksidestage.javatry.basic.st7.St7BasicExceptionThrower;
 import org.docksidestage.javatry.basic.st7.St7ConstructorChallengeException;
 import org.docksidestage.unit.PlainTestCase;
 
-// TODO iwata authorおねがいしまーす by jflute (2025/12/05)
+// TODO done iwata authorおねがいしまーす by jflute (2025/12/05)
 /**
  * The test of variable. <br>
  * Operate as javadoc. If it's question style, write your answer before test execution. <br>
  * (javadocの通りに実施。質問形式の場合はテストを実行する前に考えて答えを書いてみましょう)
  * @author jflute
- * @author your_name_here
+ * @author Rio-Rf-biz
  */
 public class Step07ExceptionTest extends PlainTestCase {
 
@@ -190,27 +190,37 @@ public class Step07ExceptionTest extends PlainTestCase {
     public void test_exception_nullpointer_basic() {
         try {
             String sea = "mystic";
-            String land = sea.equals("mystic") ? null : "oneman";
-            String lowerCase = land.toLowerCase();
+            String land = sea.equals("mystic") ? null : "oneman"; // trueなのでlandはnull
+            String lowerCase = land.toLowerCase(); // nullに対してtoLowerCase()を呼んでいるのでここでNullPointerException
             log(lowerCase);
         } catch (NullPointerException e) {
             log(e);
         }
-        // your answer? => 
+        // your answer? => 変数はland、行番号は194
+        // java.lang.NullPointerException: null
+        //	at org.docksidestage.javatry.basic.Step07ExceptionTest.test_exception_nullpointer_basic(Step07ExceptionTest.java:194)
+        //	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        //	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) 以下略
+        // あってそう
     }
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_exception_nullpointer_headache() {
         try {
             String sea = "mystic";
-            String land = !!!sea.equals("mystic") ? null : "oneman";
-            String piari = !!!sea.equals("mystic") ? "plaza" : null;
-            int sum = land.length() + piari.length();
+            String land = !!!sea.equals("mystic") ? null : "oneman"; // falseなのでlandは"oneman"
+            String piari = !!!sea.equals("mystic") ? "plaza" : null; // falseなのでpiariはnull
+            int sum = land.length() + piari.length(); // piariがnullなのでここでNullPointerException
             log(sum);
         } catch (NullPointerException e) {
             log(e);
         }
-        // your answer? => 
+        // 変数はpiari、行番号は213
+        // java.lang.NullPointerException: null
+        //	at org.docksidestage.javatry.basic.Step07ExceptionTest.test_exception_nullpointer_headache(Step07ExceptionTest.java:213)
+        //	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        //	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+        //	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
     }
 
     /**
@@ -222,12 +232,17 @@ public class Step07ExceptionTest extends PlainTestCase {
             String sea = "mystic";
             String land = !!!sea.equals("mystic") ? null : "oneman";
             String piari = !!!sea.equals("mystic") ? "plaza" : null;
-            int sum = land.length() + piari.length();
+            int landLen = land.length();
+            int piariLen = piari.length();
+            int sum = landLen + piariLen;
             log(sum);
         } catch (NullPointerException e) {
             log(e);
         }
     }
+    // 現状だと行数がわかるだけでlandとpiariのどちらの変数でNullPointerExceptionが発生したのかわからない
+    // ので変数を分けてそれぞれのlength()を呼ぶようにした
+    // 236でNullPointerExceptionが発生した
 
     // ===================================================================================
     //                                                                   Checked Exception
