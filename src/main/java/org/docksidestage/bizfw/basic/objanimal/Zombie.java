@@ -15,6 +15,8 @@
  */
 package org.docksidestage.bizfw.basic.objanimal;
 
+import org.docksidestage.bizfw.basic.objanimal.barking.BarkingProcess;
+
 /**
  * The object for zombie(ゾンビ).
  * @author Rio-Rf-biz
@@ -64,6 +66,12 @@ public class Zombie extends Animal {
         super.doBreatheIn();
         zombieDiary.countBreatheIn();
     }
+
+    // #1on1: もし、ZombieBarkingProcessを作る場合のイメージ (2025/12/19)
+    //@Override
+    //protected BarkingProcess createBarkingProcess() {
+    //    return new ZombieBarkingProcess();
+    //}
 
     @Override
     protected String getBarkWord() {

@@ -28,6 +28,8 @@ public class AnimalBarkingBridge {
         return animal.doBark();
     }
 
+    // TODO iwata Zombieの都合によるクラスデザインの乱れがない方がいい by jflute (2025/12/19)
+    // doBreatheIn() が必要ならば、Animal世界内での統一性を重視して、腹筋の方も同じ構造の方が良いかも。
     public void breatheIn() {
         animal.doBreatheIn();
     }

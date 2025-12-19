@@ -50,11 +50,23 @@ public class Step08Java8FunctionTest extends PlainTestCase {
     public void test_java8_lambda_callback_basic() {
         String title = "over";
 
+        // #1on1: コールバックの説明 (2025/12/19)
+        // 1: A -> B
+        // 2: A <- B
+
+        // これはあまりコールバック感が薄い
+        // 1: A -> B
+        // 2: C <- B
         log("...Executing named class callback(!?)");
         helpCallbackConsumer(new St8BasicConsumer(title));
 
         log("...Executing anonymous class callback");
+        // 厳密には呼ばれ返されるのはA'だけども、形がコールバックに近い
+        // 1: A  -> B
+        // 2: A' <- B
+        // (究極のprivateコンストラクターとも言える)
         helpCallbackConsumer(new Consumer<String>() {
+            @Override
             public void accept(String stage) {
                 log(stage + ": " + title);
             }
