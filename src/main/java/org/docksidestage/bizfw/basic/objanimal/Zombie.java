@@ -15,8 +15,6 @@
  */
 package org.docksidestage.bizfw.basic.objanimal;
 
-import org.docksidestage.bizfw.basic.objanimal.barking.BarkingProcess;
-
 /**
  * The object for zombie(ゾンビ).
  * @author Rio-Rf-biz
@@ -62,8 +60,8 @@ public class Zombie extends Animal {
     // 今、new Zombie().bark() しても、BarkingProcessのbreatheIn()で、このcountBreatheIn()は呼ばれない。
     // hint1: オブジェクト指向の範疇内で実現可能
     @Override
-    protected void doBreatheIn() {
-        super.doBreatheIn();
+    protected void hookAfterBreatheInToBark() {
+        super.hookAfterBreatheInToBark();
         zombieDiary.countBreatheIn();
     }
 

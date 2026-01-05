@@ -15,6 +15,9 @@
  */
 package org.docksidestage.javatry.basic;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.docksidestage.bizfw.basic.supercar.SupercarClient;
 import org.docksidestage.javatry.basic.st7.St7BasicExceptionThrower;
 import org.docksidestage.javatry.basic.st7.St7ConstructorChallengeException;
@@ -242,7 +245,7 @@ public class Step07ExceptionTest extends PlainTestCase {
     }
     // 現状だと行数がわかるだけでlandとpiariのどちらの変数でNullPointerExceptionが発生したのかわからない
     // ので変数を分けてそれぞれのlength()を呼ぶようにした
-    // 236でNullPointerExceptionが発生した
+    // 236行目でNullPointerExceptionが発生した
 
     // ===================================================================================
     //                                                                   Checked Exception
@@ -252,7 +255,19 @@ public class Step07ExceptionTest extends PlainTestCase {
      * (new java.io.File(".") の canonical path を取得してログに表示、I/Oエラーの時はメッセージとスタックトレースを代わりに表示)
      */
     public void test_exception_checkedException_basic() {
+        try {
+            File file = new File("."); // カレントディレクトリを表すFileオブジェクトを作成
+            String canonicalPath = file.getCanonicalPath(); // カノニカルパスを取得
+            log(canonicalPath); // /Users/r.iwata/projects/javatryだった
+        } catch (IOException e) {
+            System.out.println("I/O error occurred: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+    // canonical pathとは
+    // 絶対パスの中でも無駄な指示(..や.)が含まれていないもの
+    // 絶対パス：/a/b/../c/./d.txt
+    // 正規パス：/a/c/d.txt
 
     // ===================================================================================
     //                                                                               Cause

@@ -22,6 +22,7 @@ import org.docksidestage.bizfw.basic.objanimal.loud.Loudable;
 /**
  * The object for animal(動物).
  * @author jflute
+ * @author Rio-Rf-biz
  */
 public abstract class Animal implements Loudable {
 
@@ -78,11 +79,13 @@ public abstract class Animal implements Loudable {
     // 高度な技ばかりに目が行ってしまって、基礎を忘れてしまう。今回の場合は、引数戻り値デザイン。
     // プログラミングスキルというのは、文法の知識だけじゃなく、文法を使いこなす(デザインできる)ことも含まれる。
     // プログラム知識とプログラミングって違う。
-    // TODO iwata [読み物課題] 「ミング」の時間ですよ by jflute (2025/12/19)
+    // TODO done iwata [読み物課題] 「ミング」の時間ですよ by jflute (2025/12/19)
     // https://jflute.hatenadiary.jp/entry/20121016/ming
+    // 読みました。知識だけではなく「ミング」を体得する重要性に納得しました by iwata (2026/01/05)
     public BarkedSound bark() {
         AnimalBarkingBridge bridge = new AnimalBarkingBridge(this);
-        return BarkingProcess.bark(bridge);
+        BarkingProcess barkingProcess = new BarkingProcess(bridge);
+        return barkingProcess.bark(new BarkedSound(getBarkWord()));
     }
 
     // 1on1: ZombieBarkingProcessを作る場合のイメージ (2025/12/19)
@@ -91,7 +94,7 @@ public abstract class Animal implements Loudable {
     //protected BarkingProcess createBarkingProcess() {
     //    return new BarkingProcess();
     //}
-    // TODO iwata static外したくなったと思うので外しておきましょう by jflute (2025/12/19)
+    // TODO done iwata static外したくなったと思うので外しておきましょう by jflute (2025/12/19)
 
     // ===================================================================================
     //                                                                               Bark
@@ -104,15 +107,28 @@ public abstract class Animal implements Loudable {
     // #1on1: たくさん持って帰ってきてるわけではなく、hookポイントを持って帰ってきただけなのでGood (2025/12/19)
     protected abstract String getBarkWord();
 
-    // TODO iwata doBark()の処理は、barkingのロジックなので、BarkingProcessに閉じ込めたい by jflute (2025/12/19)
+    // TODO done iwata doBark()の処理は、barkingのロジックなので、BarkingProcessに閉じ込めたい by jflute (2025/12/19)
     // 抽象クラスの肥大化を抑えるという目的からしても、もしdoBark()がもっと大きなロジックだったら...
-    protected BarkedSound doBark() {
-        downHitPoint();
-        return new BarkedSound(getBarkWord());
-    }
+    //    protected BarkedSound doBark() {
+    //        downHitPoint();
+    //        return new BarkedSound(getBarkWord());
+    //    }
+    // doBark()はAnimalの処理というよりはBarkingProcessの処理なのでBarkingProcessかAnimalBarkingBridgeに移動したい。
+    //
+    // doBark()にはgetBarkWord()が必要なのでなんらかの方法でBarkingProcessからAnimalにアクセスする必要がある
+    // 案1: BarkingProcess.bark()の引数にgetBarkWord()の戻り値を渡す
+    // - BarkingProcess.doBark()の引数にgetBarkWord()の戻り値が渡り、そこに直接処理を書ける
+    // - そのためBridgeの経由が不要
+    // 案2: AnimalBarkingBridge経由でgetBarkWord()の戻り値を取得する
+    // - AnimalBarkingBridgeでreturn new BarkedSound(animal.getBarkWord());する
+    //
+    // 案1を採用。
+    // BarkingProcessにdoBarkの実際の処理が入っているほうが自然。
+    // bridgeを経由せずに書けるのであればその方がいい。
+    // 混乱していたがBridgeはあくまでも橋渡しであり、なるべく処理はProcessの方に持たせる
 
     // ZombieがOverrideできるようにdoBreatheInを追加した
-    // TODO iwata もしJavaDoc書くとしたら... by jflute (2025/12/19)
+    // TODO done iwata もしJavaDoc書くとしたら... by jflute (2025/12/19)
     // A. "吠えるときの息継ぎのヒットポイント消化を行う" downHitPointForBreatheIn()
     //  → Zombieのcountでは使いづらい (悪くはないけどちょっと間接的で変更時のすれ違いが怖い)
     // B. "吠えるときの息継ぎのAnimal側の後処理" :: hookAfterBreatheInOnAnimal()
@@ -121,7 +137,29 @@ public abstract class Animal implements Loudable {
     // #1on1: JavaDocとか自然言語で一度表現することで、物理のメソッド名が適切かどうか？ (2025/12/19)
     // そのメソッドの概念が適切かどうか？がわかることもあるので、オススメ。
     // #1on1: AIのお話、AIとコメントの話、特に「背景コメント」、「概念コメント」 (2025/12/19)
-    protected void doBreatheIn() {
+    //
+    // クラス名(Animal, AnimalBarkingBridge)からon Animalであることが読み取れると考えてOnAnimalを省略した by iwata (2025/12/25)
+    /**
+     * 鳴くために息継ぎした後の処理
+     */
+    protected void hookAfterBreatheInToBark() {
+        downHitPoint();
+    }
+
+    /**
+     * 鳴くために腹筋を準備した後の処理
+     */
+    // 腹筋を準備した後の処理と書こうとしたが、一般的に動物が腹筋を準備することはないので「鳴くために」と入れた
+    // メソッド名にも「ToBark」を入れた by iwata (2025/12/25)
+    protected void hookAfterPrepareAbdominalMuscleToBark() {
+        downHitPoint();
+    }
+
+    /**
+     * 鳴くための実処理の前処理
+     */
+    // DoBarkも動作としては「鳴く」であるが実処理と表現することで息継ぎや腹筋を含めた全体の「鳴く」と区別した
+    protected void hookBeforeDoBarkToBark() {
         downHitPoint();
     }
 
