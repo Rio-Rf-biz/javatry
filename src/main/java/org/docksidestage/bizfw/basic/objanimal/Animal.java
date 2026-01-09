@@ -79,10 +79,11 @@ public abstract class Animal implements Loudable {
     // 高度な技ばかりに目が行ってしまって、基礎を忘れてしまう。今回の場合は、引数戻り値デザイン。
     // プログラミングスキルというのは、文法の知識だけじゃなく、文法を使いこなす(デザインできる)ことも含まれる。
     // プログラム知識とプログラミングって違う。
-    // TODO done iwata [読み物課題] 「ミング」の時間ですよ by jflute (2025/12/19)
+    // done iwata [読み物課題] 「ミング」の時間ですよ by jflute (2025/12/19)
     // https://jflute.hatenadiary.jp/entry/20121016/ming
     // 読みました。知識だけではなく「ミング」を体得する重要性に納得しました by iwata (2026/01/05)
     public BarkedSound bark() {
+        // TODO iwata 元々が、doBark()がnew BarkedSound()していたので、ここではStringだけ渡す方式で by jflute (2026/01/09)
         AnimalBarkingBridge bridge = new AnimalBarkingBridge(this);
         BarkingProcess barkingProcess = new BarkingProcess(bridge);
         return barkingProcess.bark(new BarkedSound(getBarkWord()));
@@ -94,7 +95,7 @@ public abstract class Animal implements Loudable {
     //protected BarkingProcess createBarkingProcess() {
     //    return new BarkingProcess();
     //}
-    // TODO done iwata static外したくなったと思うので外しておきましょう by jflute (2025/12/19)
+    // done iwata static外したくなったと思うので外しておきましょう by jflute (2025/12/19)
 
     // ===================================================================================
     //                                                                               Bark
@@ -107,7 +108,7 @@ public abstract class Animal implements Loudable {
     // #1on1: たくさん持って帰ってきてるわけではなく、hookポイントを持って帰ってきただけなのでGood (2025/12/19)
     protected abstract String getBarkWord();
 
-    // TODO done iwata doBark()の処理は、barkingのロジックなので、BarkingProcessに閉じ込めたい by jflute (2025/12/19)
+    // done iwata doBark()の処理は、barkingのロジックなので、BarkingProcessに閉じ込めたい by jflute (2025/12/19)
     // 抽象クラスの肥大化を抑えるという目的からしても、もしdoBark()がもっと大きなロジックだったら...
     //    protected BarkedSound doBark() {
     //        downHitPoint();
@@ -128,7 +129,7 @@ public abstract class Animal implements Loudable {
     // 混乱していたがBridgeはあくまでも橋渡しであり、なるべく処理はProcessの方に持たせる
 
     // ZombieがOverrideできるようにdoBreatheInを追加した
-    // TODO done iwata もしJavaDoc書くとしたら... by jflute (2025/12/19)
+    // done iwata もしJavaDoc書くとしたら... by jflute (2025/12/19)
     // A. "吠えるときの息継ぎのヒットポイント消化を行う" downHitPointForBreatheIn()
     //  → Zombieのcountでは使いづらい (悪くはないけどちょっと間接的で変更時のすれ違いが怖い)
     // B. "吠えるときの息継ぎのAnimal側の後処理" :: hookAfterBreatheInOnAnimal()

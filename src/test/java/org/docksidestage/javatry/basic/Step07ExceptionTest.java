@@ -23,7 +23,7 @@ import org.docksidestage.javatry.basic.st7.St7BasicExceptionThrower;
 import org.docksidestage.javatry.basic.st7.St7ConstructorChallengeException;
 import org.docksidestage.unit.PlainTestCase;
 
-// TODO done iwata authorおねがいしまーす by jflute (2025/12/05)
+// done iwata authorおねがいしまーす by jflute (2025/12/05)
 /**
  * The test of variable. <br>
  * Operate as javadoc. If it's question style, write your answer before test execution. <br>
@@ -246,6 +246,15 @@ public class Step07ExceptionTest extends PlainTestCase {
     // 現状だと行数がわかるだけでlandとpiariのどちらの変数でNullPointerExceptionが発生したのかわからない
     // ので変数を分けてそれぞれのlength()を呼ぶようにした
     // 236行目でNullPointerExceptionが発生した
+    
+    // #1on1: NullPoのどの変数が？ってのは、最新のJavaだとメッセージで教えてくれるようになった (2026/01/09)
+    // e.g. 一方で、どっちが？ってのがわからなくなるパターンの例の話
+    /*
+    assertTrue(birthdate.isAfter(targetDate) && formalizeDatetime.isBefore(targetDate));
+     ↓
+    assertTrue(birthdate.isAfter(targetDate));
+    assertTrue(formalizeDatetime.isBefore(targetDate));
+     */
 
     // ===================================================================================
     //                                                                   Checked Exception
@@ -268,7 +277,15 @@ public class Step07ExceptionTest extends PlainTestCase {
     // 絶対パスの中でも無駄な指示(..や.)が含まれていないもの
     // 絶対パス：/a/b/../c/./d.txt
     // 正規パス：/a/c/d.txt
+    
+    // #1on1: チェック例外とは？RuntimeExceptionじゃないException (2026/01/09)
+    // チェック例外の何が嬉しいか？ → リカバリ処理を強制させる、気づかせてくれるもの。(compileレベルで)
+    // 一方で、流行ってない。なぜ、javatryで1問しかないのか？
+    // IOException, SQLExceptionの例。節操のないthrows。
+    // jfluteがチェック例外で嬉しかった回数。Lambda式との相性話。UncheckedIOExceptionの例。
+    // ちょっとGoの話。
 
+    // TODO jflute 次回1on1ここから (2026/01/09)
     // ===================================================================================
     //                                                                               Cause
     //                                                                               =====
