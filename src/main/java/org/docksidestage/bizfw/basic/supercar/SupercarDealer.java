@@ -16,6 +16,8 @@
 package org.docksidestage.bizfw.basic.supercar;
 
 import org.docksidestage.bizfw.basic.supercar.SupercarManufacturer.Supercar;
+import org.docksidestage.bizfw.basic.supercar.exception.SupercarCannotMakeException;
+import org.docksidestage.bizfw.basic.supercar.exception.SupercarOrderFailureException;
 
 /**
  * The dealer(販売業者) of supercar.
@@ -24,15 +26,19 @@ import org.docksidestage.bizfw.basic.supercar.SupercarManufacturer.Supercar;
 public class SupercarDealer {
 
     public Supercar orderSupercar(String clientRequirement) {
-        SupercarManufacturer supercarManufacturer = createSupercarManufacturer();
-        if (clientRequirement.contains("steering wheel is like sea")) {
-            return supercarManufacturer.makeSupercar("piari");
-        } else if (clientRequirement.contains("steering wheel is useful on land")) {
-            return supercarManufacturer.makeSupercar("land");
-        } else if (clientRequirement.contains("steering wheel has many shop")) {
-            return supercarManufacturer.makeSupercar("piari");
-        } else {
-            throw new IllegalStateException("Cannot understand the client requirement: " + clientRequirement);
+        try {
+            SupercarManufacturer supercarManufacturer = createSupercarManufacturer();
+            if (clientRequirement.contains("steering wheel is like sea")) {
+                return supercarManufacturer.makeSupercar("piari");
+            } else if (clientRequirement.contains("steering wheel is useful on land")) {
+                return supercarManufacturer.makeSupercar("land");
+            } else if (clientRequirement.contains("steering wheel has many shop")) {
+                return supercarManufacturer.makeSupercar("piari");
+            } else {
+                throw new IllegalStateException("Cannot understand the client requirement: " + clientRequirement);
+            }
+        } catch (SupercarCannotMakeException e){
+            throw new SupercarOrderFailureException("Order failed due to manufacturing issue: clientRequirement=" + clientRequirement, e);
         }
     }
 

@@ -301,39 +301,47 @@ public class Step07ExceptionTest extends PlainTestCase {
             throwCauseFirstLevel();
             fail("always exception but none");
         } catch (IllegalStateException e) {
-            Throwable cause = e.getCause();
+            Throwable cause = e.getCause(); // IllegalArgumentException
             sea = cause.getMessage();
             land = cause.getClass().getSimpleName();
-            log(sea); // your answer? => 
-            log(land); // your answer? => 
-            log(e); // your answer? => 
+            log(sea); // your answer? => 予想: IllegalArgumentExceptionのdetailMessage 実際: "Failed to call the third help method: symbol=-1"
+            log(land); // your answer? => IllegalArgumentException
+            log(e); // your answer? => Failed to call the second help method: symbol=1...
         }
     }
+    // getCause()
+    // 第二引数にcause(Throwable型)を渡さなかったらnullが返る
+    // causeはThrowable型のインスタンス変数: private Throwable cause = this;
+    // 右辺がthis(自分自身)なのは何も設定されていない場合と原因は存在しないと明確にセットされた場合を区別するため
+    // (たしかに最初からnullだと後から明示的にnullだと指定したくてもできないのか)
+    // this: 未設定, null: 明確に原因なし
+    // プログラミングの世界では、このような「初期化されていないこと」を示すための特殊な値を 「番兵（Sentinel）」 と呼びます。by Gemini
 
     private void throwCauseFirstLevel() {
-        int symbol = Integer.MAX_VALUE - 0x7ffffffe;
+        int symbol = Integer.MAX_VALUE - 0x7ffffffe; // 0x7fffffff - 0x7ffffffe = 1
         try {
             throwCauseSecondLevel(symbol);
         } catch (IllegalArgumentException e) {
-            throw new IllegalStateException("Failed to call the second help method: symbol=" + symbol, e);
+            throw new IllegalStateException("Failed to call the second help method: symbol=" + symbol, e); // 1, IllegalArgumentException
         }
     }
 
     private void throwCauseSecondLevel(int symbol) {
         try {
-            --symbol;
-            symbol--;
+            --symbol; // 1 - 1 = 0
+            symbol--; // 0 - 1 = -1
             if (symbol < 0) {
                 throwCauseThirdLevel(symbol);
             }
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Failed to call the third help method: symbol=" + symbol, e);
+            throw new IllegalArgumentException("Failed to call the third help method: symbol=" + symbol, e); // -1, NumberFormatException
         }
+        // 第二引数にcatchした例外を渡しているので、スタックトレースのCaused Byに入る
     }
 
     private void throwCauseThirdLevel(int symbol) {
         if (symbol < 0) {
-            Integer.valueOf("piari");
+            Integer.valueOf("piari"); // piariは数字ではないのでNumberFormatException
         }
     }
 
@@ -353,9 +361,22 @@ public class Step07ExceptionTest extends PlainTestCase {
             // _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
             // What happens? Write situation and cause here. (何が起きた？状況と原因をここに書いてみましょう)
             // - - - - - - - - - -
-            //
-            //
-            //
+            // createDealerする(-> dealerに依頼する)
+            // clientRequirementが"steering wheel is like sea"(-> 要求はseaのようなハンドル)
+            // dealerがclientRequirementでorderSupercarする(-> dealerがその要求でスーパーカーを注文する)
+            //   - createSupercarManufacturerする(Manufacturer=製造業者、メーカー)(-> メーカーに依頼する)
+            //   - ManufacturerがmakeSupercar("piari")する(-> メーカーがカタログキーpiariでスーパーカーを作る)
+            //     - piariはsteeringWheelId=3(-> piariのハンドルIDは3)
+            //     - createSupercarSteeringWheelManufacturerする(-> タイヤメーカーに依頼する)
+            //     - wheelManufacturerがId=3でmakeSteeringWheelする(-> タイヤメーカーがID3でタイヤを作る)
+            //       - specText="\\(^_^)/" (-> スペックテキストは\(^_^)/)
+            //       - specTextでscrewSpecを作成(-> スペックテキストでネジの仕様を作成する)
+            //       - createSpecialScrewManufacturerをする(-> 特殊ネジメーカーに依頼する)
+            //       - screwManufacturerがscrewSpecでmakeSpecialScrewをする(-> ネジメーカーがネジの仕様で特殊ネジを作る)
+            //         - "\\(^_^)/"はASCIIコードの0x5c('\'), 0x28('('), 0x5e('^'), 0x5f('_'), 0x5e('^'), 0x29(')'), 0x2f('/')なのでifの中に入る(\\の一つ目の\はエスケープ文字)
+            //         - ScrewCannotMakeBySpecExceptionがthrowされる
+            //         - msg = "The kawaii face is already unsupported so we cannot make it."; (-> 可愛い顔はもうサポートされていないので、作れません)
+            // 原因は注文した要件のSupercarの部品の特殊なネジがサポート終了しており作れなかったこと
             // _/_/_/_/_/_/_/_/_/_/
         }
     }
@@ -373,6 +394,7 @@ public class Step07ExceptionTest extends PlainTestCase {
             log("*No hint here for training.", e);
         }
     }
+    // Caused byで繋げることで根本的な問題に至るまでの経緯がわかるようになった
 
     // ===================================================================================
     //                                                                           Challenge

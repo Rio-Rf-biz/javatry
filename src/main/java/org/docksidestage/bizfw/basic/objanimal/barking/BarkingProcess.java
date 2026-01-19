@@ -26,10 +26,10 @@ public class BarkingProcess {
         this.bridge = bridge;
     }
 
-    public BarkedSound bark(BarkedSound barkedSound) {
+    public BarkedSound bark(String barkWord) {
         breatheIn();
         prepareAbdominalMuscle();
-        return doBark(barkedSound);
+        return doBark(barkWord);
     }
 
     // done iwata ちなみに、barkingに依存した息継ぎのつもりなので BarkingProcess に移動 by jflute (2025/11/21)
@@ -44,8 +44,8 @@ public class BarkingProcess {
         bridge.hookAfterPrepareAbdominalMuscleToBark();
     }
 
-    private BarkedSound doBark(BarkedSound barkedSound) {
+    private BarkedSound doBark(String barkWord) {
         bridge.hookBeforeDoBarkToBark();
-        return barkedSound;
+        return new BarkedSound(barkWord);
     }
 }

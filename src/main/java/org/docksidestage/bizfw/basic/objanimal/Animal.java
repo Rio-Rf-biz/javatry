@@ -83,10 +83,10 @@ public abstract class Animal implements Loudable {
     // https://jflute.hatenadiary.jp/entry/20121016/ming
     // 読みました。知識だけではなく「ミング」を体得する重要性に納得しました by iwata (2026/01/05)
     public BarkedSound bark() {
-        // TODO iwata 元々が、doBark()がnew BarkedSound()していたので、ここではStringだけ渡す方式で by jflute (2026/01/09)
+        // TODO done iwata 元々が、doBark()がnew BarkedSound()していたので、ここではStringだけ渡す方式で by jflute (2026/01/09)
         AnimalBarkingBridge bridge = new AnimalBarkingBridge(this);
         BarkingProcess barkingProcess = new BarkingProcess(bridge);
-        return barkingProcess.bark(new BarkedSound(getBarkWord()));
+        return barkingProcess.bark(getBarkWord());
     }
 
     // 1on1: ZombieBarkingProcessを作る場合のイメージ (2025/12/19)
