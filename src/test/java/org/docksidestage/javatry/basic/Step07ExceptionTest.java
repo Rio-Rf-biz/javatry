@@ -452,9 +452,18 @@ public class Step07ExceptionTest extends PlainTestCase {
         try {
             helpThrowIllegalState();
         } catch (IllegalStateException e) {
-            throw new St7ConstructorChallengeException("Failed to do something.");
+            throw new St7ConstructorChallengeException("Failed to do something.", e);
         }
     }
+    // catchしたeが第二引数に渡されていないので`Caused by`で繋がらなくなっていた
+    // "something illegal: importantValue=dummy"がスタックトレースとして表示されるようになった
+    //
+    // スタックトレースの処理はThrowableクラスのfillInStackTrace()に書かれていた
+    // private native Throwable fillInStackTrace(int dummy);
+    // nativeはJava以外の言語で実装されているメソッドを示す。C/C++で実装されているらしい
+    // 1. fillInStackTrace() が呼ばれる
+    // 2. fillInStackTrace(0) (native) が、現在のスレッドのメモリ（実行用スタック）をスキャンする。
+    // 3. スキャンした結果（スナップショット）を backtrace フィールド に書き込む（＝積む）。
 
     private void helpThrowIllegalState() {
         if (true) { // simulate something illegal
@@ -474,9 +483,21 @@ public class Step07ExceptionTest extends PlainTestCase {
         // _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
         // Write here. (ここに書いてみましょう)
         // - - - - - - - - - -
+        // 以前の1on1でお話しした内容だったので復習としてまとめてみました
         //
+        // Error
+        // 発生した瞬間にシステムとしてダメってのが確定するものたち
+        // メモリが足らない、(コンパイル時にいたはずの)メソッドがない、とかは発覚した時点で論外(エラー)。
         //
+        // Exception
+        // o 業務例外: 通常ではないレアな(システムとしては)正常ケース
+        // o リカバリできる例外: リトライ想定の例外ケースとか
         //
+        // 例外をthrowする人は、それが業務例外か？リカバリ可能か？などは判断付かない。
+        // 呼び出している人が、それを状況を加味して判断できる。
+        //
+        // なので、throwした瞬間は、とりあえず「例外」という扱いしかできない。
+        // その例外が、エラー扱いなのか？正常なレアケースなのか？はcatchした人じゃないと決められない。
         // _/_/_/_/_/_/_/_/_/_/
     }
     // #1on1: 何が違うんだ？ (2025/12/05)

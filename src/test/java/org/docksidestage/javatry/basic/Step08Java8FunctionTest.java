@@ -33,7 +33,7 @@ import org.docksidestage.unit.PlainTestCase;
  * Operate as javadoc. If it's question style, write your answer before test execution. <br>
  * (javadocの通りに実施。質問形式の場合はテストを実行する前に考えて答えを書いてみましょう)
  * @author jflute
- * @author your_name_here
+ * @author Rio-Rf-biz
  */
 public class Step08Java8FunctionTest extends PlainTestCase {
 
@@ -59,6 +59,8 @@ public class Step08Java8FunctionTest extends PlainTestCase {
         // 2: C <- B
         log("...Executing named class callback(!?)");
         helpCallbackConsumer(new St8BasicConsumer(title));
+        // Consumerインターフェースを実装した名前付きのクラスのインスタンスを引数に渡している
+        // accept()メソッドはインターフェースに定義しているので実装されているSt8BasicConsumerのメソッド
 
         log("...Executing anonymous class callback");
         // 厳密には呼ばれ返されるのはA'だけども、形がコールバックに近い
@@ -71,16 +73,26 @@ public class Step08Java8FunctionTest extends PlainTestCase {
                 log(stage + ": " + title);
             }
         });
+        // Consumerインターフェースを実装した無名クラスのインスタンスを引数に渡している
+        // accept()メソッドの実装が必要なので{}内でオーバーライドしている
 
         log("...Executing lambda block style callback");
         helpCallbackConsumer(stage -> {
             log(stage + ": " + title);
         });
+        // helpCallbackConsumerの引数がConsumer<String> 型なのでnew Consumer<String>()は省略できている
+        // Consumer インターフェースには、accept() というメソッド1つしかないのでpublic void accept(String stage)も省略できている <<- メソッドが2つ以上だとラムダ式ではかけない
+        // Consumer<String> なので、accept の引数が String であることもわかるのでString stageも省略できている
+        // やっていることがインターフェースを継承した無名クラスのメソッドのオーバーライドなのは変わらず
+        //
+        // 引数には処理を書いて、呼び出されたメソッドの中で渡した処理を呼び出してもらえる = コールバック
 
         log("...Executing lambda expression style callback");
         helpCallbackConsumer(stage -> log(stage + ": " + title));
 
-        // your answer? => 
+        // your answer? => broadway
+        //                 dockside: over
+        //                 hanger
 
         // cannot reassign because it is used at callback process
         //title = "wave";
@@ -96,7 +108,11 @@ public class Step08Java8FunctionTest extends PlainTestCase {
             log(stage);
         });
         log("lost river");
-        // your answer? => 
+        // your answer? => harbor
+        //                 broadway
+        //                 dockside
+        //                 hangar
+        //                 lost river
     }
 
     private class St8BasicConsumer implements Consumer<String> {
