@@ -285,7 +285,7 @@ public class Step07ExceptionTest extends PlainTestCase {
     // jfluteがチェック例外で嬉しかった回数。Lambda式との相性話。UncheckedIOExceptionの例。
     // ちょっとGoの話。
 
-    // TODO jflute 次回1on1ここから (2026/01/09)
+    // done jflute 次回1on1ここから (2026/01/09)
     // ===================================================================================
     //                                                                               Cause
     //                                                                               =====
@@ -432,7 +432,7 @@ public class Step07ExceptionTest extends PlainTestCase {
     // でも、これで十分ってわけじゃない。途中の状態とかも知ることができるに越したことはないので、
     // アプリ内での例外の翻訳もあったら嬉しい。
 
-    // TODO jflute 次回1on1ここから (2026/01/23)
+    // done jflute 次回1on1ここから (2026/01/23)
     // ===================================================================================
     //                                                                           Challenge
     //                                                                           =========
@@ -454,6 +454,9 @@ public class Step07ExceptionTest extends PlainTestCase {
         } catch (IllegalStateException e) {
             throw new St7ConstructorChallengeException("Failed to do something.", e);
         }
+        // #1on1: ignoredするケースのお話。DBFluteの中のコードの例とか (2026/02/12)
+        // でも、あとはほぼ e を使わないでthrowしなおすってことはあり得ない。
+        // #1on1: 例外のコンストラクター、どういうの用意する？話。起点用、翻訳用 (2026/02/12)
     }
     // catchしたeが第二引数に渡されていないので`Caused by`で繋がらなくなっていた
     // "something illegal: importantValue=dummy"がスタックトレースとして表示されるようになった
@@ -464,6 +467,7 @@ public class Step07ExceptionTest extends PlainTestCase {
     // 1. fillInStackTrace() が呼ばれる
     // 2. fillInStackTrace(0) (native) が、現在のスレッドのメモリ（実行用スタック）をスキャンする。
     // 3. スキャンした結果（スナップショット）を backtrace フィールド に書き込む（＝積む）。
+    // #1on1: Good, Javaの実行環境の仕組みを知っておくと良いです (2026/02/12)
 
     private void helpThrowIllegalState() {
         if (true) { // simulate something illegal

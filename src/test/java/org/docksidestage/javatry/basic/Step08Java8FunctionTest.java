@@ -67,6 +67,11 @@ public class Step08Java8FunctionTest extends PlainTestCase {
         // 1: A  -> B
         // 2: A' <- B
         // (究極のprivateコンストラクターとも言える)
+        // #1on1: classのスコープ (2026/02/12)
+        // o 独立ファイルのclass
+        // o classの中のclass (privateでもclass内では利用可能)
+        // o メソッド内定義の名前付きclass (ライブコーディングで見てもらった)
+        // o メソッド内定義の無名class (無名インナークラス == lambda式)
         helpCallbackConsumer(new Consumer<String>() {
             @Override
             public void accept(String stage) {
@@ -135,6 +140,7 @@ public class Step08Java8FunctionTest extends PlainTestCase {
         log("hangar");
     }
 
+    // TODO jflute 次回1on1ここから (2026/02/12)
     /**
      * What string is sea variable at the method end? <br>
      * (メソッド終了時の変数 sea の中身は？)
