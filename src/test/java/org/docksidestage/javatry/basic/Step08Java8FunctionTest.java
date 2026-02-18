@@ -150,12 +150,18 @@ public class Step08Java8FunctionTest extends PlainTestCase {
         String sea = helpCallbackFunction(number -> {
             return label + ": " + number;
         });
-        log(sea); // your answer? => 
+        log(sea); // your answer? => number: 7
     }
 
     private String helpCallbackFunction(Function<Integer, String> oneArgLambda) {
         return oneArgLambda.apply(7);
     }
+    // public interface Function<T, R> { ... }
+    // T, Rは型パラメーターで、Tは引数の型、Rは戻り値の型を表す
+    // 呼び出すときに型を指定できる
+    //
+    // R apply(T t);
+    // T型の引数を受け取り、R型の結果を返すメソッドが定義されている
 
     // -----------------------------------------------------
     //                                         Convert Style
@@ -175,23 +181,46 @@ public class Step08Java8FunctionTest extends PlainTestCase {
      * </pre>
      */
     public void test_java8_lambda_convertStyle_basic() {
-        helpCallbackSupplier(new Supplier<String>() { // sea
-            public String get() {
-                return "broadway";
-            }
+//        helpCallbackSupplier(new Supplier<String>() { // sea
+//            public String get() {
+//                return "broadway";
+//            }
+//        });
+        helpCallbackSupplier(() -> { // sea
+            return "broadway";
         });
 
-        helpCallbackSupplier(() -> { // land
-            return "dockside";
-        });
+//        helpCallbackSupplier(() -> { // land
+//            return "dockside";
+//        });
+        helpCallbackSupplier(() -> "dockside"); // land
 
-        helpCallbackSupplier(() -> "hangar"); // piari
+//        helpCallbackSupplier(() -> "hangar"); // piari
+        helpCallbackSupplier(() -> { // piari
+            return "hangar";
+        });
     }
+
+//    基本は Expression式（一行）: コードが読みやすくなるので、可能な限りこれを使います。
+//    複雑なら Block式: 途中で if 文を入れたり、ログを出力したりと、処理が2行以上になる場合はこれを使います。
+//    匿名クラスはほぼ使わない: ラムダ式が使えない特殊なケース（複数のメソッドを持つインターフェースなど）を除き、現代のJavaではあまり書きません。
+//    らしい
 
     private void helpCallbackSupplier(Supplier<String> oneArgLambda) {
         String supplied = oneArgLambda.get();
         log(supplied);
     }
+    // public interface Supplier<T> {
+    //
+    //    /**
+    //     * Gets a result.
+    //     *
+    //     * @return a result
+    //     */
+    //    T get();
+    //}
+    // Supplierは引数を取らず、T型の結果を返す関数型インターフェース
+    // 渡されたラムダ式がget()の実装として機能する
 
     // ===================================================================================
     //                                                                            Optional
