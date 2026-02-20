@@ -140,7 +140,7 @@ public class Step08Java8FunctionTest extends PlainTestCase {
         log("hangar");
     }
 
-    // TODO jflute 次回1on1ここから (2026/02/12)
+    // done jflute 次回1on1ここから (2026/02/12)
     /**
      * What string is sea variable at the method end? <br>
      * (メソッド終了時の変数 sea の中身は？)
@@ -162,6 +162,7 @@ public class Step08Java8FunctionTest extends PlainTestCase {
     //
     // R apply(T t);
     // T型の引数を受け取り、R型の結果を返すメソッドが定義されている
+    // #1on1: Genericの文法のお話。Tのお話。 (2026/02/20)
 
     // -----------------------------------------------------
     //                                         Convert Style
@@ -193,6 +194,10 @@ public class Step08Java8FunctionTest extends PlainTestCase {
 //        helpCallbackSupplier(() -> { // land
 //            return "dockside";
 //        });
+        // #1on1: 見栄えでblockにしたりexpressionにしたりの話 (2026/02/20)
+        // e.g.
+        //  return "docksidedocksidedockside".substring(1).replace('a', 'b').substring(4);
+        // 特にネスト括弧が多くなってきたら、分けて見やすくしたいところ。
         helpCallbackSupplier(() -> "dockside"); // land
 
 //        helpCallbackSupplier(() -> "hangar"); // piari
@@ -205,6 +210,7 @@ public class Step08Java8FunctionTest extends PlainTestCase {
 //    複雑なら Block式: 途中で if 文を入れたり、ログを出力したりと、処理が2行以上になる場合はこれを使います。
 //    匿名クラスはほぼ使わない: ラムダ式が使えない特殊なケース（複数のメソッドを持つインターフェースなど）を除き、現代のJavaではあまり書きません。
 //    らしい
+    // #1on1: 基本はこう↑でOKで、ただ、ルールに従うってよりかは、「見やすいか？」をつど考えて柔軟に (2026/02/20)
 
     private void helpCallbackSupplier(Supplier<String> oneArgLambda) {
         String supplied = oneArgLambda.get();
