@@ -28,6 +28,24 @@ import org.docksidestage.javatry.basic.st8.St8Member;
 import org.docksidestage.javatry.basic.st8.St8Withdrawal;
 import org.docksidestage.unit.PlainTestCase;
 
+// #1on1: データベースの予習 (2026/02/20)
+//
+// PK制約(主キー制約): とあるカラムをプライマリーのキーであると設定して、ユニーク性をDBMSが担保してくれる
+// (NotNull + ユニーク、そしてテーブルに一個だけ)
+// 
+// NotNull制約: カラムの値がnullであってはいけない、ことを担保してくれる
+//
+// ユニーク制約(UQ): とあるカラムのユニーク性をDBMSが担保してくれる
+// (NotNullじゃなくてもいい(NotNull付けられるなら付けた方がいいけど)、テーブルに複数でもいい)
+// (制約を付けていることで、そのテーブルのユニーク性が明示される、ドキュメントとしても活躍する)
+//
+// FK制約(外部キー制約): 外部のキー(PK)に入っている値しか入れることができない。
+// リレーショナルデータベースの思想を実現する(保証する)大事な制約。
+// ER図上のリレーションシップ線がそのままFKと解釈しても良い。
+//
+// あと、チェック制約、デフォルト制約とか、一つのカラムで閉じる制約もある。
+// チェック制約: マスターがあれば要らない、マスターなくても要素追加時にDB変更になるので避けたい
+// デフォルト制約: デフォルト値自体が業務ロジックとも言えて避けられやすい、ただカラム追加時に一時的に便利
 /**
  * The test of Java8 functions. <br>
  * Operate as javadoc. If it's question style, write your answer before test execution. <br>
