@@ -263,8 +263,19 @@ public class Step08Java8FunctionTest extends PlainTestCase {
             St8Member member = optMember.get();
             log(member.getMemberId(), member.getMemberName());
         }
-        // your answer? => 
+        // your answer? => yes
     }
+    // oldmember
+    // return new St8Member(memberId, "broadway", new St8Withdrawal(11, "music"));
+    // getMemberId() => 1
+    // getMemberName() => "broadway"
+
+    // optMember
+    // return Optional.ofNullable(oldselectMember(stageId));
+    // oleselectMember(1) => return new St8Member(memberId, "broadway", new St8Withdrawal(11, "music"));
+    // if (optMember.isPresent()) => true // nullではないので
+    //
+    // 予想通り同じ文字列が出力された
 
     /**
      * Are the strings by two log() methods same? (yes or no) <br>
@@ -279,8 +290,24 @@ public class Step08Java8FunctionTest extends PlainTestCase {
         optMember.ifPresent(member -> {
             log(member.getMemberId(), member.getMemberName());
         });
-        // your answer? => 
+        // your answer? => yes
     }
+    // optMember
+    // return Optional.ofNullable(oldselectMember(stageId));
+    // oleselectMember(1) => return new St8Member(memberId, "broadway", new St8Withdrawal(11, "music"));
+    // if (optMember.isPresent()) => true // nullではないので
+    //
+    //
+    // public void ifPresent(Consumer<? super T> consumer) {
+    //        if (value != null)
+    //            consumer.accept(value);
+    //    }
+    // TはOptional<T>クラスの型パラメータでOptional<String>ならT = String
+    // Consumer<? super T>
+    // ? super Tは「Tまたはそのスーパークラス」
+    // 引数のConsumer型は関数型インターフェースなのでラムダ式でvoid accept(T t);を実装している
+    //
+    // 予想通り同じ文字列が出力された
 
     /**
      * What string is sea, land, piari, bonvo, dstore, amba variables at the method end? <br>
@@ -290,14 +317,14 @@ public class Step08Java8FunctionTest extends PlainTestCase {
         St8DbFacade facade = new St8DbFacade();
 
         // traditional style
-        St8Member oldmemberFirst = facade.oldselectMember(1);
+        St8Member oldmemberFirst = facade.oldselectMember(1); // return new St8Member(memberId, "broadway", new St8Withdrawal(11, "music"));
         String sea;
         if (oldmemberFirst != null) {
-            St8Withdrawal withdrawal = oldmemberFirst.oldgetWithdrawal();
+            St8Withdrawal withdrawal = oldmemberFirst.oldgetWithdrawal(); // withdrawal => new St8Withdrawal(11, "music")
             if (withdrawal != null) {
-                sea = withdrawal.oldgetPrimaryReason();
+                sea = withdrawal.oldgetPrimaryReason(); // sea => "music"
                 if (sea == null) {
-                    sea = "*no reason1: the PrimaryReason was null";
+                    sea = "*no reason1: the PrimaryReason was null"; // sea => "*no reason1: the PrimaryReason was null"
                 }
             } else {
                 sea = "*no reason2: the Withdrawal was null";
@@ -306,12 +333,12 @@ public class Step08Java8FunctionTest extends PlainTestCase {
             sea = "*no reason3: the selected Member was null";
         }
 
-        Optional<St8Member> optMemberFirst = facade.selectMember(1);
+        Optional<St8Member> optMemberFirst = facade.selectMember(1); // return new St8Member(memberId, "broadway", new St8Withdrawal(11, "music"));
 
         // map style
         String land = optMemberFirst.map(mb -> mb.oldgetWithdrawal())
                 .map(wdl -> wdl.oldgetPrimaryReason())
-                .orElse("*no reason: someone was not present");
+                .orElse("*no reason: someone was not present"); // 値があればその値で、なければ引数の値で
 
         // flatMap style
         String piari = optMemberFirst.flatMap(mb -> mb.getWithdrawal())
@@ -323,30 +350,44 @@ public class Step08Java8FunctionTest extends PlainTestCase {
                 .map(wdl -> wdl.oldgetPrimaryReason())
                 .orElse("*no reason: someone was not present");
 
-        String dstore = facade.selectMember(2)
+        String dstore = facade.selectMember(2) // return new St8Member(memberId, "dockside", new St8Withdrawal(12, null));
                 .flatMap(mb -> mb.getWithdrawal())
                 .map(wdl -> wdl.oldgetPrimaryReason())
                 .orElse("*no reason: someone was not present");
 
-        String amba = facade.selectMember(3)
+        String amba = facade.selectMember(3) // return new St8Member(memberId, "hangar", null);
                 .flatMap(mb -> mb.getWithdrawal())
                 .flatMap(wdl -> wdl.getPrimaryReason())
                 .orElse("*no reason: someone was not present");
 
         int defaultWithdrawalId = -1;
-        Integer miraco = facade.selectMember(2)
+        Integer miraco = facade.selectMember(2) // return new St8Member(memberId, "dockside", new St8Withdrawal(12, null));
                 .flatMap(mb -> mb.getWithdrawal())
-                .map(wdl -> wdl.getWithdrawalId()) // ID here
+                .map(wdl -> wdl.getWithdrawalId()) // ID here 12
                 .orElse(defaultWithdrawalId);
 
-        log(sea); // your answer? => 
-        log(land); // your answer? => 
-        log(piari); // your answer? => 
-        log(bonvo); // your answer? => 
-        log(dstore); // your answer? => 
-        log(amba); // your answer? => 
-        log(miraco); // your answer? => 
+        log(sea); // your answer? => music
+        log(land); // your answer? => music
+        log(piari); // your answer? => music
+        log(bonvo); // your answer? => music
+        log(dstore); // your answer? => "*no reason: someone was not present"
+        log(amba); // your answer? => "*no reason: someone was not present"
+        log(miraco); // your answer? => 12
     }
+    // 予想は正しかった
+
+    // - map: 値 → 別の値()（ネストしない）
+    // - flatMap: 値 → Optional（自動的に平坦化）
+    // - キーポイント: 変換メソッドがOptionalを返すならflatMap、普通の値を返すならmap
+    //
+    // mapは値を値に変換:
+    //  Optional<T> → (T → U) → Optional<U>
+    //
+    //  flatMapは値をOptionalに変換して平坦化:
+    //  Optional<T> → (T → Optional<U>) → Optional<U>
+    //           ↑ もしmapなら Optional<Optional<U>> になるところを平坦化
+    //
+    // 変換関数の戻り値の違いらしい
 
     /**
      * What string is sea variables at the method end? <br>
