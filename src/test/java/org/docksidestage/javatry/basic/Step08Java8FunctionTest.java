@@ -264,6 +264,32 @@ public class Step08Java8FunctionTest extends PlainTestCase {
             log(member.getMemberId(), member.getMemberName());
         }
         // your answer? => yes
+
+        // #1on1: Optionalは(根源的に)何が嬉しい？ (2026/03/06)
+        // (Kotlinの例と比較で導入を少し)
+        //
+        // Javaだと、絶対に存在する戻り値なのか？ないかもしれない戻り値なのか？文法的な区別がない。
+        // 絶対に存在するならif文要らないけど、それを判断しているのは呼び出し側の人間。
+        // 人間が判断するからには、
+        // A. 絶対に存在する戻り値なのに、if文を書いてしまう → ただこれは無駄なだけで大問題ではない
+        // B. ないかもしれない戻り値なのに、if文を書かない → これは大問題
+        // "B" は大問題だけど、そう書いてもコンパイルエラーにならない。
+        // 実行してみて、かつ、そのケースが来ないとわからない。
+        //
+        // Optionalなら、問答無用でgetMemberId()は呼べない、コンパイルエラーになる。
+        // そして、ないかもしれないという意識付けへの主張が強い。Optional自体がその意味を持つので。
+        // ちゃんと手続きを踏んでから中身を取り出さざるを得ない。
+        // "B" の大問題が起きにくい。
+        
+        // #1on1: Optionalの導入が遅れたのはなぜだろう？ (2026/03/06)
+        // アイディアで言うと、少なくとも2003年くらいにScalaがOptionクラスを提供している。
+        // (世の中、大抵アイディアはもっと昔からあって、流行るのが遅れる)
+        // 人間、スッキリしたコードの誘惑になかなか勝てない。
+        // 実際はテストもしっかりするし、戻り値の確認とか習慣化されてるし、なのでOptionalは必須ではない。
+        // ただ、Java8というタイミングで出てきたことで...もっと別の嬉しいことがある。
+        // Lambda式で、Optionalのadvanceなメリットを享受しやすくなる。
+        
+        // #1on1: Kotlinがコンパイルエラーで教えてくれるって、なんてありがたいこと。 (2026/03/06)
     }
     // oldmember
     // return new St8Member(memberId, "broadway", new St8Withdrawal(11, "music"));
@@ -335,6 +361,7 @@ public class Step08Java8FunctionTest extends PlainTestCase {
 
         Optional<St8Member> optMemberFirst = facade.selectMember(1); // return new St8Member(memberId, "broadway", new St8Withdrawal(11, "music"));
 
+        // #1on1: ↑の書き方と厳密には等価ではない話。ただ、ほとんどのケースで↓でもOKなことが多い (2026/03/06)
         // map style
         String land = optMemberFirst.map(mb -> mb.oldgetWithdrawal())
                 .map(wdl -> wdl.oldgetPrimaryReason())
@@ -388,12 +415,15 @@ public class Step08Java8FunctionTest extends PlainTestCase {
     //           ↑ もしmapなら Optional<Optional<U>> になるところを平坦化
     //
     // 変換関数の戻り値の違いらしい
+    
+    // TODO jflute 次回1on1にて、map/flatMapの (2026/03/06)
 
     /**
      * What string is sea variables at the method end? <br>
      * (メソッド終了時の変数 sea の中身は？)
      */
     public void test_java8_optional_orElseThrow() {
+        // TODO jflute 次回1on1にて、orElseThrowジレンマの話 (2026/03/06)
         Optional<St8Member> optMember = new St8DbFacade().selectMember(2);
         St8Member member = optMember.orElseThrow(() -> new IllegalStateException("over"));
         String sea = "the";
