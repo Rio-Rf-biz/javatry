@@ -481,4 +481,6 @@ public class Step08Java8FunctionTest extends PlainTestCase {
     }
 
     // *Stream API will return at Step12 again, it's worth the wait!
+    
+    // #1on1: AIで書いたコードの可読性をいつまでこだわるか？話 (2026/03/06)
 }
