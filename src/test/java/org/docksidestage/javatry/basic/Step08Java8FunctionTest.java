@@ -394,18 +394,18 @@ public class Step08Java8FunctionTest extends PlainTestCase {
      * (メソッド終了時の変数 sea の中身は？)
      */
     public void test_java8_optional_orElseThrow() {
-        Optional<St8Member> optMember = new St8DbFacade().selectMember(2);
+        Optional<St8Member> optMember = new St8DbFacade().selectMember(2); // return new St8Member(memberId, "dockside", new St8Withdrawal(12, null));
         St8Member member = optMember.orElseThrow(() -> new IllegalStateException("over"));
         String sea = "the";
         try {
-            String reason = member.getWithdrawal().map(wdl -> wdl.oldgetPrimaryReason()).orElseThrow(() -> {
+            String reason = member.getWithdrawal().map(wdl -> wdl.oldgetPrimaryReason()).orElseThrow(() -> { // new St8Withdrawal(12, null)よりnullなのでorElseの方の処理が走る
                 return new IllegalStateException("wave");
             });
             sea = reason;
         } catch (IllegalStateException e) {
             sea = e.getMessage();
         }
-        log(sea); // your answer? => 
+        log(sea); // your answer? => wave
     }
 
     // ===================================================================================
@@ -419,20 +419,26 @@ public class Step08Java8FunctionTest extends PlainTestCase {
         List<St8Member> memberList = new St8DbFacade().selectMemberListAll();
         List<String> oldfilteredNameList = new ArrayList<>();
         for (St8Member member : memberList) {
-            if (member.getWithdrawal().isPresent()) {
+            if (member.getWithdrawal().isPresent()) { // withdrawalのnullチェック
                 oldfilteredNameList.add(member.getMemberName());
             }
         }
         String sea = oldfilteredNameList.toString();
-        log(sea); // your answer? => 
+        log(sea); // your answer? => [broadway, dockside]
 
         List<String> filteredNameList = memberList.stream() //
-                .filter(mb -> mb.getWithdrawal().isPresent()) //
+                .filter(mb -> mb.getWithdrawal().isPresent()) // 条件に一致するものだけを残す
                 .map(mb -> mb.getMemberName()) //
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()); // .collect() は Stream の終端操作で、Stream の要素を特定のコレクションにまとめます。らしい。リストに変換している。
         String land = filteredNameList.toString();
-        log(land); // your answer? => 
+        log(land); // your answer? => [broadway, dockside]
     }
+    // 拡張for文（enhanced for loop）です。for-each文とも呼ばれます。
+    // 以下と同等
+    // for (int i = 0; i < memberList.size(); i++) {
+    //    St8Member member = memberList.get(i);
+    //    // ...
+    //}
 
     /**
      * What string is sea, variables at the method end? <br>
@@ -441,14 +447,18 @@ public class Step08Java8FunctionTest extends PlainTestCase {
     public void test_java8_stream_map_flatMap() {
         List<St8Member> memberList = new St8DbFacade().selectMemberListAll();
         int sea = memberList.stream()
-                .filter(mb -> mb.getWithdrawal().isPresent())
+                .filter(mb -> mb.getWithdrawal().isPresent()) // id1とid2
                 .flatMap(mb -> mb.getPurchaseList().stream())
-                .filter(pur -> pur.getPurchaseId() > 100)
+                .filter(pur -> pur.getPurchaseId() > 100)// 2人のpurchaseListのそれぞれの要素についてフィルター
                 .mapToInt(pur -> pur.getPurchasePrice())
-                .distinct()
-                .sum();
-        log(sea); // your answer? => 
+                .distinct()// .distinct() は重複する値を除去するStream操作です。
+                .sum();// .sum() は mapToInt によって作られた IntStream の全要素を合計する終端操作です
+        log(sea); // your answer? => 2100 ではなく600だった
     }
+    // 100, 200, 300, 700, 800
+    // .flatMapなので2つの購入リストが展開されて1つのstreamになる
+    // (111, 100), (112,200), (113,200), (114,300)
+    // id1とid2に絞るって自分で書いてたのにid3の購入リストを計算に含んでしまっていた
 
     // *Stream API will return at Step12 again, it's worth the wait!
 }
