@@ -423,9 +423,43 @@ public class Step08Java8FunctionTest extends PlainTestCase {
      * (メソッド終了時の変数 sea の中身は？)
      */
     public void test_java8_optional_orElseThrow() {
-        // TODO jflute 次回1on1にて、orElseThrowジレンマの話 (2026/03/06)
+        // done jflute 次回1on1にて、orElseThrowジレンマの話 (2026/03/06)
+        // #1on1: orElseThrow(), なかったら落ちていい、みたいな場面 (2026/03/17)
+        // selectMember()からすると、呼び出し側の都合を知らないので、とにかく「ないかもしれないよ」としか言いようがない。
+        // 一方で、呼び出し側はIDを画面入力するのか？一覧画面で選択されたIDなのか？
+        // それ次第 (引数次第) で、Optionalのニュアンスが変わってくる。確かにないかもしれない、なのか、ほぼほぼあるはず、なのか。
+        // 「ほぼほぼあるはず」のケースで、orElseThrow()を使いたくなる。
+        // ただ、orElseThrow()は、ちゃんとした例外ハンドリング(例外実装)なので、しっかりとデバッグしやすいようにthrow。
+        // ↑ここまで教科書
+        //
+        // ただただ、ほぼほぼあるでしょ、というか、(バグってなければ)絶対あるでしょ、ってケースの呼び出しってまあまああり得る。
+        // そういうとき、果たして例外throwをすごくリッチに実装しようと思うだろうか？(みんなやるだろうか？)
+        // 場合によっては、雑に例外を投げちゃうみたいなことも...
+        //
+        // でも雑に例外を投げちゃうと本当にその場面(バグ)が来た時デバッグしにくい。
+        // 止めてくれるという意味合いでは、ifPresent()とかよりは良いけど...
+        // だったら、get()と何も変わらないとも言える。
+        // というか、しょぼい例外をorElseThrow()で投げるくらいなら、get()の方がすっきりしてるし実装も楽なのでマシとも言えるかも。
+        // そう、orElseThrow()を書くからには、ちゃんとデバッグしやすく例外を投げなければ意味がない。
+        //
+        // なので、考え方によっては、そういうときはget()でもOKとしちゃうというのもある。
+        // どうせしょぼい例外を投げるくらいなら。もしくはorElseThrow()ならちゃんと実装。
+        // 問答無用get()はOptionalのコンセプトを壊すから避けようという風習がある一方で、
+        // 形骸化したorElseThrow()が氾濫する問題。
+        //
+        // 教科書的なorElseThrow()は、デバッグしやすい例外をthrowするところまで入るが...
+        // get()を使わずorElseThrow()を使えばいい(許される)、だけで止まってしまうケースもある。
+        //
+        // 一方で、Java10で引数なしのorElseThrow()が導入された。挙動はget()と全く同じ。
+        // 問答無用getをする場面を許容してるんじゃないか？
+        //
+        // このジレンマ、DB周りで特に起きやすい。DBは引数によって戻り値のニュアンスがガラリと変わることが多い。
+        // 一件検索から、関連テーブルの取得などでこのOptionalジレンマ。SQL次第でないあるが簡単に変わる。
+        //
         Optional<St8Member> optMember = new St8DbFacade().selectMember(2); // return new St8Member(memberId, "dockside", new St8Withdrawal(12, null));
-        St8Member member = optMember.orElseThrow(() -> new IllegalStateException("over"));
+        St8Member member = optMember.orElseThrow(() -> {
+            return new IllegalStateException("over");
+        });
         String sea = "the";
         try {
             String reason = member.getWithdrawal().map(wdl -> wdl.oldgetPrimaryReason()).orElseThrow(() -> { // new St8Withdrawal(12, null)よりnullなのでorElseの方の処理が走る
@@ -456,6 +490,16 @@ public class Step08Java8FunctionTest extends PlainTestCase {
         String sea = oldfilteredNameList.toString();
         log(sea); // your answer? => [broadway, dockside]
 
+        // #1on1: Stream API, 小さな処理である filter, map の汎用部分だけをやってくれるようになった (2026/03/17)
+        // ところどころの情報だけ与えればあとは小人がやってくれる。
+        // なので、filterやmapの汎用部分の実装ミスを自分がすることはなくなる。
+        //
+        // 一方で、すべての言語がStream API風な感じのやり方を提唱しているかというとそうでもない。
+        // Stream APIという便利な機能を追加することによるデメリットを考える人もいる。
+        //
+        // TODO iwata [読み物課題] 応援してる "A" にもデメリットはあるよ by jflute (2026/03/17)
+        // https://jflute.hatenadiary.jp/entry/20181008/yourademerit
+        //
         List<String> filteredNameList = memberList.stream() //
                 .filter(mb -> mb.getWithdrawal().isPresent()) // 条件に一致するものだけを残す
                 .map(mb -> mb.getMemberName()) //
