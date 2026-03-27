@@ -26,6 +26,7 @@ public class TicketCustomized {
     private final TicketType ticketType;
     private final int ticketPrice;
     private final boolean nightOnly;
+    private final ClockProvider clockProvider;
 
     private int availableDays;
     private boolean alreadyIn = false;
@@ -35,38 +36,54 @@ public class TicketCustomized {
     //                                                                         ===========
     // done iwata ticketTypeの @param に、(NotNull) を付けてみてください by jflute (2025/09/19)
     /**
-     * コンストラクタ
+     * コンストラクタ (mainコード用、現在時刻はシステム時計から取得)
      * @param ticketType 入場可能日数、夜限定などのチケットの種類 (NotNull)
-     * @param ticketPrice チケットの価格
-     * @param nightOnly 夜限定チケットかどうか
-     *
-     * @param availableDays 入場可能日数
      */
-    public TicketCustomized(TicketType ticketType, int ticketPrice, boolean nightOnly, int availableDays) { // コンストラクタ
-        this.ticketType = ticketType;
-        this.ticketPrice = ticketPrice;
-        this.nightOnly = nightOnly;
+    public TicketCustomized(TicketType ticketType) {
+        this(ticketType, () -> LocalTime.now());
+    }
 
-        this.availableDays = availableDays;
+    /**
+     * コンストラクタ (テスト用、時刻の取得方法を外部から指定可能)
+     * @param ticketType 入場可能日数、夜限定などのチケットの種類 (NotNull)
+     * @param clockProvider 時刻を提供するインターフェース (NotNull)
+     */
+    public TicketCustomized(TicketType ticketType, ClockProvider clockProvider) {
+        this.ticketType = ticketType;
+        this.ticketPrice = ticketType.getPrice();
+        this.nightOnly = ticketType.isNightOnly();
+
+        this.availableDays = ticketType.getAvailableDays();
+
+        this.clockProvider = clockProvider;
     }
 
     // ===================================================================================
     //                                                                             In Park
     //                                                                             =======
-    // TODO iwata 修行++: 呼び出し側が現在日時を入れることができるということは... by jflute (2025/09/19)
+    // TODO done iwata 修行++: 呼び出し側が現在日時を入れることができるということは... by jflute (2025/09/19)
     // 意図的に違う日時を入れて何か処理をしようとするってこともできてしまうし...
     // 間違えて違う日時を入れてしまって不具合というのもありえる...
     // 本来mainコードとしては指定させる必要性がないけどtest都合で指定させているので、
     // mainとしては若干安全性がロスしている。(できればmain都合を本来は優先したい)
     // #1on1: いわたさん自身が何かmockを渡すみたいな感じでできれば...と仰っていた (2025/09/19)
     // ということで、修行++ということで、もうちょい先に進んでからまた考えてみましょう。
+
+    // 2026/03/27
+    // 課題感を思い出した。テスト都合で時刻を指定してdoInParkするようにした
+    // が理想は現在時刻は自動で取得するべき(doInPark内部で取得すべき)
+    //
+    // currentTimeはClockProviderインターフェース経由で受け取るようにした
+    //   -> 「引数なしでLocalTimeを返す」というルール
+    // コンストラクタにclockProviderを追加して、インスタンスを作る時にcurrentTimeを指定できる
+    // mainコードではLocalTime.now(), テストコードでは指定した時間
     /**
      * 入場可能日数をデクリメントしてチケットのステータスを入場済みにする, 入場に伴うチケットのステータス管理用のメソッド.
-     * @param currentTime 現在の時刻 (NotNull)
      * @throws NightOnlyException 夜限定チケットで入場可能時間前に入場しようとした場合
      * @throws TicketUnavailableException 入場可能日数が残っていない場合
      */
-    public void doInPark(LocalTime currentTime) {
+    public void doInPark() {
+        LocalTime currentTime = clockProvider.currentTime();
         if (nightOnly) {
             // done iwata コメントで19時って書いちゃうと、値が変わった時に置き去りにされちゃう可能性 by jflute (2025/08/28)
             // e.g. 夜限定チケットは、その時刻以降に入場可能

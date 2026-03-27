@@ -15,8 +15,30 @@ package org.docksidestage.bizfw.basic.buyticket;
  * @author Rio-Rf-biz
  */
 public enum TicketType {
-    ONE_DAY,
-    TWO_DAY,
-    NIGHT_ONLY_TWO_DAY,
-    FOUR_DAY
+    ONE_DAY(7400, 1, false),
+    TWO_DAY(13200, 2, false),
+    NIGHT_ONLY_TWO_DAY(7400, 2, true),
+    FOUR_DAY(22400, 4, false);
+
+    private final int price;
+    private final int availableDays;
+    private final boolean nightOnly;
+
+    TicketType(int price, int availableDays, boolean nightOnly) {
+        this.price = price;
+        this.availableDays = availableDays;
+        this.nightOnly = nightOnly;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public int getAvailableDays() {
+        return availableDays;
+    }
+
+    public boolean isNightOnly() {
+        return nightOnly;
+    }
 }

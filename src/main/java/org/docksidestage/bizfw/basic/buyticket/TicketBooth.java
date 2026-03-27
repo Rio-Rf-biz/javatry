@@ -26,15 +26,13 @@ public class TicketBooth {
     //                                                                          Definition
     //                                                                          ==========
     public static final int MAX_QUANTITY = 10;
-    public static final int ONE_DAY_PRICE = 7400; // when 2019/06/15
-    public static final int NIGHT_ONLY_TWO_DAY_PRICE = 7400; // 夜限定
-    public static final int TWO_DAY_PRICE = 13200;
-    public static final int FOUR_DAY_PRICE = 22400;
     public static final int NIGHT_ONLY_START_HOUR = 19;
 
     // ===================================================================================
     //                                                                           Attribute
     //                                                                           =========
+    private final ClockProvider clockProvider;
+
     private int quantity = MAX_QUANTITY;
     private Integer salesProceeds; // null allowed: until first purchase
 
@@ -42,6 +40,11 @@ public class TicketBooth {
     //                                                                         Constructor
     //                                                                         ===========
     public TicketBooth() {
+        this(() -> java.time.LocalTime.now());
+    }
+
+    public TicketBooth(ClockProvider clockProvider) {
+        this.clockProvider = clockProvider;
     }
 
     // ===================================================================================
@@ -69,9 +72,10 @@ public class TicketBooth {
      * @return チケットとお釣りなど (NotNull)
      */
     public TicketBuyResult buyOneDayPassport(Integer handedMoney) {
-        // TODO iwata 修行++: 新しいPassportのpublicメソッド作る時のコピー修正で... by jflute (2025/09/12)
+        // TODO done iwata 修行++: 新しいPassportのpublicメソッド作る時のコピー修正で... by jflute (2025/09/12)
         // 一箇所だけ直すでOKにしてみましょう。(現在3箇所/4箇所)
-        return (doBuyPassport(TicketType.ONE_DAY, handedMoney, ONE_DAY_PRICE, 1, false));
+        // TicketTypeにチケット種別に応じて決まる、価格・日数・nightOnlyを持たせるようにした。コピー時の修正箇所をTicketTypeの1箇所に削減
+        return doBuyPassport(TicketType.ONE_DAY, handedMoney);
     }
 
     // done iwata twoDayの方にも、@returnを付けましょう by jflute (2025/08/28)
@@ -83,11 +87,11 @@ public class TicketBooth {
      * @return チケットとお釣りなど (NotNull)
      */
     public TicketBuyResult buyTwoDayPassport(Integer handedMoney) {
-        return (doBuyPassport(TicketType.TWO_DAY, handedMoney, TWO_DAY_PRICE, 2, false));
+        return doBuyPassport(TicketType.TWO_DAY, handedMoney);
     }
 
     public TicketBuyResult buyFourDayPassport(Integer handedMoney) {
-        return (doBuyPassport(TicketType.FOUR_DAY, handedMoney, FOUR_DAY_PRICE, 4, false));
+        return doBuyPassport(TicketType.FOUR_DAY, handedMoney);
     }
 
     // #1on1: 流れを再利用して極力コピペをしないで済むようにする一方で... (2025/08/28)
@@ -98,7 +102,7 @@ public class TicketBooth {
     // パッと出せる作業用のテキストスペースを準備しておくと良い話
 
     public TicketBuyResult buyNightOnlyTwoDayPassport(Integer handedMoney) {
-        return(doBuyPassport(TicketType.NIGHT_ONLY_TWO_DAY, handedMoney, NIGHT_ONLY_TWO_DAY_PRICE, 2, true));
+        return doBuyPassport(TicketType.NIGHT_ONLY_TWO_DAY, handedMoney);
     }
 
     // done r.iwata buyAnyPassportのようにするか悩みましたがbuyPassportの方がシンプルでわかりやすいと思ったのでそう名付けました、一応doBuyと区別はできている、doBuyの方を変えた方がいいんですかね (2025/09/03)
@@ -118,13 +122,13 @@ public class TicketBooth {
     // → 役割を考えて名前をつけますが似た役割の存在に気づかずに命名してしまう可能性もあるので全体を把握する姿勢が大事だと納得しました
     // コメントを書くときに何が書いてあったら読む人が嬉しいか、という記述は以前のエラーログで変数の中身を渡す話と繋がりました
     // なぜそういう〇〇(ex. メソッド名、コメント...)にしたの？という質問に答えられるようにする
-    private TicketBuyResult doBuyPassport(TicketType ticketType, Integer handedMoney, Integer ticketPrice, Integer availableDays, boolean nightOnly) {
+    private TicketBuyResult doBuyPassport(TicketType ticketType, Integer handedMoney) {
         assertQuantityValid();
-        assertHandedMoneyValid(handedMoney, ticketPrice);
+        assertHandedMoneyValid(handedMoney, ticketType.getPrice());
         // done iwata コンパイルエラーが出ています (凡ミス: リファクタリングの影響) by jflute (2025/10/03)
         // 教訓: リファクタリングした後は、動作確認すること
-        TicketCustomized ticket = new TicketCustomized(ticketType, ticketPrice, nightOnly, availableDays);
-        int change = acceptPurchaseOrder(handedMoney, ticketPrice);
+        TicketCustomized ticket = new TicketCustomized(ticketType, clockProvider);
+        int change = acceptPurchaseOrder(handedMoney, ticketType.getPrice());
         return new TicketBuyResult(ticket, change);
     }
 
