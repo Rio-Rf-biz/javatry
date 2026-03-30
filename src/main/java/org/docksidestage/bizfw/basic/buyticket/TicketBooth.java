@@ -43,10 +43,31 @@ public class TicketBooth {
         this(() -> java.time.LocalTime.now());
     }
 
+    // #1on1: publicのConstructorだけど、TicketBoothは自分でnewして使うものじゃないので隠れてる感あり (2026/03/30)
+    // 厳密には、ユーザープログラムが現在日時を間違って細工することはできちゃうけど、でも隠れてる感があれば。
+    // ぼくらは悪意のある同僚を防ぐことはできないので、ついついやっちゃったを防ぐことができれば。
+    // なので、隠れてる感の演出をいかにするか？ってところがポイント。
+    // 差し替えポイントを露骨に見せるよりは、ある程度隠れていればそれでOKというデザインもある。
     public TicketBooth(ClockProvider clockProvider) {
         this.clockProvider = clockProvider;
     }
 
+    // #1on1: オーバーライドによる拡張ポイントの演出 (2026/03/30)
+    // これも100%隠しているわけではないが、より隠れてる感を出す。少し高度な文法をあえて使わせる。
+    //TicketBooth booth = new TicketBooth() {
+    //    @Override
+    //    protected ClockProvider createClockProvider() {
+    //        return () -> customizedNow;
+    //    }
+    //};
+    
+    // #1on1: 簡単に壊せないようにあえて少し不便にするデザインのお話 (2026/03/30)
+    // iPhoneの昔の電話アプリの例。
+    
+    // #1on1: 現場の現在日時差し替え話 e.g. TimeManager (2026/03/30)
+    // switchCurrentDate()の隠れてる感の演出。
+    // 人間のことを考えながらコードデザインする意識。
+    
     // ===================================================================================
     //                                                                          Buy Ticket
     //                                                                          ==========
@@ -72,11 +93,13 @@ public class TicketBooth {
      * @return チケットとお釣りなど (NotNull)
      */
     public TicketBuyResult buyOneDayPassport(Integer handedMoney) {
-        // TODO done iwata 修行++: 新しいPassportのpublicメソッド作る時のコピー修正で... by jflute (2025/09/12)
+        // done iwata 修行++: 新しいPassportのpublicメソッド作る時のコピー修正で... by jflute (2025/09/12)
         // 一箇所だけ直すでOKにしてみましょう。(現在3箇所/4箇所)
         // TicketTypeにチケット種別に応じて決まる、価格・日数・nightOnlyを持たせるようにした。コピー時の修正箇所をTicketTypeの1箇所に削減
         return doBuyPassport(TicketType.ONE_DAY, handedMoney);
     }
+    // #1on1: メニュー表的なpublicメソッドの意義 (2026/03/30)
+    // enumを公開しないようにして、販売しなくなったenumを指定できないようにするとか。
 
     // done iwata twoDayの方にも、@returnを付けましょう by jflute (2025/08/28)
     /**

@@ -497,7 +497,7 @@ public class Step08Java8FunctionTest extends PlainTestCase {
         // 一方で、すべての言語がStream API風な感じのやり方を提唱しているかというとそうでもない。
         // Stream APIという便利な機能を追加することによるデメリットを考える人もいる。
         //
-        // TODO done iwata [読み物課題] 応援してる "A" にもデメリットはあるよ by jflute (2026/03/17)
+        // done iwata [読み物課題] 応援してる "A" にもデメリットはあるよ by jflute (2026/03/17)
         // https://jflute.hatenadiary.jp/entry/20181008/yourademerit
         // 読みました
         // どんな選択肢にもデメリットはあるし、デメリットが全くないならそもそも議論になっていないというお話をしたのを思い出しました。

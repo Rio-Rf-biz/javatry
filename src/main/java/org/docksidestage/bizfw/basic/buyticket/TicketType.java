@@ -18,7 +18,7 @@ public enum TicketType {
     ONE_DAY(7400, 1, false),
     TWO_DAY(13200, 2, false),
     NIGHT_ONLY_TWO_DAY(7400, 2, true),
-    FOUR_DAY(22400, 4, false);
+    FOUR_DAY(22400, 4, false); // OLD
 
     private final int price;
     private final int availableDays;
