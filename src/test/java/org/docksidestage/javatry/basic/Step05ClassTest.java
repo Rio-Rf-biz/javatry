@@ -71,11 +71,12 @@ public class Step05ClassTest extends PlainTestCase {
         TicketBooth booth = new TicketBooth();
         booth.buyOneDayPassport(7400);
         int sea = booth.getQuantity();
-        log(sea); // your answer? => 9
+        log(sea); // your answer? => 9 -> 39 (在庫を種別ごとに分けたため、全種別の合計: 9+10+10+10=39)
     }
     // TicketBooth.javaを読んだ。seaにはquantityが入るので、そこにアタリをつけた。
     // quantityの初期値は10、buyOneDayPassport()内でquantityをgrepするとquantity--があるので、1減る。直前のifには入らず他に操作してる箇所はない。
     // なので、seaの中身は9になる。
+    // → 在庫を種別ごとに分けたため、getQuantity()は全種別の合計を返すようになった。39になる。
 
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_class_howToUse_overpay() {
@@ -102,12 +103,13 @@ public class Step05ClassTest extends PlainTestCase {
     /** Same as the previous method question. (前のメソッドの質問と同じ) */
     public void test_class_howToUse_wrongQuantity() {
         Integer sea = doTest_class_ticket_wrongQuantity();
-        log(sea); // your answer? => 9 -> 10
+        log(sea); // your answer? => 9 -> 10 -> 40 (在庫を種別ごとに分けたため、全種別の合計: 10*4=40)
     }
     // booth.getQuantity();が戻り値としてseaに入る。
     // 前の問題でbuyOneDayPassport()を実行すると、quantityが1減ったので9と予想。
     //
     // 次の問題でbuyOneDayPassportを変更した影響で答えは10になる。
+    // → 在庫を種別ごとに分けたため、getQuantity()は全種別の合計を返すようになった。購入失敗なので全種別10のまま、40になる。
 
     private Integer doTest_class_ticket_wrongQuantity() {
         TicketBooth booth = new TicketBooth();
@@ -185,7 +187,7 @@ public class Step05ClassTest extends PlainTestCase {
     // 修正後：org.docksidestage.bizfw.basic.buyticket.TicketBooth$TicketShortMoneyException: Short money: 5000
     //
     // 購入の処理が共通しているのでメソッドで切り出した。
-    // 修正前：9, 7400
+    // 修正前：9, 7400 → 在庫を種別ごとに分けたため39, 7400になった
     // 修正後：9, 7400
     // done iwata [ざつだん] なるほど、エクササイズの "再利用しましょう" 以前にIDEで警告出るんですね^^ by jflute (2025/08/14)
     // #1on1: IDEの警告を見る習慣があるのは素晴らしい、見ないともったいない (2025/08/15)
@@ -407,7 +409,55 @@ public class Step05ClassTest extends PlainTestCase {
      * (もし、OneDay/TwoDay/...で在庫(quantity)を共有する仕様になってたら、
      * OneDay/TwoDay/...ごとに在庫を分ける仕様に変えてみましょう)
      */
+
+    // 状況整理
+    // AsIs
+    // TicketBoothには在庫が一つのquantityフィールドしかない
+    //   -> 全チケット種別で在庫を共有している
+
+    // ToBe
+    // チケット種別ごとに在庫を分ける
+
+    // 案1 EnumMap<TicketType, Integer> で管理
+    // メリット TicketTypeが増えても変更箇所が少ない
+    // デメリット ボクシング(Int→Integerの変換)が発生する
+    // Java5以降はオートボクシングで自動的にやってくれる、数百万のループなどが起こるとパフォーマンス影響が気になるレベル感
+    //
+    // 案2 フィールドを個別に持つ
+    // メリット 増やすだけなのでわかりやすい
+    // デメリット TicketTypeが増えるたびにフィールド追加が必要
+    //
+    // 案3 TicketStockクラスを新設 << 採用
+    // メリット 将来的に種別ごとに初期在庫数を変えたい場合などに対応しやすい
+    // デメリット クラスが増える、規模的に過剰かもしれない
+    //
+    // 案4 TicketType自体に在庫を持たせる
+    // メリット チケット種別と在庫が一体化して直感的
+    // デメリット TicketBoothが複数ある場合に在庫が混ざる
+
     public void test_class_moreFix_zonedQuantity() {
-        // your confirmation code here
+        // Given
+        TicketBooth booth = new TicketBooth();
+
+        // When
+        // OneDayを全部売り切る
+        for (int i = 0; i < 10; i++) {
+            booth.buyOneDayPassport(7400);
+        }
+
+        // Then
+        // OneDayは売り切れ
+        log("OneDay quantity: " + booth.getQuantity(TicketType.ONE_DAY)); // should be 0
+        try {
+            booth.buyOneDayPassport(7400);
+            fail("should be sold out");
+        } catch (TicketBooth.TicketSoldOutException e) {
+            log(e.getMessage());
+        }
+
+        // TwoDayはまだ買える（在庫が分かれている証拠）
+        log("TwoDay quantity: " + booth.getQuantity(TicketType.TWO_DAY)); // should be 10
+        booth.buyTwoDayPassport(13200);
+        log("TwoDay quantity after buy: " + booth.getQuantity(TicketType.TWO_DAY)); // should be 9
     }
 }

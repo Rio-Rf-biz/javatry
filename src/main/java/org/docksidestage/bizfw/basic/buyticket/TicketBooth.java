@@ -15,6 +15,9 @@
  */
 package org.docksidestage.bizfw.basic.buyticket;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 // done iwata @authorの追加をお願いします by jflute (2025/08/28)
 /**
  * @author jflute
@@ -33,7 +36,7 @@ public class TicketBooth {
     //                                                                           =========
     private final ClockProvider clockProvider;
 
-    private int quantity = MAX_QUANTITY;
+    private final Map<TicketType, TicketStock> stockMap = new EnumMap<>(TicketType.class); // EnumMapはHashMapのようなハッシュ計算をしないので高速。キーがenumならEnumMapを使うのが定石らしい
     private Integer salesProceeds; // null allowed: until first purchase
 
     // ===================================================================================
@@ -50,6 +53,9 @@ public class TicketBooth {
     // 差し替えポイントを露骨に見せるよりは、ある程度隠れていればそれでOKというデザインもある。
     public TicketBooth(ClockProvider clockProvider) {
         this.clockProvider = clockProvider;
+        for (TicketType type : TicketType.values()) {
+            stockMap.put(type, new TicketStock(type, MAX_QUANTITY));
+        }
     }
 
     // #1on1: オーバーライドによる拡張ポイントの演出 (2026/03/30)
@@ -146,12 +152,13 @@ public class TicketBooth {
     // コメントを書くときに何が書いてあったら読む人が嬉しいか、という記述は以前のエラーログで変数の中身を渡す話と繋がりました
     // なぜそういう〇〇(ex. メソッド名、コメント...)にしたの？という質問に答えられるようにする
     private TicketBuyResult doBuyPassport(TicketType ticketType, Integer handedMoney) {
-        assertQuantityValid();
+        TicketStock stock = stockMap.get(ticketType);
+        assertQuantityValid(stock);
         assertHandedMoneyValid(handedMoney, ticketType.getPrice());
         // done iwata コンパイルエラーが出ています (凡ミス: リファクタリングの影響) by jflute (2025/10/03)
         // 教訓: リファクタリングした後は、動作確認すること
         TicketCustomized ticket = new TicketCustomized(ticketType, clockProvider);
-        int change = acceptPurchaseOrder(handedMoney, ticketType.getPrice());
+        int change = acceptPurchaseOrder(stock, handedMoney, ticketType.getPrice());
         return new TicketBuyResult(ticket, change);
     }
 
@@ -196,9 +203,9 @@ public class TicketBooth {
     // #1on1: 指が早いというのは、単に作業が早くなるって単純な話だけではなく...
     // 試行錯誤が何回もできる、とか、サンクコストによる判断のブレを少なくすることにもつながる。
 
-    private void assertQuantityValid() {
-        if (quantity <= 0) {
-            throw new TicketSoldOutException("Sold out");
+    private void assertQuantityValid(TicketStock stock) {
+        if (!stock.isAvailable()) {
+            throw new TicketSoldOutException("Sold out: " + stock.getTicketType());
         }
     }
 
@@ -218,8 +225,8 @@ public class TicketBooth {
     // publicのbuyメソッドに対して、privateのdoBuyPassport()メソッドみたいにdoをprefixとして付けるとか。
     // 他にも色々な区別の仕方はあるのですが、ぼくはけっこう「実処理」みたいなニュアンスで doXxx() はよく使います。
     // 会話上も言いやすく区別しやすいので。
-    private int acceptPurchaseOrder(Integer handedMoney, int price) {
-        --quantity;
+    private int acceptPurchaseOrder(TicketStock stock, Integer handedMoney, int price) {
+        stock.consume();
         if (salesProceeds != null) { // second or more purchase
             salesProceeds = salesProceeds + price;
         } else { // first purchase
@@ -269,7 +276,11 @@ public class TicketBooth {
     //                                                                            Accessor
     //                                                                            ========
     public int getQuantity() {
-        return quantity;
+        return stockMap.values().stream().mapToInt(TicketStock::getQuantity).sum(); // 全てのチケットの在庫の合計
+    }
+
+    public int getQuantity(TicketType ticketType) {
+        return stockMap.get(ticketType).getQuantity(); // 特定種別のチケットの在庫
     }
 
     public Integer getSalesProceeds() {
