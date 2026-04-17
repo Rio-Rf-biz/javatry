@@ -402,7 +402,11 @@ public class Step05ClassTest extends PlainTestCase {
     // ===================================================================================
     //                                                                         Devil Stage
     //                                                                         ===========
-    // TODO iwata 修行++: ちょっとエクササイズ追加でお願いします2 by jflute (2025/08/28)
+    // done iwata 修行++: ちょっとエクササイズ追加でお願いします2 by jflute (2025/08/28)
+    // #1on1: 共有する仕様で一度最適化して仕上げてから、在庫を分けるってステップ踏む方が良いアイディア浮かびやすい (2026/04/17)
+    // 実務でも、共有する仕様ではリリースしないかもだけど、あえて先にそれで実装してからリファクタリングもアリ。
+    // (在庫を分ける仕様がすぐに思いつかない場合は)
+    // いきなり答えに辿りつかない時は、あえて踊り場をまず目指してみると良い。
     /**
      * If your specification is to share inventory (quantity) between OneDay/TwoDay/...,
      * change the specification to separate inventory for each OneDay/TwoDay/.... <br>

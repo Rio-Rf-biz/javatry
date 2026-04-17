@@ -371,6 +371,11 @@ public class Step08Java8FunctionTest extends PlainTestCase {
         String piari = optMemberFirst.flatMap(mb -> mb.getWithdrawal())
                 .flatMap(wdl -> wdl.getPrimaryReason())
                 .orElse("*no reason: someone was not present");
+        /* mapでやった場合
+        Optional<Optional<Optional<String>>> map = optMemberFirst
+                .map(mb -> mb.getWithdrawal())
+                .map(optWdl -> optWdl.map(wdl -> wdl.getPrimaryReason()));
+         */
 
         // flatMap and map style
         String bonvo = optMemberFirst.flatMap(mb -> mb.getWithdrawal())
@@ -416,7 +421,8 @@ public class Step08Java8FunctionTest extends PlainTestCase {
     //
     // 変換関数の戻り値の違いらしい
 
-    // TODO jflute 次回1on1にて、map/flatMapの (2026/03/06)
+    // done jflute 次回1on1にて、map/flatMapのお話 (2026/03/06)
+    // https://dbflute.seasar.org/ja/manual/topic/programming/java/java8/mapandflat.html
 
     /**
      * What string is sea variables at the method end? <br>

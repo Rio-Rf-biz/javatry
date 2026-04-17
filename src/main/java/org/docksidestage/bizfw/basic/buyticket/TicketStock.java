@@ -9,6 +9,7 @@ public class TicketStock {
     private final TicketType ticketType;
     private int quantity;
 
+    // #1on1: initialQuantity という変数名Good。
     public TicketStock(TicketType ticketType, int initialQuantity) {
         this.ticketType = ticketType;
         this.quantity = initialQuantity;
